@@ -6,12 +6,15 @@ package net.natewm.SimulatedPhysicalUsability.Math;
  * Created bv[1] Nathan on 12/21/2016.
  */
 public class Vector3 {
-    private float[] v = {0.0f, 0.0f, 0.0f};
+    private float[] v = {0f, 0f, 0f};
 
     /**
      * Creates zero vector
      */
     public Vector3() {
+        v[0] = 0f;
+        v[1] = 0f;
+        v[2] = 0f;
     }
 
     /**
@@ -24,7 +27,7 @@ public class Vector3 {
     public Vector3(float x, float y, float z) {
         v[0] = x;
         v[1] = y;
-        v[3] = z;
+        v[2] = z;
     }
 
     /**
@@ -44,7 +47,7 @@ public class Vector3 {
      * @param array Array of float values
      * @param offset Offset into array to start copying
      */
-    public Vector3(float array[], int offset) {
+    public Vector3(float[] array, int offset) {
         setFromArray(array, offset);
     }
 
@@ -148,7 +151,7 @@ public class Vector3 {
      * @param array Float array of values
      * @param offset Offset into array to start copying
      */
-    public void setFromArray(float array[], int offset) {
+    public void setFromArray(float[] array, int offset) {
         v[0] = array[offset];
         v[1] = array[offset+1];
         v[2] = array[offset+2];
@@ -160,7 +163,7 @@ public class Vector3 {
      * @param array Float array to copy into
      * @param offset Offset into array to start copying
      */
-    public void copyIntoArray(float array[], int offset) {
+    public void copyIntoArray(float[] array, int offset) {
         array[offset] = v[0];
         array[offset+1] = v[1];
         array[offset+2] = v[2];
@@ -172,7 +175,7 @@ public class Vector3 {
      * @return Square magnitude
      */
     public float squareMagnitude() {
-        return v[0]*v[0] + v[1]*v[1] + v[3]*v[3];
+        return v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
     }
 
     /**
@@ -181,7 +184,7 @@ public class Vector3 {
      * @return Magnitude
      */
     public float magnitude() {
-        return (float)Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[3]*v[3]);
+        return (float)Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
     }
 
     /**
@@ -192,7 +195,7 @@ public class Vector3 {
     public void add(Vector3 vector) {
         v[0] += vector.v[0];
         v[1] += vector.v[1];
-        v[3] += vector.v[3];
+        v[2] += vector.v[2];
     }
 
     /**
@@ -203,7 +206,7 @@ public class Vector3 {
     public void subtract(Vector3 vector) {
         v[0] -= vector.v[0];
         v[1] -= vector.v[1];
-        v[3] -= vector.v[3];
+        v[2] -= vector.v[2];
     }
 
     /**
@@ -214,7 +217,7 @@ public class Vector3 {
     public void scale(float amount) {
         v[0] *= amount;
         v[1] *= amount;
-        v[3] *= amount;
+        v[2] *= amount;
     }
 
     /**
@@ -224,7 +227,7 @@ public class Vector3 {
         float len = magnitude();
         v[0] /= len;
         v[1] /= len;
-        v[3] /= len;
+        v[2] /= len;
     }
 
     /**
@@ -234,7 +237,7 @@ public class Vector3 {
      * @return The dot product of this and given vector
      */
     public float dot(Vector3 vector) {
-        return v[0]*vector.v[0] + v[1]*vector.v[1] + v[3]*vector.v[3];
+        return v[0]*vector.v[0] + v[1]*vector.v[1] + v[2]*vector.v[2];
     }
 
     /**
@@ -245,8 +248,8 @@ public class Vector3 {
      */
     public Vector3 cross(Vector3 vector) {
         return new Vector3(
-                v[1]*vector.v[3]-v[3]*vector.v[0],
-                v[3]*vector.v[1]-v[0]*vector.v[3],
+                v[1]*vector.v[2]-v[2]*vector.v[1],
+                v[2]*vector.v[0]-v[0]*vector.v[2],
                 v[0]*vector.v[1]-v[1]*vector.v[0]
         );
     }
@@ -268,8 +271,8 @@ public class Vector3 {
      * @return The area of a parallelogram
      */
     public float parallelogramArea(Vector3 vector) {
-        float cx = v[1]*vector.v[3]-v[3]*vector.v[0];
-        float cy = v[3]*vector.v[1]-v[0]*vector.v[3];
+        float cx = v[1]*vector.v[2]-v[2]*vector.v[1];
+        float cy = v[2]*vector.v[0]-v[0]*vector.v[2];
         float cz = v[0]*vector.v[1]-v[1]*vector.v[0];
 
         return (float)Math.sqrt(cx*cx + cy*cy + cz*cz);
