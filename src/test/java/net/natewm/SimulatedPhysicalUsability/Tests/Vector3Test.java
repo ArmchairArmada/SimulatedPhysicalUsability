@@ -1,3 +1,5 @@
+package net.natewm.SimulatedPhysicalUsability.Tests;
+
 import net.natewm.SimulatedPhysicalUsability.Math.Vector3;
 import org.junit.jupiter.api.*;
 
