@@ -2,19 +2,19 @@ package net.natewm.SimulatedPhysicalUsability.Math;
 
 /**
  * Floating point based Vector3.
- *
+ * <p>
  * Created bv[1] Nathan on 12/21/2016.
  */
 public class Vector3 {
-    private float[] v = {0f, 0f, 0f};
+    float[] values = {0f, 0f, 0f};
 
     /**
      * Creates zero vector
      */
     public Vector3() {
-        v[0] = 0f;
-        v[1] = 0f;
-        v[2] = 0f;
+        values[0] = 0f;
+        values[1] = 0f;
+        values[2] = 0f;
     }
 
     /**
@@ -25,9 +25,9 @@ public class Vector3 {
      * @param z z
      */
     public Vector3(float x, float y, float z) {
-        v[0] = x;
-        v[1] = y;
-        v[2] = z;
+        values[0] = x;
+        values[1] = y;
+        values[2] = z;
     }
 
     /**
@@ -36,15 +36,15 @@ public class Vector3 {
      * @param vector Vector to copy
      */
     public Vector3(Vector3 vector) {
-        v[0] = vector.v[0];
-        v[1] = vector.v[1];
-        v[2] = vector.v[2];
+        values[0] = vector.values[0];
+        values[1] = vector.values[1];
+        values[2] = vector.values[2];
     }
 
     /**
      * Creates vector from array values
      *
-     * @param array Array of float values
+     * @param array  Array of float values
      * @param offset Offset into array to start copying
      */
     public Vector3(float[] array, int offset) {
@@ -84,7 +84,7 @@ public class Vector3 {
      * @return x
      */
     public float getX() {
-        return v[0];
+        return values[0];
     }
 
     /**
@@ -93,7 +93,7 @@ public class Vector3 {
      * @return y
      */
     public float getY() {
-        return v[1];
+        return values[1];
     }
 
     /**
@@ -102,7 +102,7 @@ public class Vector3 {
      * @return z
      */
     public float getZ() {
-        return v[2];
+        return values[2];
     }
 
     /**
@@ -111,7 +111,7 @@ public class Vector3 {
      * @param x x
      */
     public void setX(float x) {
-        v[0] = x;
+        values[0] = x;
     }
 
     /**
@@ -120,7 +120,7 @@ public class Vector3 {
      * @param y y
      */
     public void setY(float y) {
-        v[1] = y;
+        values[1] = y;
     }
 
     /**
@@ -129,7 +129,7 @@ public class Vector3 {
      * @param z z
      */
     public void setZ(float z) {
-        v[2] = z;
+        values[2] = z;
     }
 
     /**
@@ -140,33 +140,33 @@ public class Vector3 {
      * @param z z
      */
     public void setValues(float x, float y, float z) {
-        v[0] = x;
-        v[1] = y;
-        v[2] = z;
+        values[0] = x;
+        values[1] = y;
+        values[2] = z;
     }
 
     /**
      * Sets vector components from an array
      *
-     * @param array Float array of values
+     * @param array  Float array of values
      * @param offset Offset into array to start copying
      */
     public void setFromArray(float[] array, int offset) {
-        v[0] = array[offset];
-        v[1] = array[offset+1];
-        v[2] = array[offset+2];
+        values[0] = array[offset];
+        values[1] = array[offset + 1];
+        values[2] = array[offset + 2];
     }
 
     /**
      * Copies vector values into an array
      *
-     * @param array Float array to copy into
+     * @param array  Float array to copy into
      * @param offset Offset into array to start copying
      */
     public void copyIntoArray(float[] array, int offset) {
-        array[offset] = v[0];
-        array[offset+1] = v[1];
-        array[offset+2] = v[2];
+        array[offset] = values[0];
+        array[offset + 1] = values[1];
+        array[offset + 2] = values[2];
     }
 
     /**
@@ -175,7 +175,7 @@ public class Vector3 {
      * @return Square magnitude
      */
     public float squareMagnitude() {
-        return v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+        return values[0] * values[0] + values[1] * values[1] + values[2] * values[2];
     }
 
     /**
@@ -184,7 +184,7 @@ public class Vector3 {
      * @return Magnitude
      */
     public float magnitude() {
-        return (float)Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+        return (float) Math.sqrt(values[0] * values[0] + values[1] * values[1] + values[2] * values[2]);
     }
 
     /**
@@ -193,9 +193,9 @@ public class Vector3 {
      * @param vector Vector to add
      */
     public void add(Vector3 vector) {
-        v[0] += vector.v[0];
-        v[1] += vector.v[1];
-        v[2] += vector.v[2];
+        values[0] += vector.values[0];
+        values[1] += vector.values[1];
+        values[2] += vector.values[2];
     }
 
     /**
@@ -204,9 +204,9 @@ public class Vector3 {
      * @param vector Vector to subtract
      */
     public void subtract(Vector3 vector) {
-        v[0] -= vector.v[0];
-        v[1] -= vector.v[1];
-        v[2] -= vector.v[2];
+        values[0] -= vector.values[0];
+        values[1] -= vector.values[1];
+        values[2] -= vector.values[2];
     }
 
     /**
@@ -215,9 +215,9 @@ public class Vector3 {
      * @param amount Amount to scale by
      */
     public void scale(float amount) {
-        v[0] *= amount;
-        v[1] *= amount;
-        v[2] *= amount;
+        values[0] *= amount;
+        values[1] *= amount;
+        values[2] *= amount;
     }
 
     /**
@@ -225,9 +225,9 @@ public class Vector3 {
      */
     public void normalize() {
         float len = magnitude();
-        v[0] /= len;
-        v[1] /= len;
-        v[2] /= len;
+        values[0] /= len;
+        values[1] /= len;
+        values[2] /= len;
     }
 
     /**
@@ -237,7 +237,7 @@ public class Vector3 {
      * @return The dot product of this and given vector
      */
     public float dot(Vector3 vector) {
-        return v[0]*vector.v[0] + v[1]*vector.v[1] + v[2]*vector.v[2];
+        return values[0] * vector.values[0] + values[1] * vector.values[1] + values[2] * vector.values[2];
     }
 
     /**
@@ -248,9 +248,9 @@ public class Vector3 {
      */
     public Vector3 cross(Vector3 vector) {
         return new Vector3(
-                v[1]*vector.v[2]-v[2]*vector.v[1],
-                v[2]*vector.v[0]-v[0]*vector.v[2],
-                v[0]*vector.v[1]-v[1]*vector.v[0]
+                values[1] * vector.values[2] - values[2] * vector.values[1],
+                values[2] * vector.values[0] - values[0] * vector.values[2],
+                values[0] * vector.values[1] - values[1] * vector.values[0]
         );
     }
 
@@ -261,7 +261,7 @@ public class Vector3 {
      * @return Angle between this and given vector
      */
     public float angle(Vector3 vector) {
-        return (float)Math.acos(dot(vector) / (magnitude() * vector.magnitude()));
+        return (float) Math.acos(dot(vector) / (magnitude() * vector.magnitude()));
     }
 
     /**
@@ -271,11 +271,11 @@ public class Vector3 {
      * @return The area of a parallelogram
      */
     public float parallelogramArea(Vector3 vector) {
-        float cx = v[1]*vector.v[2]-v[2]*vector.v[1];
-        float cy = v[2]*vector.v[0]-v[0]*vector.v[2];
-        float cz = v[0]*vector.v[1]-v[1]*vector.v[0];
+        float cx = values[1] * vector.values[2] - values[2] * vector.values[1];
+        float cy = values[2] * vector.values[0] - values[0] * vector.values[2];
+        float cz = values[0] * vector.values[1] - values[1] * vector.values[0];
 
-        return (float)Math.sqrt(cx*cx + cy*cy + cz*cz);
+        return (float) Math.sqrt(cx * cx + cy * cy + cz * cz);
     }
 
     /**
