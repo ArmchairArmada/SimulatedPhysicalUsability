@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability;
+package net.natewm.SimulatedPhysicalUsability.TestMains;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
@@ -11,8 +11,8 @@ import java.awt.event.WindowEvent;
 /**
  * Created by Nathan on 12/21/2016.
  */
-public class Main extends JFrame {
-    public Main() {
+public class GraphicsTestMain extends JFrame {
+    public GraphicsTestMain() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -41,7 +41,7 @@ public class Main extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Main main = new Main();
+                GraphicsTestMain main = new GraphicsTestMain();
             }
         });
     }
