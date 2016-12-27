@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Vector3f;
 
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Created by Nathan on 12/22/2016.
@@ -24,9 +25,16 @@ public class GraphicsPanel extends GLCanvas {
 
         addGLEventListener(new GLEventListener() {
             Mesh mesh;
+            Material material;
 
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
+
+                try {
+                    material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader.glsl");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 Geometry geometry = new Geometry();
                 geometry.addVertex(new Vector3f(-0.5f, 0.5f, 0.0f));
@@ -63,6 +71,7 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glClearColor(x, 0.0f, 0.0f, 1.0f);
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
+                material.use(gl);
                 mesh.easyRender(gl);
             }
 
