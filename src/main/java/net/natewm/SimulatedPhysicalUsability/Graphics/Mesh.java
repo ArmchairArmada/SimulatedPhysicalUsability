@@ -10,9 +10,6 @@ import java.nio.IntBuffer;
  * Created by Nathan on 12/27/2016.
  */
 public class Mesh {
-    static final int FLOAT_SIZE = 4;
-    static final int INT_SIZE = 4;
-
     IntBuffer vao;
     IntBuffer vbo;
 
@@ -74,11 +71,11 @@ public class Mesh {
 
         // TRIANGLES
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, triangleID);
-        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * INT_SIZE, triangleBuffer, gl.GL_STATIC_DRAW);
+        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * Integer.BYTES, triangleBuffer, gl.GL_STATIC_DRAW);
 
         // VERTEX POSITIONS
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, vertexBuffer.capacity() * FLOAT_SIZE, vertexBuffer, gl.GL_STATIC_DRAW);
+        gl.glBufferData(gl.GL_ARRAY_BUFFER, vertexBuffer.capacity() * Float.BYTES, vertexBuffer, gl.GL_STATIC_DRAW);
         // TODO: Get attribute numbers from vertex shader
         gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, false, 0, 0);
         gl.glEnableVertexAttribArray(0);
@@ -88,7 +85,7 @@ public class Mesh {
             normalId = vbo.get(nextIndex);
             nextIndex++;
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, normalId);
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, normalBuffer.capacity() * FLOAT_SIZE, normalBuffer, gl.GL_STATIC_DRAW);
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, normalBuffer.capacity() * Float.BYTES, normalBuffer, gl.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(1, 3, gl.GL_FLOAT, false, 0, 0);
             gl.glEnableVertexAttribArray(1);
         }
@@ -98,7 +95,7 @@ public class Mesh {
             colorId = vbo.get(nextIndex);
             nextIndex++;
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, colorId);
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, colorBuffer.capacity() * FLOAT_SIZE, colorBuffer, gl.GL_STATIC_DRAW);
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, colorBuffer.capacity() * Float.BYTES, colorBuffer, gl.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(2, 3, gl.GL_FLOAT, false, 0, 0);
             gl.glEnableVertexAttribArray(2);
         }
@@ -108,7 +105,7 @@ public class Mesh {
             uvId = vbo.get(nextIndex);
             nextIndex++;
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, uvId);
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, uvBuffer.capacity() * FLOAT_SIZE, uvBuffer, gl.GL_STATIC_DRAW);
+            gl.glBufferData(gl.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, gl.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(3, 2, gl.GL_FLOAT, false, 0, 0);
             gl.glEnableVertexAttribArray(3);
         }
@@ -127,6 +124,8 @@ public class Mesh {
         gl.glBindVertexArray(vao.get(0));
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, triangleID);
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
+        //gl.glEnableVertexAttribArray(0);
+        //gl.glEnableVertexAttribArray(2);
     }
 
     public void render(GL3 gl) {
