@@ -13,6 +13,8 @@ public class Mesh {
     IntBuffer vao;
     IntBuffer vbo;
 
+    Material material;
+
     int triangleID = 0;
     int vertexId = 0;
     int normalId = 0;
@@ -27,9 +29,11 @@ public class Mesh {
     int triangleCount;
     int vertexCount;
 
-    public Mesh(GL3 gl, Geometry geometry /*, Material material */) throws Exception {
+    public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
         if (!geometry.checkConsistancy())
             throw new Exception("Inconsistant Geometry Buffer");
+
+        this.material = material;
 
         hasNormals = geometry.normalsCount() > 0;
         hasColors = geometry.colorsCount() > 0;
@@ -56,6 +60,7 @@ public class Mesh {
         FloatBuffer colorBuffer = geometry.makeColorBuffer();
         FloatBuffer uvBuffer = geometry.makeUvBuffer();
         IntBuffer triangleBuffer = geometry.makeTriangleBuffer();
+        int attrib = 0;
         int nextIndex = 2;
         int enabledBuffers = countEnabledBuffers();
 
@@ -84,30 +89,33 @@ public class Mesh {
         if (hasNormals) {
             normalId = vbo.get(nextIndex);
             nextIndex++;
+            attrib = material.getAttributeLocation(gl, "normal");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, normalId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, normalBuffer.capacity() * Float.BYTES, normalBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(1, 3, gl.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(1);
+            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(attrib);
         }
 
         // COLORS
         if (hasColors) {
             colorId = vbo.get(nextIndex);
             nextIndex++;
+            attrib = material.getAttributeLocation(gl, "color");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, colorId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, colorBuffer.capacity() * Float.BYTES, colorBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(2, 3, gl.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(2);
+            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(attrib);
         }
 
         // UV
         if (hasUvs) {
             uvId = vbo.get(nextIndex);
             nextIndex++;
+            attrib = material.getAttributeLocation(gl, "uv");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, uvId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(3, 2, gl.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(3);
+            gl.glVertexAttribPointer(attrib, 2, gl.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(attrib);
         }
     }
 
@@ -140,6 +148,7 @@ public class Mesh {
 
     public void easyRender(GL3 gl) {
         bind(gl);
+        material.use(gl);
         render(gl);
         unbind(gl);
     }

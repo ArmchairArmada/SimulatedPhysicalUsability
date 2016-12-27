@@ -34,10 +34,12 @@ public class Material {
 
         gl.glCompileShader(vertexShader);
 
+        // TODO: Better error checking and logging
         System.out.println(ShaderUtil.getShaderInfoLog(gl, vertexShader));
 
         gl.glCompileShader(fragmentShader);
 
+        // TODO: Better error checking and logging
         System.out.println(ShaderUtil.getShaderInfoLog(gl, fragmentShader));
 
         programID = gl.glCreateProgram();
@@ -46,6 +48,7 @@ public class Material {
         gl.glLinkProgram(programID);
         gl.glValidateProgram(programID);
 
+        // TODO: Better error checking and logging
         System.out.println(ShaderUtil.getProgramInfoLog(gl, programID));
     }
 
@@ -71,5 +74,9 @@ public class Material {
 
     public void use(GL3 gl) {
         gl.glUseProgram(programID);
+    }
+
+    public int getAttributeLocation(GL3 gl, String name) {
+        return gl.glGetAttribLocation(programID, name);
     }
 }

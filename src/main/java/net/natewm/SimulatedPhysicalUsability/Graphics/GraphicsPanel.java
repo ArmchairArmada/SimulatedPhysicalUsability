@@ -51,7 +51,7 @@ public class GraphicsPanel extends GLCanvas {
                 geometry.addTriangle(new Triangle(0, 2, 3));
 
                 try {
-                    mesh = new Mesh(gl, geometry);
+                    mesh = new Mesh(gl, geometry, material);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -71,7 +71,6 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glClearColor(x, 0.0f, 0.0f, 1.0f);
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-                material.use(gl);
                 mesh.easyRender(gl);
             }
 
