@@ -42,6 +42,16 @@ public class Geometry {
         triangles.add(triangle);
     }
 
+    public Vector3f getVertex(int index) {return vertices.get(index);}
+
+    public Vector3f getNormal(int index) {return normals.get(index);}
+
+    public Vector3f getColor(int index) {return colors.get(index);}
+
+    public Vector2f getUv(int index) {return uv.get(index);}
+
+    public Triangle getTriangle(int index) {return triangles.get(index);}
+
     public int vertexCount() {
         return vertices.size();
     }

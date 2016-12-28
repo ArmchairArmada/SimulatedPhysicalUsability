@@ -29,6 +29,7 @@ public class Mesh {
     int indexCount;
     int triangleCount;
     int vertexCount;
+    int elementCount;
 
     public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
         if (!geometry.checkConsistancy())
@@ -43,6 +44,7 @@ public class Mesh {
         indexCount = geometry.vertexCount() * 3;
         triangleCount = geometry.trianglesCount();
         vertexCount = geometry.vertexCount();
+        elementCount = triangleCount * 3;
 
         genVAO(gl, geometry);
     }
@@ -138,7 +140,7 @@ public class Mesh {
     }
 
     public void render(GL3 gl) {
-        gl.glDrawElements(gl.GL_TRIANGLES, indexCount, gl.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(gl.GL_TRIANGLES, elementCount, gl.GL_UNSIGNED_INT, 0);
     }
 
     public void unbind(GL3 gl) {
