@@ -17,7 +17,6 @@ public class GraphicsPanel extends GLCanvas {
     private FPSAnimator animator;
 
     private float x = 0.0f;
-    private float dx = 0.01f;
 
     public GraphicsPanel(GLCapabilities glCapabilities) {
         super(glCapabilities);
@@ -48,6 +47,7 @@ public class GraphicsPanel extends GLCanvas {
                     e.printStackTrace();
                 }
 
+                /*
                 Geometry geometry = new Geometry();
                 geometry.addVertex(new Vector3f(-0.5f, 0.5f, 0.0f));
                 geometry.addVertex(new Vector3f(-0.5f, -0.5f, 0.0f));
@@ -61,6 +61,11 @@ public class GraphicsPanel extends GLCanvas {
 
                 geometry.addTriangle(new Triangle(0, 1, 2));
                 geometry.addTriangle(new Triangle(0, 2, 3));
+                */
+
+                Geometry geometry = OBJLoader.load("data/graphics/monkey.obj");
+
+                gl.glEnable(gl.GL_DEPTH_TEST);
 
                 try {
                     mesh = new Mesh(gl, geometry, material);
@@ -74,13 +79,9 @@ public class GraphicsPanel extends GLCanvas {
             }
 
             public void display(GLAutoDrawable glAutoDrawable) {
-                x += dx;
-                if (x < 0.0f || x > 1.0f) {
-                    x -= dx;
-                    dx = -dx;
-                }
+                x += 0.05f;
 
-                gl.glClearColor(x, 0.0f, 0.0f, 1.0f);
+                gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
                 model = model.identity();
