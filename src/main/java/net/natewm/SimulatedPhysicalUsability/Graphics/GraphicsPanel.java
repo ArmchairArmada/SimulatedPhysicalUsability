@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.Graphics;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.awt.*;
@@ -27,8 +28,19 @@ public class GraphicsPanel extends GLCanvas {
             Mesh mesh;
             Material material;
 
+            Matrix4f projection;
+            Matrix4f camera;
+            Matrix4f model;
+            Matrix4f mvp = new Matrix4f();
+
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
+
+                projection = new Matrix4f();
+                camera = new Matrix4f();
+                camera.setLookAt(4, 3, 3, 0, 0, 0, 0, 1, 0);
+
+                model = new Matrix4f();
 
                 try {
                     material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader.glsl");
@@ -71,11 +83,17 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glClearColor(x, 0.0f, 0.0f, 1.0f);
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-                mesh.easyRender(gl);
+                model = model.identity();
+                model.rotate(x, 0, 1, 0);
+
+                mvp.identity().mul(projection).mul(camera).mul(model);
+
+                mesh.easyRender(gl, mvp);
             }
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 gl.glViewport(0, 0, width, height);
+                projection.setPerspective((float)Math.toRadians(45.0), (float)width / (float)height, 0.1f, 100.0f);
             }
         });
 
