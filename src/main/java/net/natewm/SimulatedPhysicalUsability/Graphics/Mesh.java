@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Graphics;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
+import org.joml.Matrix4f;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -79,11 +80,11 @@ public class Mesh {
         gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * Integer.BYTES, triangleBuffer, gl.GL_STATIC_DRAW);
 
         // VERTEX POSITIONS
+        attrib = material.getAttributeLocation(gl, "position");
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         gl.glBufferData(gl.GL_ARRAY_BUFFER, vertexBuffer.capacity() * Float.BYTES, vertexBuffer, gl.GL_STATIC_DRAW);
-        // TODO: Get attribute numbers from vertex shader
-        gl.glVertexAttribPointer(0, 3, gl.GL_FLOAT, false, 0, 0);
-        gl.glEnableVertexAttribArray(0);
+        gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+        gl.glEnableVertexAttribArray(attrib);
 
         // NORMALS
         if (hasNormals) {
@@ -146,9 +147,11 @@ public class Mesh {
         gl.glBindVertexArray(0);
     }
 
-    public void easyRender(GL3 gl) {
+    public void easyRender(GL3 gl, Matrix4f mvp) {
         bind(gl);
         material.use(gl);
+        FloatBuffer fb = Buffers.newDirectFloatBuffer(16);
+        gl.glUniformMatrix4fv(material.getMvpLocation(), 1, false, mvp.get(fb));
         render(gl);
         unbind(gl);
     }

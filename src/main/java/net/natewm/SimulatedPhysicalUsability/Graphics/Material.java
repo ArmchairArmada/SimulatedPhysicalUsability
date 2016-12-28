@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class Material {
     int programID;
+    int mvpLocation;
+
 
     public Material(GL3 gl, String[] vertexShaderCode, String[] fragmentShaderCode) {
         int vertexShader = gl.glCreateShader(gl.GL_VERTEX_SHADER);
@@ -50,6 +52,12 @@ public class Material {
 
         // TODO: Better error checking and logging
         System.out.println(ShaderUtil.getProgramInfoLog(gl, programID));
+
+        mvpLocation = getUniformLocation(gl, "mvp");
+    }
+
+    public int getMvpLocation() {
+        return mvpLocation;
     }
 
     public static Material loadFromFiles(GL3 gl, String vertexSource, String fragmentSource) throws IOException {
@@ -78,5 +86,9 @@ public class Material {
 
     public int getAttributeLocation(GL3 gl, String name) {
         return gl.glGetAttribLocation(programID, name);
+    }
+
+    public int getUniformLocation(GL3 gl, String name) {
+        return gl.glGetUniformLocation(programID, name);
     }
 }
