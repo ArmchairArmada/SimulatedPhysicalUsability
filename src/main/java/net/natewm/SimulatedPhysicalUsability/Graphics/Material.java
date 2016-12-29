@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,8 @@ public class Material {
     int programID;
     int modelViewLocation;
     int projectionLocation;
-
+    ArrayList<Texture> textures = new ArrayList<>();
+    ArrayList<Integer> textureID = new ArrayList<>();
 
     public Material(GL3 gl, String[] vertexShaderCode, String[] fragmentShaderCode) {
         int vertexShader = gl.glCreateShader(gl.GL_VERTEX_SHADER);
@@ -87,8 +89,19 @@ public class Material {
         return new Material(gl, vertexShaderCode, fragmentShaderCode);
     }
 
+    public void addTexture(GL3 gl, Texture texture) {
+        textures.add(texture);
+        textureID.add(getUniformLocation(gl, "texture"+textureID.size()));
+    }
+
     public void use(GL3 gl) {
         gl.glUseProgram(programID);
+
+        for (int i=0; i<textures.size(); i++) {
+            gl.glUniform1i(textureID.get(i), i);
+            gl.glActiveTexture(gl.GL_TEXTURE0 + i);
+            gl.glBindTexture(gl.GL_TEXTURE_2D, textures.get(i).getTextureID());
+        }
     }
 
     public int getAttributeLocation(GL3 gl, String name) {

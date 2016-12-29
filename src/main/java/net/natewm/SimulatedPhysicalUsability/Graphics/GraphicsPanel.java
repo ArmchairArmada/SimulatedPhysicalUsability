@@ -7,7 +7,10 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -36,6 +39,8 @@ public class GraphicsPanel extends GLCanvas {
             Matrix4f camera;
             //Matrix4f model;
 
+            Texture texture;
+
             Matrix4f modelView = new Matrix4f();
 
             public void init(GLAutoDrawable glAutoDrawable) {
@@ -43,7 +48,7 @@ public class GraphicsPanel extends GLCanvas {
 
                 //projection = new Matrix4f();
                 camera = new Matrix4f();
-                camera.setLookAt(0, 2, 5, 0, 0, 0, 0, 1, 0);
+                camera.setLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
 
                 //model = new Matrix4f();
 
@@ -75,7 +80,20 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glEnable(gl.GL_DEPTH_TEST);
                 gl.glEnable(gl.GL_CULL_FACE);
 
+                try {
+                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/rgb.png"));
+                    texture = new Texture(gl, bufferedImage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                material.addTexture(gl, texture);
                 material.use(gl);
+
+                //gl.glUniform1i(material.getUniformLocation(gl, "theTexture"), 0);
+                //gl.glActiveTexture(gl.GL_TEXTURE0);
+                //gl.glBindTexture(gl.GL_TEXTURE_2D, texture.getTextureID());
+
                 gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.3f, 0.3f, 0.3f);
 
                 try {
@@ -110,11 +128,11 @@ public class GraphicsPanel extends GLCanvas {
 
                 //mesh.easyRender(gl, modelView, projection);
 
-                node1.getTransform().setPosition(new Vector3f(-2f, 0, 0));
+                node1.getTransform().setPosition(new Vector3f(-1f, 0, 0));
                 node1.getTransform().setRotation(new Quaternionf().rotationAxis(x, 0f, 1f, 0f));
                 node1.getTransform().updateMatrix();
 
-                node2.getTransform().setPosition(new Vector3f(2f, 0, 0));
+                node2.getTransform().setPosition(new Vector3f(1f, 0, 0));
                 node2.getTransform().setRotation(new Quaternionf().rotationAxis(-x, 0f, 1f, 0f));
                 node2.getTransform().updateMatrix();
 
