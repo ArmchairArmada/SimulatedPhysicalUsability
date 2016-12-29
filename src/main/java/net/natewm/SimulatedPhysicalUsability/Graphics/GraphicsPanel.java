@@ -80,9 +80,9 @@ public class GraphicsPanel extends GLCanvas {
             }
 
             public void display(GLAutoDrawable glAutoDrawable) {
-                x += 0.025f;
+                x += 0.01f;
 
-                gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+                gl.glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
                 model = model.identity();
@@ -92,7 +92,7 @@ public class GraphicsPanel extends GLCanvas {
 
                 modelView.identity().mul(camera).mul(model);
 
-                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.5f, 0.5f, 0.5f);
+                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.25f, 0.25f, 0.25f);
                 mesh.easyRender(gl, modelView, projection);
             }
 
