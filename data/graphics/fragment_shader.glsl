@@ -1,5 +1,7 @@
 #version 330
 
+uniform sampler2D texture0;
+
 in vec3 theNormal;
 in vec3 theColor;
 in vec2 theUv;
@@ -18,7 +20,8 @@ void main() {
     
     //outColor = vec4((theColor + diffuse) * materialColor + specular, 1.0);
     
-    float c = mod(floor((theUv.x + theUv.y) * 100),2);
+    float c = 0.0; //mod(floor((theUv.x + theUv.y) * 100),2);
     
+    materialColor = texture2D(texture0, theUv).rgb;
     outColor = vec4((theColor + ambient + diffuse) * min(c*0.25+materialColor,1.0) + specular + ambient*rim, 1.0);
 }

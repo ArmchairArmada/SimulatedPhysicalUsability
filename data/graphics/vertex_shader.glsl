@@ -1,9 +1,9 @@
 #version 330
 
-in layout(location=0) vec3 position;
-in layout(location=1) vec3 normal;
-/* in layout(location=2) vec3 color; */
-in layout(location=3) vec2 uv;
+in vec3 position;
+in vec3 normal;
+/* in vec3 color; */
+in vec2 uv;
 
 uniform vec3 ambient;
 uniform vec3 diffuse;
