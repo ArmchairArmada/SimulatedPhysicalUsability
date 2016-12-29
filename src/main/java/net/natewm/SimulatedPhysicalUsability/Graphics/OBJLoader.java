@@ -127,6 +127,10 @@ public class OBJLoader implements IGeometryLoader {
                             newNormals.set(face.pb, normals.get(face.nb));
                             newNormals.set(face.pc, normals.get(face.nc));
 
+                            newUvs.set(face.pa, uvs.get(face.ta));
+                            newUvs.set(face.pb, uvs.get(face.tb));
+                            newUvs.set(face.pc, uvs.get(face.tc));
+
                             // Split quads into triangles
                             if (items.length > 4) {
                                 face = new Face(items, true);
@@ -136,6 +140,10 @@ public class OBJLoader implements IGeometryLoader {
                                 newNormals.set(face.pa, normals.get(face.na));
                                 newNormals.set(face.pb, normals.get(face.nb));
                                 newNormals.set(face.pc, normals.get(face.nc));
+
+                                newUvs.set(face.pa, uvs.get(face.ta));
+                                newUvs.set(face.pb, uvs.get(face.tb));
+                                newUvs.set(face.pc, uvs.get(face.tc));
                             }
                             break;
 
