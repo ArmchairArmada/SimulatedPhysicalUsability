@@ -149,11 +149,12 @@ public class Mesh {
         gl.glBindVertexArray(0);
     }
 
-    public void easyRender(GL3 gl, Matrix4f mvp) {
+    public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         bind(gl);
         material.use(gl);
         FloatBuffer fb = Buffers.newDirectFloatBuffer(16);
-        gl.glUniformMatrix4fv(material.getMvpLocation(), 1, false, mvp.get(fb));
+        gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, modelView.get(fb));
+        gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, projection.get(fb));
         render(gl);
         unbind(gl);
     }

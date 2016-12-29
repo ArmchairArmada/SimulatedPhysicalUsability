@@ -14,7 +14,8 @@ import java.util.List;
  */
 public class Material {
     int programID;
-    int mvpLocation;
+    int modelViewLocation;
+    int projectionLocation;
 
 
     public Material(GL3 gl, String[] vertexShaderCode, String[] fragmentShaderCode) {
@@ -53,11 +54,17 @@ public class Material {
         // TODO: Better error checking and logging
         System.out.println(ShaderUtil.getProgramInfoLog(gl, programID));
 
-        mvpLocation = getUniformLocation(gl, "mvp");
+        //mvpLocation = getUniformLocation(gl, "mvp");
+        modelViewLocation = getUniformLocation(gl, "modelView");
+        projectionLocation = getUniformLocation(gl, "projection");
     }
 
-    public int getMvpLocation() {
-        return mvpLocation;
+    public int getModelViewLocation() {
+        return modelViewLocation;
+    }
+
+    public int getProjectionLocation() {
+        return projectionLocation;
     }
 
     public static Material loadFromFiles(GL3 gl, String vertexSource, String fragmentSource) throws IOException {
