@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Graphics;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -14,7 +15,7 @@ import java.io.IOException;
  */
 public class GraphicsPanel extends GLCanvas {
     private GL3 gl;
-    private FPSAnimator animator;
+    private Animator animator;
 
     private float x = 0.0f;
 
@@ -64,15 +65,22 @@ public class GraphicsPanel extends GLCanvas {
                 geometry.addTriangle(new Triangle(0, 2, 3));
                 */
 
-                Geometry geometry = OBJLoader.load("data/graphics/monkey.obj");
+                IGeometryLoader geometryLoader = new OBJLoader();
+                Geometry geometry = geometryLoader.load("data/graphics/monkey.obj");
 
                 gl.glEnable(gl.GL_DEPTH_TEST);
+                gl.glEnable(gl.GL_CULL_FACE);
+
+                material.use(gl);
+                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.3f, 0.3f, 0.3f);
 
                 try {
                     mesh = new Mesh(gl, geometry, material);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                animator.setUpdateFPSFrames(60, System.out);
             }
 
             public void dispose(GLAutoDrawable glAutoDrawable) {
@@ -92,7 +100,6 @@ public class GraphicsPanel extends GLCanvas {
 
                 modelView.identity().mul(camera).mul(model);
 
-                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.25f, 0.25f, 0.25f);
                 mesh.easyRender(gl, modelView, projection);
             }
 
@@ -102,7 +109,7 @@ public class GraphicsPanel extends GLCanvas {
             }
         });
 
-        animator = new FPSAnimator(this, 60);
+        animator = new Animator(this);
         animator.start();
     }
 }
