@@ -112,7 +112,7 @@ public class Geometry {
     }
 
     public FloatBuffer makeUvBuffer() {
-        FloatBuffer floatBuffer = Buffers.newDirectFloatBuffer(colors.size() * 2);
+        FloatBuffer floatBuffer = Buffers.newDirectFloatBuffer(uv.size() * 2);
         for (Vector2f vector: uv) {
             floatBuffer.put(vector.x);
             floatBuffer.put(vector.y);

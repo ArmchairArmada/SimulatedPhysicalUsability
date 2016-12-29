@@ -2,7 +2,7 @@
 
 in vec3 theNormal;
 in vec3 theColor;
-in vec3 theUv;
+in vec2 theUv;
 
 out vec4 outColor;
 
@@ -18,5 +18,7 @@ void main() {
     
     //outColor = vec4((theColor + diffuse) * materialColor + specular, 1.0);
     
-    outColor = vec4((theColor + ambient + diffuse) * materialColor + specular + ambient*rim, 1.0);
+    float c = mod(floor((theUv.x + theUv.y) * 100),2);
+    
+    outColor = vec4((theColor + ambient + diffuse) * min(c*0.25+materialColor,1.0) + specular + ambient*rim, 1.0);
 }
