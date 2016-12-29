@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
@@ -18,24 +19,25 @@ import java.util.stream.Stream;
  * Created by Nathan on 12/28/2016.
  */
 public class OBJLoader implements IGeometryLoader {
+    private class Point {
+        Vector3f vertex = null;
+        Vector3f normal = null;
+        Vector2f uv = null;
+        int index = -1;
+    }
+
 
     private class Face {
-        int pa, pb, pc;  // Position indices
-        int ta, tb, tc;  // Texture indices
-        int na, nb, nc;  // Normal indices
+        int pa=-1, pb=-1, pc=-1;  // Position indices
+        int ta=-1, tb=-1, tc=-1;  // Texture indices
+        int na=-1, nb=-1, nc=-1;  // Normal indices
 
-        Face(String[] items, boolean quad) {
+        Face(String[] items) {
             String[] a, b, c;
 
             a = items[1].split("\\/");
-            if (quad) {
-                b = items[3].split("\\/");
-                c = items[4].split("\\/");
-            }
-            else {
-                b = items[2].split("\\/");
-                c = items[3].split("\\/");
-            }
+            b = items[2].split("\\/");
+            c = items[3].split("\\/");
 
             pa = Integer.parseInt(a[0])-1;
             pb = Integer.parseInt(b[0])-1;
@@ -55,26 +57,14 @@ public class OBJLoader implements IGeometryLoader {
         }
     }
 
-    /**
-     * This is a limited implementation of OBJ file loading.  Some features are purposely omitted.
-     *
-     * Limitations include:
-     *  - Face vertices, textures, and normals all use same index
-     *  - Only one object can be described in the file (o is ignored).
-     *  - All meshes are smoothed (no smoothing groups)
-     *  - No per-vertex colors (general limitation of OBJ)
-     *  - Materials are not loaded (must be loaded separately)
-     *
-     * @param filename
-     * @return
-     */
     public Geometry load(String filename) {
-        Geometry geometry = new Geometry();
+        HashMap<String, Point> pointMap = new HashMap<>();;
+        ArrayList<Point> points = new ArrayList<>();
+        ArrayList<Vector3f> vertices = new ArrayList<>();
         ArrayList<Vector3f> normals = new ArrayList<>();
         ArrayList<Vector2f> uvs = new ArrayList<>();
 
-        final ArrayList<Vector3f> newNormals = new ArrayList<>();
-        final ArrayList<Vector2f> newUvs = new ArrayList<>();
+        Geometry geometry = new Geometry();
 
         try (Stream<String> stream = Files.lines(Paths.get(filename))) {
             stream.forEach((String line) -> {
@@ -89,62 +79,79 @@ public class OBJLoader implements IGeometryLoader {
                             break;
 
                         case "v":   // Vertex
-                            geometry.addVertex(new Vector3f(
-                                Float.parseFloat(items[1]),
-                                Float.parseFloat(items[2]),
-                                Float.parseFloat(items[3])
+                            vertices.add(new Vector3f(
+                                    Float.parseFloat(items[1]),
+                                    Float.parseFloat(items[2]),
+                                    Float.parseFloat(items[3])
                             ));
                             break;
 
                         case "vn":  // Normal
                             normals.add(new Vector3f(
-                                Float.parseFloat(items[1]),
-                                Float.parseFloat(items[2]),
-                                Float.parseFloat(items[3])
+                                    Float.parseFloat(items[1]),
+                                    Float.parseFloat(items[2]),
+                                    Float.parseFloat(items[3])
                             ));
 
                             break;
 
                         case "vt":  // UV
                             uvs.add(new Vector2f(
-                                Float.parseFloat(items[1]),
-                                Float.parseFloat(items[2])
+                                    Float.parseFloat(items[1]),
+                                    Float.parseFloat(items[2])
                             ));
                             break;
 
                         case "f":   // Face
-                            while (newNormals.size() < geometry.vertexCount())
-                                newNormals.add(null);
+                            Face face = new Face(items);
 
-                            while (newUvs.size() < geometry.vertexCount())
-                                newUvs.add(null);
+                            if (!pointMap.containsKey(items[1])) {
+                                Point p = new Point();
 
-                            Face face = new Face(items, false);
+                                p.index = points.size();
+                                p.vertex = vertices.get(face.pa);
+                                if (face.na > -1)
+                                    p.normal = normals.get(face.na);
+                                if (face.ta > -1)
+                                    p.uv = uvs.get(face.ta);
 
-                            geometry.addTriangle(new Triangle(face.pa, face.pb, face.pc));
-
-                            newNormals.set(face.pa, normals.get(face.na));
-                            newNormals.set(face.pb, normals.get(face.nb));
-                            newNormals.set(face.pc, normals.get(face.nc));
-
-                            newUvs.set(face.pa, uvs.get(face.ta));
-                            newUvs.set(face.pb, uvs.get(face.tb));
-                            newUvs.set(face.pc, uvs.get(face.tc));
-
-                            // Split quads into triangles
-                            if (items.length > 4) {
-                                face = new Face(items, true);
-
-                                geometry.addTriangle(new Triangle(face.pa, face.pb, face.pc));
-
-                                newNormals.set(face.pa, normals.get(face.na));
-                                newNormals.set(face.pb, normals.get(face.nb));
-                                newNormals.set(face.pc, normals.get(face.nc));
-
-                                newUvs.set(face.pa, uvs.get(face.ta));
-                                newUvs.set(face.pb, uvs.get(face.tb));
-                                newUvs.set(face.pc, uvs.get(face.tc));
+                                pointMap.put(items[1], p);
+                                points.add(p);
                             }
+
+                            if (!pointMap.containsKey(items[2])) {
+                                Point p = new Point();
+
+                                p.index = points.size();
+                                p.vertex = vertices.get(face.pb);
+                                if (face.nb > -1)
+                                    p.normal = normals.get(face.nb);
+                                if (face.tb > -1)
+                                    p.uv = uvs.get(face.tb);
+
+                                pointMap.put(items[2], p);
+                                points.add(p);
+                            }
+
+                            if (!pointMap.containsKey(items[3])) {
+                                Point p = new Point();
+
+                                p.index = points.size();
+                                p.vertex = vertices.get(face.pc);
+                                if (face.nc > -1)
+                                    p.normal = normals.get(face.nc);
+                                if (face.tc > -1)
+                                    p.uv = uvs.get(face.tc);
+
+                                pointMap.put(items[3], p);
+                                points.add(p);
+                            }
+
+                            int a = pointMap.get(items[1]).index;
+                            int b = pointMap.get(items[2]).index;
+                            int c = pointMap.get(items[3]).index;
+
+                            geometry.addTriangle(new Triangle(a, b, c));
                             break;
 
                         case "s":   // Smoothing
@@ -167,19 +174,18 @@ public class OBJLoader implements IGeometryLoader {
 
             });
 
-            if (normals.size() > 0)
-                for (Vector3f vector: newNormals)
-                    geometry.addNormal(vector);
-
-            if (uvs.size() > 0)
-                for (Vector2f vector: newUvs)
-                    geometry.addUv(vector);
+            for (Point point : points) {
+                geometry.addVertex(point.vertex);
+                if (point.normal != null)
+                    geometry.addNormal(point.normal);
+                if (point.uv != null)
+                    geometry.addUv(point.uv);
+            }
 
             return geometry;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 }
