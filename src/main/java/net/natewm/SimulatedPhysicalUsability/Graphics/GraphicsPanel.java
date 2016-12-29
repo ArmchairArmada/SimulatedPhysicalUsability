@@ -30,7 +30,8 @@ public class GraphicsPanel extends GLCanvas {
             Matrix4f projection;
             Matrix4f camera;
             Matrix4f model;
-            Matrix4f mvp = new Matrix4f();
+
+            Matrix4f modelView = new Matrix4f();
 
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
@@ -79,17 +80,20 @@ public class GraphicsPanel extends GLCanvas {
             }
 
             public void display(GLAutoDrawable glAutoDrawable) {
-                x += 0.05f;
+                x += 0.025f;
 
                 gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
                 model = model.identity();
+                model.rotate(x, 1, 0, 0);
                 model.rotate(x, 0, 1, 0);
+                model.rotate(x, 0, 0, 1);
 
-                mvp.identity().mul(projection).mul(camera).mul(model);
+                modelView.identity().mul(camera).mul(model);
 
-                mesh.easyRender(gl, mvp);
+                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.5f, 0.5f, 0.5f);
+                mesh.easyRender(gl, modelView, projection);
             }
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
