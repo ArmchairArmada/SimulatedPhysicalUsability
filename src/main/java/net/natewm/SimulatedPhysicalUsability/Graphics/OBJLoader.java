@@ -17,9 +17,9 @@ import java.util.stream.Stream;
 /**
  * Created by Nathan on 12/28/2016.
  */
-public class OBJLoader {
+public class OBJLoader implements IGeometryLoader {
 
-    private static class Face {
+    private class Face {
         int pa, pb, pc;  // Position indices
         int ta, tb, tc;  // Texture indices
         int na, nb, nc;  // Normal indices
@@ -68,7 +68,7 @@ public class OBJLoader {
      * @param filename
      * @return
      */
-    public static Geometry load(String filename) {
+    public Geometry load(String filename) {
         Geometry geometry = new Geometry();
         ArrayList<Vector3f> normals = new ArrayList<>();
         ArrayList<Vector2f> uvs = new ArrayList<>();
