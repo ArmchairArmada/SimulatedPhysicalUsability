@@ -113,12 +113,11 @@ public class OBJLoader {
                             break;
 
                         case "f":   // Face
-                            while (newNormals.size() < normals.size())
+                            while (newNormals.size() < geometry.vertexCount())
                                 newNormals.add(null);
 
-                            while (newUvs.size() < uvs.size())
+                            while (newUvs.size() < geometry.vertexCount())
                                 newUvs.add(null);
-
 
                             Face face = new Face(items, false);
 
@@ -160,11 +159,13 @@ public class OBJLoader {
 
             });
 
-            for (Vector3f vector: newNormals)
-                geometry.addNormal(vector);
+            if (normals.size() > 0)
+                for (Vector3f vector: newNormals)
+                    geometry.addNormal(vector);
 
-            for (Vector2f vector: newUvs)
-                geometry.addUv(vector);
+            if (uvs.size() > 0)
+                for (Vector2f vector: newUvs)
+                    geometry.addUv(vector);
 
             return geometry;
         } catch (IOException e) {
