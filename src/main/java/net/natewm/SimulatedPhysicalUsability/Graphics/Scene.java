@@ -12,6 +12,7 @@ public class Scene {
     ArrayList<SceneNode> nodes = new ArrayList<>();
     ArrayList<SceneNode> toRemove = new ArrayList<>();
     Matrix4f projection = new Matrix4f();
+    Matrix4f modelView = new Matrix4f();
 
     public Scene() {
     }
@@ -29,12 +30,12 @@ public class Scene {
     }
 
     public void render(GL3 gl, Matrix4f camera) {
-        Matrix4f modelView = new Matrix4f();
-
-        for (SceneNode node : toRemove) {
-            nodes.remove(node);
+        if (toRemove.size() > 0) {
+            for (SceneNode node : toRemove) {
+                nodes.remove(node);
+            }
+            toRemove.clear();
         }
-        toRemove.clear();
 
         for (SceneNode node : nodes) {
             modelView.identity().mul(camera).mul(node.transform.getMatrix());

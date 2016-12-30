@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Graphics;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
+import com.sun.prism.impl.BufferUtil;
 import org.joml.Matrix4f;
 
 import java.nio.FloatBuffer;
@@ -152,9 +153,13 @@ public class Mesh {
     public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         bind(gl);
         material.use(gl);
-        FloatBuffer fb = Buffers.newDirectFloatBuffer(16);
-        gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, modelView.get(fb));
-        gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, projection.get(fb));
+
+        float[] fa = new float[16];
+        modelView.get(fa);
+        gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, fa, 0);
+        projection.get(fa);
+        gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, fa, 0);
+
         render(gl);
         unbind(gl);
     }

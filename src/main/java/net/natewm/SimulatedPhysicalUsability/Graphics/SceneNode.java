@@ -20,5 +20,6 @@ public class SceneNode {
 
     public void render(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         mesh.easyRender(gl,modelView, projection);
+        //mesh.render(gl);
     }
 }
