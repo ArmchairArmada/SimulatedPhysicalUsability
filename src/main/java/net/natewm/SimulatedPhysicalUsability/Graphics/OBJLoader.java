@@ -28,31 +28,25 @@ public class OBJLoader implements IGeometryLoader {
 
 
     private class Face {
-        int pa=-1, pb=-1, pc=-1;  // Position indices
-        int ta=-1, tb=-1, tc=-1;  // Texture indices
-        int na=-1, nb=-1, nc=-1;  // Normal indices
+        int[] p = {-1, -1, -1};
+        int[] t = {-1, -1, -1};
+        int[] n = {-1, -1, -1};
 
         Face(String[] items) {
-            String[] a, b, c;
+            String[] strings;
 
-            a = items[1].split("\\/");
-            b = items[2].split("\\/");
-            c = items[3].split("\\/");
+            for (int i=0; i<3; i++) {
+                strings = items[i+1].split("\\/");
 
-            pa = Integer.parseInt(a[0])-1;
-            pb = Integer.parseInt(b[0])-1;
-            pc = Integer.parseInt(c[0])-1;
+                p[i] = Integer.parseInt(strings[0])-1;
 
-            if (a[1].compareTo("") != 0) {
-                ta = Integer.parseInt(a[1])-1;
-                tb = Integer.parseInt(b[1])-1;
-                tc = Integer.parseInt(c[1])-1;
-            }
+                if (strings[1].compareTo("") != 0) {
+                    t[i] = Integer.parseInt(strings[1])-1;
+                }
 
-            if (a[2].compareTo("") != 0) {
-                na = Integer.parseInt(a[2])-1;
-                nb = Integer.parseInt(b[2])-1;
-                nc = Integer.parseInt(c[2])-1;
+                if (strings[2].compareTo("") != 0) {
+                    n[i] = Integer.parseInt(strings[2])-1;
+                }
             }
         }
     }
@@ -105,46 +99,20 @@ public class OBJLoader implements IGeometryLoader {
                         case "f":   // Face
                             Face face = new Face(items);
 
-                            if (!pointMap.containsKey(items[1])) {
-                                Point p = new Point();
+                            for (int i=0; i<3; i++) {
+                                if (!pointMap.containsKey(items[i+1])) {
+                                    Point p = new Point();
 
-                                p.index = points.size();
-                                p.vertex = vertices.get(face.pa);
-                                if (face.na > -1)
-                                    p.normal = normals.get(face.na);
-                                if (face.ta > -1)
-                                    p.uv = uvs.get(face.ta);
+                                    p.index = points.size();
+                                    p.vertex = vertices.get(face.p[i]);
+                                    if (face.n[i] > -1)
+                                        p.normal = normals.get(face.n[i]);
+                                    if (face.t[i] > -1)
+                                        p.uv = uvs.get(face.t[i]);
 
-                                pointMap.put(items[1], p);
-                                points.add(p);
-                            }
-
-                            if (!pointMap.containsKey(items[2])) {
-                                Point p = new Point();
-
-                                p.index = points.size();
-                                p.vertex = vertices.get(face.pb);
-                                if (face.nb > -1)
-                                    p.normal = normals.get(face.nb);
-                                if (face.tb > -1)
-                                    p.uv = uvs.get(face.tb);
-
-                                pointMap.put(items[2], p);
-                                points.add(p);
-                            }
-
-                            if (!pointMap.containsKey(items[3])) {
-                                Point p = new Point();
-
-                                p.index = points.size();
-                                p.vertex = vertices.get(face.pc);
-                                if (face.nc > -1)
-                                    p.normal = normals.get(face.nc);
-                                if (face.tc > -1)
-                                    p.uv = uvs.get(face.tc);
-
-                                pointMap.put(items[3], p);
-                                points.add(p);
+                                    pointMap.put(items[i+1], p);
+                                    points.add(p);
+                                }
                             }
 
                             int a = pointMap.get(items[1]).index;
