@@ -29,9 +29,8 @@ public class Texture {
         textureID = intBuffer.get(0);
         gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
 
-        System.out.println(image.getColorModel());
-
         if (image.getColorModel().hasAlpha()) {
+            // Convert from ARGB to RGBA
             ByteBuffer byteBuffer = Buffers.newDirectByteBuffer(dataBuffer.capacity());
 
             for (int i=0; i<dataBuffer.capacity(); i+=4) {
@@ -49,8 +48,9 @@ public class Texture {
         }
 
         // TODO: Allow configuring min and mag filters
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR_MIPMAP_LINEAR);
+        gl.glGenerateMipmap(gl.GL_TEXTURE_2D);
     }
 
     public int getTextureID() {

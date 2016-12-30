@@ -19,20 +19,4 @@ public class Transform {
     public void updateMatrix() {
         matrix.identity().translateLocal(position).rotate(rotation);
     }
-
-    public void setPosition(Vector3f newPosition) {
-        position = newPosition;
-    }
-
-    public void move(Vector3f offset) {
-        position.add(offset);
-    }
-
-    public void setRotation(Quaternionf newRotation) {
-        rotation = newRotation;
-    }
-
-    public void rotate(Quaternionf rotate) {
-        rotation.mul(rotate);
-    }
 }
