@@ -81,7 +81,7 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glEnable(gl.GL_CULL_FACE);
 
                 try {
-                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/rgb.png"));
+                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/alpha.png"));
                     texture = new Texture(gl, bufferedImage);
                 } catch (IOException e) {
                     e.printStackTrace();

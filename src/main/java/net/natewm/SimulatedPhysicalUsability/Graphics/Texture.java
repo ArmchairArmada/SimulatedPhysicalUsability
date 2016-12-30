@@ -29,7 +29,24 @@ public class Texture {
         textureID = intBuffer.get(0);
         gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
 
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.getWidth(), image.getHeight(), 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, dataBuffer);
+        System.out.println(image.getColorModel());
+
+        if (image.getColorModel().hasAlpha()) {
+            ByteBuffer byteBuffer = Buffers.newDirectByteBuffer(dataBuffer.capacity());
+
+            for (int i=0; i<dataBuffer.capacity(); i+=4) {
+                byteBuffer.put(dataBuffer.get(i+1));
+                byteBuffer.put(dataBuffer.get(i+2));
+                byteBuffer.put(dataBuffer.get(i+3));
+                byteBuffer.put(dataBuffer.get(i));
+            }
+            byteBuffer.flip();
+
+            gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, image.getWidth(), image.getHeight(), 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, byteBuffer);
+        }
+        else {
+            gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.getWidth(), image.getHeight(), 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, dataBuffer);
+        }
 
         // TODO: Allow configuring min and mag filters
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
