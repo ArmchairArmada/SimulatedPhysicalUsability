@@ -4,6 +4,8 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by Nathan on 12/22/2016.
@@ -19,6 +22,17 @@ import java.util.ArrayList;
 public class GraphicsPanel extends GLCanvas {
     private GL3 gl;
     private Animator animator;
+
+    Vector3f cameraCenter = new Vector3f();
+    float distance = 20;
+    float cameraRotateY = 0f;
+    float cameraRotateX = -2.5f;
+    Quaternionf cameraAngle = new Quaternionf();
+    Matrix4f camera = new Matrix4f();
+
+    int button = 0;
+    int previousX = 0;
+    int previousY = 0;
 
     public GraphicsPanel(GLCapabilities glCapabilities) {
         super(glCapabilities);
@@ -34,12 +48,16 @@ public class GraphicsPanel extends GLCanvas {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println("PRESSED " + e.getButton());
+                //System.out.println("PRESSED " + e.getButton());
+                button = e.getButton();
+                previousX = e.getX();
+                previousY = e.getY();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                System.out.println("RELEASED " + e.getButton());
+                //System.out.println("RELEASED " + e.getButton());
+                button = 0;
             }
 
             @Override
@@ -56,7 +74,51 @@ public class GraphicsPanel extends GLCanvas {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                System.out.println("DRAG " + e.getX() + ", " + e.getY());
+                Vector3f v = new Vector3f();
+                Quaternionf q = new Quaternionf();
+
+                if (button == 1) {
+                    q.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f);
+
+                    v.set(1f, 0f, 0f);
+                    v.rotate(q);
+                    //System.out.println(v);
+                    v.mul((e.getX() - previousX) * 0.0007f * distance);
+                    cameraCenter.add(v);
+
+                    v.set(0f, 0f, 1f);
+                    v.rotate(q);
+                    //System.out.println(v);
+                    v.mul((e.getY() - previousY) * 0.0007f * distance);
+                    cameraCenter.add(v);
+
+                    //System.out.println(cameraCenter);
+                }
+                if (button == 2) {
+                    distance += (e.getY() - previousY) * 0.05f;
+                    //System.out.println("New Distance " + distance);
+
+                    if (distance < 2f)
+                        distance = 2f;
+                }
+                if (button == 3) {
+                    cameraRotateY -= (e.getX() - previousX) * 0.001f;
+                    cameraRotateX += (e.getY() - previousY) * 0.001f;
+                    cameraAngle.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f).rotateAxis(cameraRotateX, 1f, 0f, 0f);
+
+                    //System.out.println("New Z " + cameraRotateY + ", X " + cameraRotateX);
+                }
+
+                previousX = e.getX();
+                previousY = e.getY();
+
+                v.set(0f, 0f, distance);
+                v.rotate(cameraAngle);
+                v.add(cameraCenter);
+
+                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 1f, cameraCenter.z, 0, 1, 0);
+
+                //System.out.println("DRAG " + e.getX() + ", " + e.getY());
             }
 
             @Override
@@ -80,8 +142,6 @@ public class GraphicsPanel extends GLCanvas {
             Renderer renderer = new Renderer();
             ArrayList<RenderNode> nodes = new ArrayList<>();
 
-            Matrix4f camera;
-
             Texture texture;
 
             long lastTime = 0;
@@ -90,8 +150,14 @@ public class GraphicsPanel extends GLCanvas {
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
 
-                camera = new Matrix4f();
-                camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
+                cameraAngle.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f).rotateAxis(cameraRotateX, 1f, 0f, 0f);
+                Vector3f v = new Vector3f(0f, 0f, distance);
+                v.rotate(cameraAngle);
+                v.add(cameraCenter);
+
+                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 1f, cameraCenter.z, 0, 1, 0);
+
+                //camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
                 //camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
 
                 try {
@@ -129,8 +195,8 @@ public class GraphicsPanel extends GLCanvas {
                     geometry = geometryLoader.load("data/graphics/monkey_lopoly.obj");
                     Mesh mesh2 = new Mesh(gl, geometry, material);
 
-                    for (int i=-150; i<151; i++) {
-                        for (int j=-150; j<151; j++) {
+                    for (int i=-20; i<21; i++) {
+                        for (int j=-20; j<21; j++) {
                             RenderNode node;
                             if ((i+j) % 2 == 0) {
                                 node = new RenderNode(mesh);
@@ -167,7 +233,7 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
                 x += 0.001f * dt;
 
-                camera.setLookAt(10f-x, 40f - x, 15, 0, -5, 0, 0, 1, 0);
+                //camera.setLookAt(10f-x, 40f - x, 15, 0, -5, 0, 0, 1, 0);
 
                 //for (RenderNode node : nodes) {
                 nodes.parallelStream().forEach((node) -> {
