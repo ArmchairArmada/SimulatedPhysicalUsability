@@ -50,6 +50,11 @@ public class Texture {
         // TODO: Allow configuring min and mag filters
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR_MIPMAP_LINEAR);
+
+        float[] fLargest = {-1f};
+        gl.glGetFloatv(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, fLargest, 0);
+
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest[0]);
         gl.glGenerateMipmap(gl.GL_TEXTURE_2D);
     }
 

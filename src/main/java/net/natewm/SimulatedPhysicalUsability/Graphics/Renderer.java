@@ -2,8 +2,6 @@ package net.natewm.SimulatedPhysicalUsability.Graphics;
 
 import com.jogamp.opengl.GL3;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
@@ -11,7 +9,7 @@ import java.util.ArrayList;
  * Created by Nathan on 12/29/2016.
  */
 public class Renderer {
-    ArrayList<ArrayList<RenderNode>> renderGroups = new ArrayList<>();
+    ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
 
     Matrix4f projection = new Matrix4f();
     //Matrix4f modelView = new Matrix4f();
@@ -28,11 +26,11 @@ public class Renderer {
         projection.setPerspective((float)Math.toRadians(fieldOfView), width / height, near, far);
     }
 
-    public void add(int renderGroup, RenderNode node) {
+    public void add(int renderGroup, MeshRenderNode node) {
         renderGroups.get(renderGroup).add(node);
     }
 
-    public void remove(int renderGroup, RenderNode node) {
+    public void remove(int renderGroup, MeshRenderNode node) {
         renderGroups.get(renderGroup).remove(node);
     }
 
@@ -42,7 +40,7 @@ public class Renderer {
         //float r, z;
         //int c = 0;
 
-        for (ArrayList<RenderNode> renderGroup : renderGroups) {
+        for (ArrayList<IRenderNode> renderGroup : renderGroups) {
             if (renderGroup.size() > 0) {
                 renderGroup.get(0).bind(gl);
 
@@ -50,7 +48,7 @@ public class Renderer {
                     node.updateView(camera, projection);
                 });
 
-                for (RenderNode node : renderGroup) {
+                for (IRenderNode node : renderGroup) {
 
                     /*
                     modelView.set(camera).mul(node.transform.getMatrix());
@@ -69,12 +67,12 @@ public class Renderer {
                     //System.out.println(z + ", " + r);
 
                     // TODO: Use camera's far clipping plane
-                    if (node.viewZ < 1000f && node.viewZ > 0f
-                            && node.viewCenter.x+node.viewRadius > -1.0f
-                            && node.viewCenter.x-node.viewRadius < 1.0f
-                            && node.viewCenter.y+node.viewRadius > -1.0f
-                            && node.viewCenter.y-node.viewRadius < 1.0f) {
-                        node.render(gl, node.modelView, projection);
+                    if (node.getViewZ() < 1000f && node.getViewZ() > 0f
+                            && node.getViewCenter().x+node.getViewRadius() > -1.0f
+                            && node.getViewCenter().x-node.getViewRadius() < 1.0f
+                            && node.getViewCenter().y+node.getViewRadius() > -1.0f
+                            && node.getViewCenter().y-node.getViewRadius() < 1.0f) {
+                        node.render(gl, node.getModelView(), projection);
                         //c++;
                     }
                 }

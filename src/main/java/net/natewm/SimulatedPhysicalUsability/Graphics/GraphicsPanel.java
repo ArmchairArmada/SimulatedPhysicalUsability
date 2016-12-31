@@ -14,7 +14,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  * Created by Nathan on 12/22/2016.
@@ -26,7 +25,7 @@ public class GraphicsPanel extends GLCanvas {
     Vector3f cameraCenter = new Vector3f();
     float distance = 20;
     float cameraRotateY = 0f;
-    float cameraRotateX = -2.5f;
+    float cameraRotateX = -0.8f;
     Quaternionf cameraAngle = new Quaternionf();
     Matrix4f camera = new Matrix4f();
 
@@ -95,7 +94,7 @@ public class GraphicsPanel extends GLCanvas {
                     //System.out.println(cameraCenter);
                 }
                 if (button == 2) {
-                    distance += (e.getY() - previousY) * 0.05f;
+                    distance += (e.getY() - previousY) * 0.1f;
                     //System.out.println("New Distance " + distance);
 
                     if (distance < 2f)
@@ -104,6 +103,10 @@ public class GraphicsPanel extends GLCanvas {
                 if (button == 3) {
                     cameraRotateY -= (e.getX() - previousX) * 0.001f;
                     cameraRotateX += (e.getY() - previousY) * 0.001f;
+                    if (cameraRotateX > -0.001f)
+                        cameraRotateX = -0.001f;
+                    if (cameraRotateX < -Math.PI/2.0+0.025)
+                        cameraRotateX = (float)(-Math.PI/2.0+0.025);
                     cameraAngle.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f).rotateAxis(cameraRotateX, 1f, 0f, 0f);
 
                     //System.out.println("New Z " + cameraRotateY + ", X " + cameraRotateX);
@@ -112,11 +115,11 @@ public class GraphicsPanel extends GLCanvas {
                 previousX = e.getX();
                 previousY = e.getY();
 
-                v.set(0f, 0f, distance);
+                v.set(0f, distance, 0f);
                 v.rotate(cameraAngle);
                 v.add(cameraCenter);
 
-                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 1f, cameraCenter.z, 0, 1, 0);
+                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 0.5f, cameraCenter.z, 0, 1, 0);
 
                 //System.out.println("DRAG " + e.getX() + ", " + e.getY());
             }
@@ -136,11 +139,11 @@ public class GraphicsPanel extends GLCanvas {
 
 
         addGLEventListener(new GLEventListener() {
-            Mesh mesh;
-            Material material;
+            Mesh mesh, mesh3;
+            Material material, floor_material;
 
             Renderer renderer = new Renderer();
-            ArrayList<RenderNode> nodes = new ArrayList<>();
+            ArrayList<IRenderNode> nodes = new ArrayList<>();
 
             Texture texture;
 
@@ -151,26 +154,26 @@ public class GraphicsPanel extends GLCanvas {
                 gl = glAutoDrawable.getGL().getGL3();
 
                 cameraAngle.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f).rotateAxis(cameraRotateX, 1f, 0f, 0f);
-                Vector3f v = new Vector3f(0f, 0f, distance);
+                Vector3f v = new Vector3f(0f, distance, 0f);
                 v.rotate(cameraAngle);
                 v.add(cameraCenter);
 
-                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 1f, cameraCenter.z, 0, 1, 0);
+                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 0.5f, cameraCenter.z, 0, 1, 0);
 
                 //camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
                 //camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
-
-                try {
-                    material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader.glsl");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
                 IGeometryLoader geometryLoader = new OBJLoader();
                 Geometry geometry = geometryLoader.load("data/graphics/agent.obj");
 
                 gl.glEnable(gl.GL_DEPTH_TEST);
                 gl.glEnable(gl.GL_CULL_FACE);
+
+                try {
+                    material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader.glsl");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 try {
                     BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/rgb.png"));
@@ -180,30 +183,65 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 material.addTexture(gl, texture);
-                material.use(gl);
-
-                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.3f, 0.3f, 0.3f);
-
-                gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-
-                int renderGroup = renderer.createRenderGroup();
-                int renderGroup2 = renderer.createRenderGroup();
 
                 try {
                     mesh = new Mesh(gl, geometry, material);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+
+                try {
+                    floor_material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader2.glsl");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/floor_tile.png"));
+                    texture = new Texture(gl, bufferedImage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                floor_material.addTexture(gl, texture);
+
+
+
+                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.3f, 0.3f, 0.3f);
+
+                gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+                int renderGroup = renderer.createRenderGroup();
+
+                try {
+                    geometry = geometryLoader.load("data/graphics/floor.obj");
+                    mesh3 = new Mesh(gl, geometry, floor_material);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                renderer.add(renderGroup, new MeshRenderNode(mesh3));
+
+                renderGroup = renderer.createRenderGroup();
+
+
+                int renderGroup2 = renderer.createRenderGroup();
+
+                try {
                     geometry = geometryLoader.load("data/graphics/monkey_lopoly.obj");
                     Mesh mesh2 = new Mesh(gl, geometry, material);
 
                     for (int i=-20; i<21; i++) {
                         for (int j=-20; j<21; j++) {
-                            RenderNode node;
+                            MeshRenderNode node;
                             if ((i+j) % 2 == 0) {
-                                node = new RenderNode(mesh);
+                                node = new MeshRenderNode(mesh);
                                 renderer.add(renderGroup, node);
                             }
                             else {
-                                node = new RenderNode(mesh2);
+                                node = new MeshRenderNode(mesh2);
                                 renderer.add(renderGroup2, node);
                             }
                             node.getTransform().position.set(i, 0, j);
@@ -235,9 +273,9 @@ public class GraphicsPanel extends GLCanvas {
 
                 //camera.setLookAt(10f-x, 40f - x, 15, 0, -5, 0, 0, 1, 0);
 
-                //for (RenderNode node : nodes) {
+                //for (MeshRenderNode node : nodes) {
                 nodes.parallelStream().forEach((node) -> {
-                    node.getTransform().rotation.identity().rotateAxis(x, 1f, 0f, 0f).rotateAxis(x, 0f, 1f, 0f).rotateAxis(x, 0f, 0f, 1f);
+                    node.getTransform().rotation.identity().rotateAxis(x, 0f, 1f, 0f);
                     node.getTransform().updateMatrix();
                 });
 
