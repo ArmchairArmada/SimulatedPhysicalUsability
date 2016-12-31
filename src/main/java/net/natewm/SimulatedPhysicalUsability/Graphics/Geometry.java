@@ -131,4 +131,15 @@ public class Geometry {
         intBuffer.flip();
         return intBuffer;
     }
+
+    public float getRadius() {
+        float radius = 0f;
+        float maxRadius = 0f;
+        for (Vector3f vector : vertices) {
+            radius = vector.length();
+            if (radius > maxRadius)
+                maxRadius = radius;
+        }
+        return radius;
+    }
 }

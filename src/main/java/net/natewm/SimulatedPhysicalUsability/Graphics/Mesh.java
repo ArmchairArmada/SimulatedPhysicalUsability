@@ -32,6 +32,8 @@ public class Mesh {
     int vertexCount;
     int elementCount;
 
+    float radius;
+
     public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
         if (!geometry.checkConsistancy())
             throw new Exception("Inconsistant Geometry Buffer");
@@ -64,6 +66,7 @@ public class Mesh {
         FloatBuffer colorBuffer = geometry.makeColorBuffer();
         FloatBuffer uvBuffer = geometry.makeUvBuffer();
         IntBuffer triangleBuffer = geometry.makeTriangleBuffer();
+        radius = geometry.getRadius();
         int attrib = 0;
         int nextIndex = 2;
         int enabledBuffers = countEnabledBuffers();
@@ -138,6 +141,15 @@ public class Mesh {
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         //gl.glEnableVertexAttribArray(0);
         //gl.glEnableVertexAttribArray(2);
+        material.use(gl);
+    }
+
+    public void bindMatricies(GL3 gl, Matrix4f modelView, Matrix4f projection) {
+        float[] fa = new float[16];
+        modelView.get(fa);
+        gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, fa, 0);
+        projection.get(fa);
+        gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, fa, 0);
     }
 
     public void render(GL3 gl) {
@@ -152,14 +164,7 @@ public class Mesh {
 
     public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         bind(gl);
-        material.use(gl);
-
-        float[] fa = new float[16];
-        modelView.get(fa);
-        gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, fa, 0);
-        projection.get(fa);
-        gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, fa, 0);
-
+        bindMatricies(gl, modelView, projection);
         render(gl);
         unbind(gl);
     }

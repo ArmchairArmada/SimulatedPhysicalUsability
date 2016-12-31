@@ -4,8 +4,6 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -79,8 +77,8 @@ public class GraphicsPanel extends GLCanvas {
             Mesh mesh;
             Material material;
 
-            Scene scene = new Scene();
-            ArrayList<SceneNode> nodes = new ArrayList<>();
+            Renderer renderer = new Renderer();
+            ArrayList<RenderNode> nodes = new ArrayList<>();
 
             Matrix4f camera;
 
@@ -93,8 +91,8 @@ public class GraphicsPanel extends GLCanvas {
                 gl = glAutoDrawable.getGL().getGL3();
 
                 camera = new Matrix4f();
-                //camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
-                camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
+                camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
+                //camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
 
                 try {
                     material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader.glsl");
@@ -103,13 +101,13 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 IGeometryLoader geometryLoader = new OBJLoader();
-                Geometry geometry = geometryLoader.load("data/graphics/monkey_lopoly.obj");
+                Geometry geometry = geometryLoader.load("data/graphics/agent.obj");
 
                 gl.glEnable(gl.GL_DEPTH_TEST);
                 gl.glEnable(gl.GL_CULL_FACE);
 
                 try {
-                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/texture.png"));
+                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/rgb.png"));
                     texture = new Texture(gl, bufferedImage);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -122,17 +120,33 @@ public class GraphicsPanel extends GLCanvas {
 
                 gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
+                int renderGroup = renderer.createRenderGroup();
+                int renderGroup2 = renderer.createRenderGroup();
+
                 try {
                     mesh = new Mesh(gl, geometry, material);
 
-                    for (int i=-15; i<16; i++) {
-                        for (int j=-15; j<16; j++) {
-                            SceneNode node = new SceneNode(mesh);
+                    geometry = geometryLoader.load("data/graphics/monkey_lopoly.obj");
+                    Mesh mesh2 = new Mesh(gl, geometry, material);
+
+                    for (int i=-150; i<151; i++) {
+                        for (int j=-150; j<151; j++) {
+                            RenderNode node;
+                            if ((i+j) % 2 == 0) {
+                                node = new RenderNode(mesh);
+                                renderer.add(renderGroup, node);
+                            }
+                            else {
+                                node = new RenderNode(mesh2);
+                                renderer.add(renderGroup2, node);
+                            }
                             node.getTransform().position.set(i, 0, j);
                             nodes.add(node);
-                            scene.add(node);
+
                         }
                     }
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -153,18 +167,20 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
                 x += 0.001f * dt;
 
-                for (SceneNode node : nodes) {
-                    //node.getTransform().rotation.identity().rotateAxis(x, 0f, 1f, 0f);
+                camera.setLookAt(10f-x, 40f - x, 15, 0, -5, 0, 0, 1, 0);
+
+                //for (RenderNode node : nodes) {
+                nodes.parallelStream().forEach((node) -> {
                     node.getTransform().rotation.identity().rotateAxis(x, 1f, 0f, 0f).rotateAxis(x, 0f, 1f, 0f).rotateAxis(x, 0f, 0f, 1f);
                     node.getTransform().updateMatrix();
-                }
+                });
 
-                scene.render(gl, camera);
+                renderer.render(gl, camera);
             }
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 gl.glViewport(0, 0, width, height);
-                scene.setProjection(45.0f, width, height, 0.1f, 1000.0f);
+                renderer.setProjection(45.0f, width, height, 0.1f, 1000.0f);
             }
         });
 
