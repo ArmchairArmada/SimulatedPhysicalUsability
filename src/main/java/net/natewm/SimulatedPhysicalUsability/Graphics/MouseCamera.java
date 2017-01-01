@@ -1,0 +1,158 @@
+package net.natewm.SimulatedPhysicalUsability.Graphics;
+
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
+import java.awt.event.*;
+
+/**
+ * Created by Nathan on 12/31/2016.
+ */
+public class MouseCamera {
+    static final float TRANSLATE_RATE = 0.0007f;
+    static final float ZOOM_RATE = 0.0025f;
+    static final float ROTATE_RATE = 0.001f;
+    static final float SCROLL_RATE = 0.05f;
+    static final float MIN_ROTATE = (float)(-Math.PI/2.0+0.025f);
+    static final float MAX_ROTATE = -0.001f;
+    static final float MIN_ZOOM = 2f;
+
+    MouseListener mouseListener;
+    MouseMotionListener mouseMotionListener;
+    MouseWheelListener mouseWheelListener;
+
+    int button = 0;
+    float previousX = 0f;
+    float previousY = 0f;
+
+    float rotateX = 0f;
+    float rotateY = 0f;
+    float distance = 10f;
+    Vector3f cameraCenter = new Vector3f();
+    Quaternionf cameraAngle = new Quaternionf();
+
+    Matrix4f matrix = new Matrix4f();
+
+
+    public MouseCamera(float cameraRotateX, float cameraRotateY, float cameraDistance) {
+        this.rotateX = cameraRotateX;
+        this.rotateY = cameraRotateY;
+        this.distance = cameraDistance;
+
+        cameraAngle.identity().rotateAxis(rotateY, 0f, 1f, 0f).rotateAxis(rotateX, 1f, 0f, 0f);
+        updateMatrix();
+
+        mouseListener = new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                button = e.getButton();
+                previousX = e.getX();
+                previousY = e.getY();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button = 0;
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        };
+
+        mouseMotionListener = new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Vector3f v = new Vector3f();
+                Quaternionf q = new Quaternionf();
+
+                if (button == 1) {
+                    q.identity().rotateAxis(rotateY, 0f, 1f, 0f);
+
+                    v.set(1f, 0f, 0f);
+                    v.rotate(q);
+                    v.mul((e.getX() - previousX) * TRANSLATE_RATE * distance);
+                    cameraCenter.add(v);
+
+                    v.set(0f, 0f, 1f);
+                    v.rotate(q);
+                    v.mul((e.getY() - previousY) * TRANSLATE_RATE * distance);
+                    cameraCenter.add(v);
+                }
+                if (button == 2) {
+                    distance += (e.getY() - previousY) * distance * ZOOM_RATE;
+
+                    if (distance < MIN_ZOOM)
+                        distance = MIN_ZOOM;
+                }
+                if (button == 3) {
+                    rotateY -= (e.getX() - previousX) * ROTATE_RATE;
+                    rotateX += (e.getY() - previousY) * ROTATE_RATE;
+                    if (rotateX > MAX_ROTATE)
+                        rotateX = MAX_ROTATE;
+                    if (rotateX < MIN_ROTATE)
+                        rotateX = MIN_ROTATE;
+                    cameraAngle.identity().rotateAxis(rotateY, 0f, 1f, 0f).rotateAxis(rotateX, 1f, 0f, 0f);
+                }
+
+                previousX = e.getX();
+                previousY = e.getY();
+
+                updateMatrix();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+
+            }
+        };
+
+        mouseWheelListener = new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                distance += e.getPreciseWheelRotation() * distance * SCROLL_RATE;
+
+                if (distance < MIN_ZOOM)
+                    distance = MIN_ZOOM;
+
+                updateMatrix();
+            }
+        };
+    }
+
+    public Matrix4f getMatrix() {
+        return matrix;
+    }
+
+    public MouseListener getMouseListener() {
+        return mouseListener;
+    }
+
+    public MouseMotionListener getMouseMotionListener() {
+        return mouseMotionListener;
+    }
+
+    public MouseWheelListener getMouseWheelListener() {
+        return mouseWheelListener;
+    }
+
+    private void updateMatrix() {
+        Vector3f v = new Vector3f(0f, distance, 0f);
+        v.rotate(cameraAngle);
+        v.add(cameraCenter);
+
+        matrix.setLookAt(v.x, v.y, v.z, cameraCenter.x, 0.5f, cameraCenter.z, 0, 1, 0);
+    }
+}
