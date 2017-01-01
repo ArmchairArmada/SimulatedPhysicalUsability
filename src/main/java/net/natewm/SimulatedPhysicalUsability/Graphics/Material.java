@@ -13,13 +13,40 @@ import java.util.List;
 /**
  * Created by Nathan on 12/27/2016.
  */
-public class Material {
-    int programID;
-    int modelViewLocation;
-    int projectionLocation;
-    ArrayList<Texture> textures = new ArrayList<>();
-    ArrayList<Integer> textureID = new ArrayList<>();
 
+// TODO: Loading material from file.
+// TODO: Material properties.
+
+/*
+    Example of changes in use:
+
+    MaterialLoader ml = new JSONMaterialLoader();
+    Material m = ml.load("material.json");
+    m.setProperty("diffuseColor", new Vector3f(1.0f, 0.5f, 0.0f));  // Override what was in the material
+    m.use(gl);
+
+    It would be nice to allow each render node to specify unique values for material properties.  For example, each
+    instances of a mesh might be a different color.  If an asset manager is implemented, it would be easier to create
+    materials that reuse shader programs.  Some additional thought may be needed.
+ */
+
+/**
+ * A surface material to be used with OpenGL rendering.
+ */
+public class Material {
+    int programID;          // OpenGL program ID
+    int modelViewLocation;  // Shader's uniform location for modelView matrix
+    int projectionLocation; // Shader's uniform location for projection matrix
+    ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will use
+    ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
+
+    /**
+     * Constructor for createing a Material.
+     *
+     * @param gl                 OpenGL
+     * @param vertexShaderCode   GLSL source code for vertex shader.
+     * @param fragmentShaderCode GLSL source code for fragment shader.
+     */
     public Material(GL3 gl, String[] vertexShaderCode, String[] fragmentShaderCode) {
         int vertexShader = gl.glCreateShader(gl.GL_VERTEX_SHADER);
         int fragmentShader = gl.glCreateShader(gl.GL_FRAGMENT_SHADER);
@@ -56,19 +83,37 @@ public class Material {
         // TODO: Better error checking and logging
         System.out.println(ShaderUtil.getProgramInfoLog(gl, programID));
 
-        //mvpLocation = getUniformLocation(gl, "mvp");
         modelViewLocation = getUniformLocation(gl, "modelView");
         projectionLocation = getUniformLocation(gl, "projection");
     }
 
-    public int getModelViewLocation() {
+    /**
+     * Gets the model view uniform location.
+     *
+     * @return ModelView uniform location.
+     */
+    int getModelViewLocation() {
         return modelViewLocation;
     }
 
-    public int getProjectionLocation() {
+    /**
+     * Gets the projection uniform location.
+     *
+     * @return Projection uniform location.
+     */
+    int getProjectionLocation() {
         return projectionLocation;
     }
 
+    /**
+     * Loads a material's shaders from a file.
+     *
+     * @param gl             OpenGL
+     * @param vertexSource   File name for vertex shader.
+     * @param fragmentSource File name for fragment shader.
+     * @return New Material
+     * @throws IOException If a file is not found.
+     */
     public static Material loadFromFiles(GL3 gl, String vertexSource, String fragmentSource) throws IOException {
         List<String> lines;
         String[] vertexShaderCode;
@@ -89,26 +134,51 @@ public class Material {
         return new Material(gl, vertexShaderCode, fragmentShaderCode);
     }
 
+    /**
+     * Adds a texture to the material.  Textures are used in the order they are added.
+     *
+     * @param gl      OpenGL.
+     * @param texture Texture to add.
+     */
     public void addTexture(GL3 gl, Texture texture) {
         textures.add(texture);
-        textureID.add(getUniformLocation(gl, "texture"+textureID.size()));
+        textureLocations.add(getUniformLocation(gl, "texture"+textureLocations.size()));
     }
 
-    public void use(GL3 gl) {
+    /**
+     * Tells OpenGL to use this material.
+     *
+     * @param gl OpenGL
+     */
+    void use(GL3 gl) {
         gl.glUseProgram(programID);
 
         for (int i=0; i<textures.size(); i++) {
-            gl.glUniform1i(textureID.get(i), i);
+            gl.glUniform1i(textureLocations.get(i), i);
             gl.glActiveTexture(gl.GL_TEXTURE0 + i);
             gl.glBindTexture(gl.GL_TEXTURE_2D, textures.get(i).getTextureID());
         }
     }
 
-    public int getAttributeLocation(GL3 gl, String name) {
+    /**
+     * Gets a shader's attribute location.
+     *
+     * @param gl   OpenGL
+     * @param name Name of the attribute.
+     * @return Attribute ID from shader.
+     */
+    int getAttributeLocation(GL3 gl, String name) {
         return gl.glGetAttribLocation(programID, name);
     }
 
-    public int getUniformLocation(GL3 gl, String name) {
+    /**
+     * Gets a shader's uniform location.
+     *
+     * @param gl   OpenGL
+     * @param name Name of the uniform.
+     * @return Uniform ID from shader.
+     */
+    int getUniformLocation(GL3 gl, String name) {
         return gl.glGetUniformLocation(programID, name);
     }
 }
