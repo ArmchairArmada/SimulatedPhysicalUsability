@@ -11,6 +11,10 @@ import java.nio.IntBuffer;
 /**
  * Created by Nathan on 12/27/2016.
  */
+
+/**
+ * OpenGL mesh
+ */
 public class Mesh {
     IntBuffer vao;
     IntBuffer vbo;

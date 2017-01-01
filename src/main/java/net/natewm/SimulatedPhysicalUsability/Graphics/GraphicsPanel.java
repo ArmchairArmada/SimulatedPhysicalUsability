@@ -18,6 +18,8 @@ import java.util.ArrayList;
 /**
  * Created by Nathan on 12/22/2016.
  */
+
+// TODO: Clean up this mess
 public class GraphicsPanel extends GLCanvas {
     private GL3 gl;
     private Animator animator;
