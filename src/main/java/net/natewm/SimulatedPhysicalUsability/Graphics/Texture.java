@@ -4,9 +4,12 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -17,7 +20,16 @@ import java.nio.IntBuffer;
 public class Texture {
     int textureID;
 
+    public Texture(GL3 gl, String filename) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/rgb.png"));
+        loadFromImage(gl, bufferedImage);
+    }
+
     public Texture(GL3 gl, BufferedImage image) {
+        loadFromImage(gl, image);
+    }
+
+    private void loadFromImage(GL3 gl, BufferedImage image) {
         // Get the data buffer from the image
         ByteBuffer dataBuffer = ByteBuffer.wrap(((DataBufferByte)image.getData().getDataBuffer()).getData());
         dataBuffer.position(0);

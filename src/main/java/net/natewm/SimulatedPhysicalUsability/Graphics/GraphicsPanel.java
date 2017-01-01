@@ -22,120 +22,19 @@ public class GraphicsPanel extends GLCanvas {
     private GL3 gl;
     private Animator animator;
 
-    Vector3f cameraCenter = new Vector3f();
-    float distance = 20;
-    float cameraRotateY = 0f;
-    float cameraRotateX = -0.8f;
-    Quaternionf cameraAngle = new Quaternionf();
-    Matrix4f camera = new Matrix4f();
-
-    int button = 0;
-    int previousX = 0;
-    int previousY = 0;
+    MouseCamera mouseCamera;
 
     public GraphicsPanel(GLCapabilities glCapabilities) {
         super(glCapabilities);
 
         setPreferredSize(new Dimension(1000, 600));
 
+        mouseCamera = new MouseCamera(-0.8f, 0f, 20f);
+
         // TODO: Create camera controls
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //System.out.println("PRESSED " + e.getButton());
-                button = e.getButton();
-                previousX = e.getX();
-                previousY = e.getY();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                //System.out.println("RELEASED " + e.getButton());
-                button = 0;
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-
-        addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                Vector3f v = new Vector3f();
-                Quaternionf q = new Quaternionf();
-
-                if (button == 1) {
-                    q.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f);
-
-                    v.set(1f, 0f, 0f);
-                    v.rotate(q);
-                    //System.out.println(v);
-                    v.mul((e.getX() - previousX) * 0.0007f * distance);
-                    cameraCenter.add(v);
-
-                    v.set(0f, 0f, 1f);
-                    v.rotate(q);
-                    //System.out.println(v);
-                    v.mul((e.getY() - previousY) * 0.0007f * distance);
-                    cameraCenter.add(v);
-
-                    //System.out.println(cameraCenter);
-                }
-                if (button == 2) {
-                    distance += (e.getY() - previousY) * 0.1f;
-                    //System.out.println("New Distance " + distance);
-
-                    if (distance < 2f)
-                        distance = 2f;
-                }
-                if (button == 3) {
-                    cameraRotateY -= (e.getX() - previousX) * 0.001f;
-                    cameraRotateX += (e.getY() - previousY) * 0.001f;
-                    if (cameraRotateX > -0.001f)
-                        cameraRotateX = -0.001f;
-                    if (cameraRotateX < -Math.PI/2.0+0.025)
-                        cameraRotateX = (float)(-Math.PI/2.0+0.025);
-                    cameraAngle.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f).rotateAxis(cameraRotateX, 1f, 0f, 0f);
-
-                    //System.out.println("New Z " + cameraRotateY + ", X " + cameraRotateX);
-                }
-
-                previousX = e.getX();
-                previousY = e.getY();
-
-                v.set(0f, distance, 0f);
-                v.rotate(cameraAngle);
-                v.add(cameraCenter);
-
-                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 0.5f, cameraCenter.z, 0, 1, 0);
-
-                //System.out.println("DRAG " + e.getX() + ", " + e.getY());
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-
-            }
-        });
-
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                System.out.println("WHEEL " + e.getScrollAmount());
-            }
-        });
+        addMouseListener(mouseCamera.getMouseListener());
+        addMouseMotionListener(mouseCamera.getMouseMotionListener());
+        addMouseWheelListener(mouseCamera.getMouseWheelListener());
 
 
         addGLEventListener(new GLEventListener() {
@@ -152,13 +51,6 @@ public class GraphicsPanel extends GLCanvas {
 
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
-
-                cameraAngle.identity().rotateAxis(cameraRotateY, 0f, 1f, 0f).rotateAxis(cameraRotateX, 1f, 0f, 0f);
-                Vector3f v = new Vector3f(0f, distance, 0f);
-                v.rotate(cameraAngle);
-                v.add(cameraCenter);
-
-                camera.setLookAt(v.x, v.y, v.z, cameraCenter.x, 0.5f, cameraCenter.z, 0, 1, 0);
 
                 //camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
                 //camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
@@ -279,7 +171,7 @@ public class GraphicsPanel extends GLCanvas {
                     node.getTransform().updateMatrix();
                 });
 
-                renderer.render(gl, camera);
+                renderer.render(gl, mouseCamera.getMatrix());
             }
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
