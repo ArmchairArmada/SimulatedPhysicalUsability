@@ -16,28 +16,35 @@ import java.nio.IntBuffer;
  * OpenGL mesh
  */
 public class Mesh {
-    IntBuffer vao;
-    IntBuffer vbo;
+    IntBuffer vao;      // Vertex array object id
+    IntBuffer vbo;      // Vertex buffer object id
 
-    Material material;
+    Material material;  // Material to use with mesh
 
-    int triangleID = 0;
-    int vertexId = 0;
-    int normalId = 0;
-    int colorId = 0;
-    int uvId = 0;
+    int triangleID = 0; // ID for OpenGL buffer containing triangle vertex indices
+    int vertexId = 0;   // ID for OpenGL buffer containing vertex position values
+    int normalId = 0;   // ID for OpenGL buffer containing vertex normal values
+    int colorId = 0;    // ID for OpenGL buffer containing vertex color values
+    int uvId = 0;       // ID for OpenGL buffer containing texture coordinate values
 
-    boolean hasNormals;
-    boolean hasColors;
-    boolean hasUvs;
+    boolean hasNormals; // If the mesh has vertex normal vectors
+    boolean hasColors;  // If the mesh has vertex color values
+    boolean hasUvs;     // If the mesh has vertex texture coordinates
 
-    int indexCount;
-    int triangleCount;
-    int vertexCount;
-    int elementCount;
+    int triangleCount;  // Number of triangles in the mesh
+    int vertexCount;    // Number of vertices in the mesh
+    int elementCount;   // Number of elements in mesh (for glDrawElements)
 
-    float radius;
+    float radius;       // Radius of a sphere that mesh can fully fit inside
 
+    /**
+     * Constructor for creating an OpenGL mesh from a given geometry and material.
+     *
+     * @param gl       OpenGL
+     * @param geometry Geometry to create mesh from
+     * @param material Material for the geometry to use
+     * @throws Exception Thrown if geometry is not consistent (same number of vertice properties as vertices)
+     */
     public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
         if (!geometry.checkConsistancy())
             throw new Exception("Inconsistant Geometry Buffer");
@@ -48,7 +55,6 @@ public class Mesh {
         hasColors = geometry.colorsCount() > 0;
         hasUvs = geometry.uvCount() > 0;
 
-        indexCount = geometry.vertexCount() * 3;
         triangleCount = geometry.trianglesCount();
         vertexCount = geometry.vertexCount();
         elementCount = triangleCount * 3;
@@ -56,6 +62,11 @@ public class Mesh {
         genVAO(gl, geometry);
     }
 
+    /**
+     * Counts the number of buffers that need to be created for OpenGL.
+     *
+     * @return The number of buffers to create.
+     */
     private int countEnabledBuffers() {
         int i = 2;  // Triangles and vertices;
         if (hasNormals) i++;
@@ -64,7 +75,13 @@ public class Mesh {
         return i;
     }
 
-    private void genVAO(GL3 gl, Geometry geometry /*, Material material */) {
+    /**
+     * Creates OpenGL vertex array object.
+     *
+     * @param gl       OpenGL
+     * @param geometry Gemetry to create vertex array object with
+     */
+    private void genVAO(GL3 gl, Geometry geometry) {
         FloatBuffer vertexBuffer = geometry.makeVertexBuffer();
         FloatBuffer normalBuffer = geometry.makeNormalBuffer();
         FloatBuffer colorBuffer = geometry.makeColorBuffer();
@@ -130,6 +147,11 @@ public class Mesh {
         }
     }
 
+    /**
+     * Destroys vertex array attribute.
+     *
+     * @param gl OpenGL
+     */
     public void dispose(GL3 gl) {
         gl.glBindVertexArray(vbo.get(0));
         gl.glDisableVertexAttribArray(0);
@@ -139,6 +161,11 @@ public class Mesh {
         gl.glDeleteVertexArrays(vao.capacity(), vao);
     }
 
+    /**
+     * Bind this mesh to OpenGL
+     *
+     * @param gl OpenGL
+     */
     public void bind(GL3 gl) {
         gl.glBindVertexArray(vao.get(0));
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, triangleID);
@@ -148,6 +175,13 @@ public class Mesh {
         material.use(gl);
     }
 
+    /**
+     * Bind the matrices to OpenGL necessary for rendering this mesh.
+     *
+     * @param gl         OpenGL
+     * @param modelView  Model View matrix
+     * @param projection Projection matrix
+     */
     public void bindMatricies(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         float[] fa = new float[16];
         modelView.get(fa);
@@ -156,16 +190,33 @@ public class Mesh {
         gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, fa, 0);
     }
 
+    /**
+     * Renders the mesh using OpenGL
+     *
+     * @param gl OpenGL
+     */
     public void render(GL3 gl) {
         gl.glDrawElements(gl.GL_TRIANGLES, elementCount, gl.GL_UNSIGNED_INT, 0);
     }
 
+    /**
+     * Unbind stuff from OpenGL
+     *
+     * @param gl OpenGL
+     */
     public void unbind(GL3 gl) {
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.glBindVertexArray(0);
     }
 
+    /**
+     * Simpler, though less efficient rendering, by binding and unbinding everything that is needed.
+     *
+     * @param gl         OpenGL
+     * @param modelView  Model view matrix
+     * @param projection Projection matrix
+     */
     public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         bind(gl);
         bindMatricies(gl, modelView, projection);

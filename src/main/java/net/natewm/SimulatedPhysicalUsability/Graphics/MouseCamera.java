@@ -9,6 +9,10 @@ import java.awt.event.*;
 /**
  * Created by Nathan on 12/31/2016.
  */
+
+/**
+ * Camera control system which uses the mouse for translation, rotation, and zoom.
+ */
 public class MouseCamera {
     static final float TRANSLATE_RATE = 0.0007f;
     static final float ZOOM_RATE = 0.0025f;
@@ -34,7 +38,13 @@ public class MouseCamera {
 
     Matrix4f matrix = new Matrix4f();
 
-
+    /**
+     * Constructor to create the mouse controlled camera.
+     *
+     * @param cameraRotateX  Initial rotation around X axis
+     * @param cameraRotateY  Initial rotation around Y axis
+     * @param cameraDistance Initial zoom distance
+     */
     public MouseCamera(float cameraRotateX, float cameraRotateY, float cameraDistance) {
         this.rotateX = cameraRotateX;
         this.rotateY = cameraRotateY;
@@ -132,22 +142,45 @@ public class MouseCamera {
         };
     }
 
+    /**
+     * Gets the camera matrix.
+     *
+     * @return Camera matrix.
+     */
     public Matrix4f getMatrix() {
         return matrix;
     }
 
+    /**
+     * Gets the mouse listener, to be used with Swing
+     *
+     * @return Mouse listener
+     */
     public MouseListener getMouseListener() {
         return mouseListener;
     }
 
+    /**
+     * Gets the mouse motion listener, to be used with Swing.
+     *
+     * @return Mouse motion listener
+     */
     public MouseMotionListener getMouseMotionListener() {
         return mouseMotionListener;
     }
 
+    /**
+     * Gets mouse wheel listener, to be used with Swing.
+     *
+     * @return Mouse wheel listener
+     */
     public MouseWheelListener getMouseWheelListener() {
         return mouseWheelListener;
     }
 
+    /**
+     * Updates the camera's matrix.
+     */
     private void updateMatrix() {
         Vector3f v = new Vector3f(0f, distance, 0f);
         v.rotate(cameraAngle);
