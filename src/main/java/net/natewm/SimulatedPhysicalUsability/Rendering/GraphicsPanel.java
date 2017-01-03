@@ -1,17 +1,11 @@
-package net.natewm.SimulatedPhysicalUsability.Graphics;
+package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import net.natewm.SimulatedPhysicalUsability.Resources.*;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -57,6 +51,8 @@ public class GraphicsPanel extends GLCanvas {
                 //camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
                 //camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
 
+                IImageLoader imageLoader = new ImageLoader();
+
                 IGeometryLoader geometryLoader = new OBJLoader();
                 Geometry geometry = geometryLoader.load("data/graphics/agent.obj");
 
@@ -70,8 +66,7 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 try {
-                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/rgb.png"));
-                    texture = new Texture(gl, bufferedImage);
+                    texture = new Texture(gl, imageLoader.load("data/graphics/rgb.png"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -92,8 +87,7 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 try {
-                    BufferedImage bufferedImage = ImageIO.read(new File("data/graphics/floor_tile.png"));
-                    texture = new Texture(gl, bufferedImage);
+                    texture = new Texture(gl, imageLoader.load("data/graphics/floor_tile.png"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -178,7 +172,7 @@ public class GraphicsPanel extends GLCanvas {
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 gl.glViewport(0, 0, width, height);
-                renderer.setProjection(45.0f, width, height, 0.1f, 1000.0f);
+                renderer.setProjection(49.0f, width, height, 0.1f, 1000.0f);
             }
         });
 

@@ -1,6 +1,7 @@
-package net.natewm.SimulatedPhysicalUsability.Graphics;
+package net.natewm.SimulatedPhysicalUsability.Resources;
 
 import com.jogamp.common.nio.Buffers;
+import net.natewm.SimulatedPhysicalUsability.Rendering.Triangle;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

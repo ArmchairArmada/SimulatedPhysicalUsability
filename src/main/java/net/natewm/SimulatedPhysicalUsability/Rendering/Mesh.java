@@ -1,8 +1,8 @@
-package net.natewm.SimulatedPhysicalUsability.Graphics;
+package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
-import com.sun.prism.impl.BufferUtil;
+import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
 import org.joml.Matrix4f;
 
 import java.nio.FloatBuffer;

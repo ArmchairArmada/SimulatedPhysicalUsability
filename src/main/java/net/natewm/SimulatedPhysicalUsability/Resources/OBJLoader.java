@@ -1,18 +1,14 @@
-package net.natewm.SimulatedPhysicalUsability.Graphics;
+package net.natewm.SimulatedPhysicalUsability.Resources;
 
+import net.natewm.SimulatedPhysicalUsability.Rendering.Triangle;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**

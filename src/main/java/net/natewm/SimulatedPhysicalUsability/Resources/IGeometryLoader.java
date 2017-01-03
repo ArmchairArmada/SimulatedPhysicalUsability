@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.Graphics;
+package net.natewm.SimulatedPhysicalUsability.Resources;
 
 /**
  * Created by Nathan on 12/29/2016.
