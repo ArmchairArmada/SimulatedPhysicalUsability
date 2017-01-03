@@ -2,7 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.TestMains;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
-import net.natewm.SimulatedPhysicalUsability.Graphics.GraphicsPanel;
+import net.natewm.SimulatedPhysicalUsability.Rendering.GraphicsPanel;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
