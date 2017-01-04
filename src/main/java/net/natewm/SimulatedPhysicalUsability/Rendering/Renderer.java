@@ -125,6 +125,7 @@ public class Renderer {
 
                 // This is being done in parallel, to speed up matrix multiplicaitons
                 renderGroup.parallelStream().forEach((node) -> {
+                    //node.getTransform().updateMatrix();
                     node.updateView(camera, projection);
                 });
 
