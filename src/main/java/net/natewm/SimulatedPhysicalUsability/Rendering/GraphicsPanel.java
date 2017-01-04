@@ -54,7 +54,12 @@ public class GraphicsPanel extends GLCanvas {
                 IImageLoader imageLoader = new ImageLoader();
 
                 IGeometryLoader geometryLoader = new OBJLoader();
-                Geometry geometry = geometryLoader.load("data/graphics/agent.obj");
+                Geometry geometry = null;
+                try {
+                    geometry = geometryLoader.load("data/graphics/agent.obj");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 gl.glEnable(gl.GL_DEPTH_TEST);
                 gl.glEnable(gl.GL_CULL_FACE);

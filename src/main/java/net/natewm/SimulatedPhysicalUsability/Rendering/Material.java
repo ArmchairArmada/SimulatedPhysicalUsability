@@ -40,6 +40,14 @@ public class Material {
     ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will use
     ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
 
+    
+    public Material(GL3 gl, int shaderProgram) {
+        programID = shaderProgram;
+        gl.glUseProgram(programID);
+        modelViewLocation = getUniformLocation(gl, "modelView");
+        projectionLocation = getUniformLocation(gl, "projection");
+    }
+
     /**
      * Constructor for createing a Material.
      *
