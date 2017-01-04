@@ -7,6 +7,7 @@ import net.natewm.SimulatedPhysicalUsability.Rendering.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -56,14 +57,17 @@ public class ResourceManager {
         if (meshMap.containsKey(filename))
             return meshMap.get(filename);
 
+        Path path = Paths.get(filename);
+        String dir = path.getParent() + "/";
+
         // Load mesh description from file
         MeshDescription meshDescription = MeshDescription.loadFromJSON(objectMapper, filename);
 
         // Load geometry
-        Geometry geometry = loadGeometry(meshDescription.getGeometry(), false);
+        Geometry geometry = loadGeometry(dir + meshDescription.getGeometry(), false);
 
         // Load material
-        Material material = loadMaterial(meshDescription.getMaterial());
+        Material material = loadMaterial(dir + meshDescription.getMaterial());
 
         // Construct mesh
         meshMap.put(filename, new Mesh(gl, geometry, material));
@@ -75,15 +79,23 @@ public class ResourceManager {
         if (materialMap.containsKey(filename))
             return materialMap.get(filename);
 
+        Path path = Paths.get(filename);
+        String dir = path.getParent() + "/";
+
         MaterialDescription materialDescription = MaterialDescription.loadFromJSON(objectMapper, filename);
-        ShaderProgram shaderProgram = loadShaderProgram(materialDescription.getVertexShader(), materialDescription.getFragmentShader());
+        ShaderProgram shaderProgram = loadShaderProgram(
+                dir + materialDescription.getVertexShader(),
+                dir + materialDescription.getFragmentShader());
 
         Material material = new Material(gl, shaderProgram);
         for (String string : materialDescription.getProperties().getTextures()) {
-            material.addTexture(gl, loadTexture(string));
+            material.addTexture(gl, loadTexture(dir + string));
         }
 
         // TODO: Set additional material properties
+        // diffuseColor
+        // specularColor
+        // specularPower
 
         return material;
     }

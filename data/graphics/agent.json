@@ -1,4 +1,4 @@
 {
-    "geometry": "data/graphics/agent.obj",
-    "material": "data/graphics/agent_material.json"
+    "geometry": "agent.obj",
+    "material": "agent_material.json"
 }
