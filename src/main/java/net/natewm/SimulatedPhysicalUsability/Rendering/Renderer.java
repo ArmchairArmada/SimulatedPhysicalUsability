@@ -13,15 +13,56 @@ import java.util.ArrayList;
  * Renders an OpenGL scene.
  */
 public class Renderer {
-    ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
+    private ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
+    private float fieldOfView = 49.0f;
+    private float nearPlane = 0.1f;
+    private float farPlane = 1000.0f;
+    private float[] clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
 
-    Matrix4f projection = new Matrix4f();
-    //Matrix4f modelView = new Matrix4f();
+    private Matrix4f projection = new Matrix4f();
 
     /**
      * Constructor
      */
     public Renderer() {
+    }
+
+    public void init(GL3 gl) {
+        gl.glEnable(gl.GL_DEPTH_TEST);
+        gl.glEnable(gl.GL_CULL_FACE);
+        gl.glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+    }
+
+    public float getFieldOfView() {
+        return fieldOfView;
+    }
+
+    public void setFieldOfView(float fov) {
+        fieldOfView = fov;
+    }
+
+    public float getNearPlane() {
+        return nearPlane;
+    }
+
+    public void setNearPlane(float near) {
+        nearPlane = near;
+    }
+
+    public float getFarPlane() {
+        return farPlane;
+    }
+
+    public void setFarPlane(float far) {
+        farPlane = far;
+    }
+
+    public float[] getClearColor() {
+        return clearColor;
+    }
+
+    public void setClearColor(float[] color) {
+        clearColor = color;
     }
 
     /**
@@ -76,6 +117,8 @@ public class Renderer {
      * @param camera Camera matrix
      */
     public void render(GL3 gl, Matrix4f camera) {
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
             if (renderGroup.size() > 0) {
                 renderGroup.get(0).bind(gl);
@@ -99,5 +142,10 @@ public class Renderer {
                 renderGroup.get(0).unbind(gl);
             }
         }
+    }
+
+    public void reshape(GL3 gl, int x, int y, int width, int height) {
+        gl.glViewport(0, 0, width, height);
+        setProjection(fieldOfView, width, height, nearPlane, farPlane);
     }
 }
