@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
@@ -34,7 +35,9 @@ public class GraphicsPanel extends GLCanvas {
 
 
         addGLEventListener(new GLEventListener() {
-            Mesh mesh, mesh3;
+            ResourceManager resourceManager;
+            Mesh monkeyMesh, agentMesh, floorMesh;
+            int monkeyGroup, agentGroup, floorGroup;
             Material material, floor_material;
 
             Renderer renderer = new Renderer();
@@ -48,104 +51,51 @@ public class GraphicsPanel extends GLCanvas {
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
 
-                //camera.setLookAt(10, 40, 15, 0, -5, 0, 0, 1, 0);
-                //camera.setLookAt(2, 5, 3, 0, 0, 0, 0, 1, 0);
-
-                IImageLoader imageLoader = new ImageLoader();
-
-                IGeometryLoader geometryLoader = new OBJLoader();
-                Geometry geometry = null;
-                try {
-                    geometry = geometryLoader.load("data/graphics/agent.obj");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
                 gl.glEnable(gl.GL_DEPTH_TEST);
                 gl.glEnable(gl.GL_CULL_FACE);
-
-                try {
-                    material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader.glsl");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    texture = new Texture(gl, imageLoader.load("data/graphics/rgb.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                material.addTexture(gl, texture);
-
-                try {
-                    mesh = new Mesh(gl, geometry, material);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                try {
-                    floor_material = Material.loadFromFiles(gl, "data/graphics/vertex_shader.glsl", "data/graphics/fragment_shader2.glsl");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    texture = new Texture(gl, imageLoader.load("data/graphics/floor_tile.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                floor_material.addTexture(gl, texture);
-
-
-
-                gl.glUniform3f(material.getUniformLocation(gl, "ambient"), 0.3f, 0.3f, 0.3f);
-
                 gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+                resourceManager = new ResourceManager(gl, new ObjectMapper());
 
-                int renderGroup = renderer.createRenderGroup();
-
+                monkeyGroup = renderer.createRenderGroup();
                 try {
-                    geometry = geometryLoader.load("data/graphics/floor.obj");
-                    mesh3 = new Mesh(gl, geometry, floor_material);
+                    monkeyMesh = resourceManager.loadMesh("data/graphics/monkey.json");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                renderer.add(renderGroup, new MeshRenderNode(mesh3));
-
-                renderGroup = renderer.createRenderGroup();
-
-
-                int renderGroup2 = renderer.createRenderGroup();
-
+                agentGroup = renderer.createRenderGroup();
                 try {
-                    geometry = geometryLoader.load("data/graphics/monkey_lopoly.obj");
-                    Mesh mesh2 = new Mesh(gl, geometry, material);
-
-                    for (int i=-20; i<21; i++) {
-                        for (int j=-20; j<21; j++) {
-                            MeshRenderNode node;
-                            if ((i+j) % 2 == 0) {
-                                node = new MeshRenderNode(mesh);
-                                renderer.add(renderGroup, node);
-                            }
-                            else {
-                                node = new MeshRenderNode(mesh2);
-                                renderer.add(renderGroup2, node);
-                            }
-                            node.getTransform().position.set(i, 0, j);
-                            nodes.add(node);
-
-                        }
-                    }
-
-
+                    agentMesh = resourceManager.loadMesh("data/graphics/agent.json");
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+                floorGroup = renderer.createRenderGroup();
+                try {
+                    floorMesh = resourceManager.loadMesh("data/graphics/floor.json");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                renderer.add(floorGroup, new MeshRenderNode(floorMesh));
+
+
+                for (int i=-20; i<21; i++) {
+                    for (int j=-20; j<21; j++) {
+                        MeshRenderNode node;
+                        if ((i+j) % 2 == 0) {
+                            node = new MeshRenderNode(monkeyMesh);
+                            renderer.add(monkeyGroup, node);
+                        }
+                        else {
+                            node = new MeshRenderNode(agentMesh);
+                            renderer.add(agentGroup, node);
+                        }
+                        node.getTransform().position.set(i, 0, j);
+                        nodes.add(node);
+
+                    }
                 }
 
                 animator.setUpdateFPSFrames(60, System.out);
@@ -153,7 +103,7 @@ public class GraphicsPanel extends GLCanvas {
             }
 
             public void dispose(GLAutoDrawable glAutoDrawable) {
-                mesh.dispose(gl);
+                resourceManager.disposeAll();
             }
 
             public void display(GLAutoDrawable glAutoDrawable) {

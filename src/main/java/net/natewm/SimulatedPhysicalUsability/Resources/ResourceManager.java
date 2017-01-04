@@ -76,9 +76,9 @@ public class ResourceManager {
             return materialMap.get(filename);
 
         MaterialDescription materialDescription = MaterialDescription.loadFromJSON(objectMapper, filename);
-        ShaderProgram shaderProgram = loadShaderProgram(materialDescription.getVertexShader(), materialDescription.getVertexShader());
+        ShaderProgram shaderProgram = loadShaderProgram(materialDescription.getVertexShader(), materialDescription.getFragmentShader());
 
-        Material material = new Material(gl, shaderProgram.getProgramID());
+        Material material = new Material(gl, shaderProgram);
         for (String string : materialDescription.getProperties().getTextures()) {
             material.addTexture(gl, loadTexture(string));
         }
@@ -108,7 +108,7 @@ public class ResourceManager {
 
 
     public Shader loadFragmentShader(String filename) throws Exception {
-        if (vertexShaderMap.containsKey(filename))
+        if (fragmentShaderMap.containsKey(filename))
             return fragmentShaderMap.get(filename);
 
         vertexShaderMap.put(filename, new Shader(gl, gl.GL_FRAGMENT_SHADER, getLines(filename)));
@@ -130,14 +130,46 @@ public class ResourceManager {
     }
 
 
+    public void disposeAll() {
+        for (ShaderProgram shaderProgram : shaderProgramMap.values()) {
+            shaderProgram.dispose(gl);
+        }
+        shaderProgramMap.clear();
+
+        for (Shader shader : fragmentShaderMap.values()) {
+            shader.dispose(gl);
+        }
+        fragmentShaderMap.clear();
+
+        for (Shader shader : vertexShaderMap.values()) {
+            shader.dispose(gl);
+        }
+        vertexShaderMap.clear();
+
+        for (Texture texture : textureMap.values()) {
+            texture.dispose(gl);
+        }
+        textureMap.clear();
+
+        for (Mesh mesh : meshMap.values()) {
+            mesh.dispose(gl);
+        }
+        meshMap.clear();
+
+        geometryMap.clear();
+    }
+
+
     private String[] getLines(String filename) throws IOException {
         List<String> lines;
+        String[] linesArray;
 
         lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
         for (int i=0; i<lines.size(); i++) {
             lines.set(i, lines.get(i).concat("\r\n"));
         }
 
-        return (String[]) lines.toArray();
+        linesArray = lines.toArray(new String[0]);
+        return linesArray;
     }
 }

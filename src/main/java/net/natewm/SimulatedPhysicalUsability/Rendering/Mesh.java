@@ -107,7 +107,7 @@ public class Mesh {
         gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * Integer.BYTES, triangleBuffer, gl.GL_STATIC_DRAW);
 
         // VERTEX POSITIONS
-        attrib = material.getAttributeLocation(gl, "position");
+        attrib = material.getShaderProgram().getAttributeLocation(gl, "position");
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         gl.glBufferData(gl.GL_ARRAY_BUFFER, vertexBuffer.capacity() * Float.BYTES, vertexBuffer, gl.GL_STATIC_DRAW);
         gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
@@ -117,7 +117,7 @@ public class Mesh {
         if (hasNormals) {
             normalId = vbo.get(nextIndex);
             nextIndex++;
-            attrib = material.getAttributeLocation(gl, "normal");
+            attrib = material.getShaderProgram().getAttributeLocation(gl, "normal");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, normalId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, normalBuffer.capacity() * Float.BYTES, normalBuffer, gl.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
@@ -128,7 +128,7 @@ public class Mesh {
         if (hasColors) {
             colorId = vbo.get(nextIndex);
             nextIndex++;
-            attrib = material.getAttributeLocation(gl, "color");
+            attrib = material.getShaderProgram().getAttributeLocation(gl, "color");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, colorId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, colorBuffer.capacity() * Float.BYTES, colorBuffer, gl.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
@@ -139,7 +139,7 @@ public class Mesh {
         if (hasUvs) {
             uvId = vbo.get(nextIndex);
             nextIndex++;
-            attrib = material.getAttributeLocation(gl, "uv");
+            attrib = material.getShaderProgram().getAttributeLocation(gl, "uv");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, uvId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, gl.GL_STATIC_DRAW);
             gl.glVertexAttribPointer(attrib, 2, gl.GL_FLOAT, false, 0, 0);
