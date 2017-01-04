@@ -39,6 +39,7 @@ public class Material {
     int projectionLocation; // Shader's uniform location for projection matrix
     ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will use
     ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
+    ArrayList<MaterialProperty> materialProperties = new ArrayList<>();
 
 
     public Material(GL3 gl, ShaderProgram shaderProgram) {
@@ -77,18 +78,31 @@ public class Material {
         textureLocations.add(shaderProgram.getUniformLocation(gl, "texture"+textureLocations.size()));
     }
 
+    public void addProperty(GL3 gl, MaterialProperty property) {
+        property.attach(gl, this);
+        materialProperties.add(property);
+    }
+
     /**
      * Tells OpenGL to use this material.
      *
      * @param gl OpenGL
      */
-    void use(GL3 gl) {
+    public void use(GL3 gl) {
         shaderProgram.use(gl);
 
         for (int i=0; i<textures.size(); i++) {
             gl.glUniform1i(textureLocations.get(i), i);
             gl.glActiveTexture(gl.GL_TEXTURE0 + i);
             gl.glBindTexture(gl.GL_TEXTURE_2D, textures.get(i).getTextureID());
+        }
+
+        useProperties(gl);
+    }
+
+    public void useProperties(GL3 gl) {
+        for (MaterialProperty materialProperty : materialProperties) {
+            materialProperty.use(gl);
         }
     }
 

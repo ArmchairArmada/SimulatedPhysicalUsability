@@ -196,6 +196,7 @@ public class Mesh {
      * @param gl OpenGL
      */
     public void render(GL3 gl) {
+        //material.useProperties(gl);
         gl.glDrawElements(gl.GL_TRIANGLES, elementCount, gl.GL_UNSIGNED_INT, 0);
     }
 

@@ -15,7 +15,8 @@ public class MaterialDescription {
         private List<String> textures = null;
         private List<Double> diffuseColor = null;
         private List<Double> specularColor = null;
-        private float specularPower;
+        private Double specularPower = null;
+        private Double specularIntensity = null;
 
         public List<String> getTextures() {
             return textures;
@@ -29,8 +30,12 @@ public class MaterialDescription {
             return specularColor;
         }
 
-        public float getSpecularPower() {
+        public Double getSpecularPower() {
             return specularPower;
+        }
+
+        public Double getSpecularIntensity() {
+            return specularIntensity;
         }
     }
 
