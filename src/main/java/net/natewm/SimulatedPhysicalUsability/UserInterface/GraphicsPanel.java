@@ -6,6 +6,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import net.natewm.SimulatedPhysicalUsability.Rendering.*;
 import net.natewm.SimulatedPhysicalUsability.Resources.*;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,9 +39,11 @@ public class GraphicsPanel extends GLCanvas {
             ResourceManager resourceManager;
             Mesh monkeyMesh, agentMesh, floorMesh;
             int monkeyGroup, agentGroup, floorGroup;
-            Material material, floor_material;
+
+            RenderNodeHandle monkeyHandle, agentHandle, floorHandle;
 
             Renderer renderer = new Renderer();
+            //RenderingSystem renderingSystem;
             ArrayList<IRenderNode> nodes = new ArrayList<>();
 
             Texture texture;
@@ -51,11 +54,14 @@ public class GraphicsPanel extends GLCanvas {
             public void init(GLAutoDrawable glAutoDrawable) {
                 gl = glAutoDrawable.getGL().getGL3();
 
+                //renderingSystem = new RenderingSystem(gl);
+
                 renderer.init(gl);
 
                 resourceManager = new ResourceManager(gl, new ObjectMapper());
 
                 monkeyGroup = renderer.createRenderGroup();
+                //monkeyGroup = renderingSystem.createRenderGroup();
                 try {
                     monkeyMesh = resourceManager.loadMesh("data/graphics/monkey.json");
                 } catch (Exception e) {
@@ -63,6 +69,7 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 agentGroup = renderer.createRenderGroup();
+                //agentGroup = renderingSystem.createRenderGroup();
                 try {
                     agentMesh = resourceManager.loadMesh("data/graphics/agent.json");
                 } catch (Exception e) {
@@ -70,6 +77,7 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 floorGroup = renderer.createRenderGroup();
+                //floorGroup = renderingSystem.createRenderGroup();
                 try {
                     floorMesh = resourceManager.loadMesh("data/graphics/floor.json");
                 } catch (Exception e) {
@@ -77,17 +85,25 @@ public class GraphicsPanel extends GLCanvas {
                 }
 
                 renderer.add(floorGroup, new MeshRenderNode(floorMesh));
+                floorHandle = new RenderNodeHandle(new MeshRenderNode(floorMesh));
+                //renderingSystem.addRenderNode(floorGroup, floorHandle);
 
                 for (int i=-30; i<31; i++) {
                     for (int j=-30; j<31; j++) {
                         MeshRenderNode node;
                         if ((i+j) % 2 == 0) {
                             node = new MeshRenderNode(monkeyMesh);
+                            monkeyHandle = new RenderNodeHandle(new MeshRenderNode(monkeyMesh));
+                            //renderingSystem.addRenderNode(monkeyGroup, monkeyHandle);
+                            //renderingSystem.setRenderNodePosition(monkeyHandle, new Vector3f(i, 1, j));
                             renderer.add(monkeyGroup, node);
                             node.getTransform().position.set(i, 1, j);
                         }
                         else {
                             node = new MeshRenderNode(agentMesh);
+                            agentHandle = new RenderNodeHandle(new MeshRenderNode(agentMesh));
+                            //renderingSystem.addRenderNode(agentGroup, agentHandle);
+                            //renderingSystem.setRenderNodePosition(agentHandle, new Vector3f(i, 1, j));
                             renderer.add(agentGroup, node);
                             node.getTransform().position.set(i, 0, j);
                         }
@@ -101,6 +117,7 @@ public class GraphicsPanel extends GLCanvas {
             }
 
             public void dispose(GLAutoDrawable glAutoDrawable) {
+                //renderingSystem.stop();
                 resourceManager.disposeAll();
             }
 
@@ -113,15 +130,18 @@ public class GraphicsPanel extends GLCanvas {
 
                 nodes.parallelStream().forEach((node) -> {
                     node.getTransform().rotation.identity().rotateAxis(x, 0f, 1f, 0f);
-                    //node.getTransform().position.add(new Vector3f(0f, 0f, dt*0.001f).rotate(node.getTransform().rotation));
+                    //renderingSystem.setRenderNodeRotation();
+                    node.getTransform().position.add(new Vector3f(0f, 0f, dt*0.001f).rotate(node.getTransform().rotation));
                     node.getTransform().updateMatrix();
                 });
 
                 renderer.render(gl, mouseCamera.getMatrix());
+                //renderingSystem.render(mouseCamera.getMatrix());
             }
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 renderer.reshape(gl, x, y, width, height);
+                //renderingSystem.reshape(x, y, width, height);
             }
         });
 
