@@ -47,7 +47,8 @@ public class OBJLoader implements IGeometryLoader {
         }
     }
 
-    public Geometry load(String filename) {
+
+    public Geometry load(String filename) throws IOException {
         HashMap<String, Point> pointMap = new HashMap<>();;
         ArrayList<Point> points = new ArrayList<>();
         ArrayList<Vector3f> vertices = new ArrayList<>();
@@ -56,100 +57,96 @@ public class OBJLoader implements IGeometryLoader {
 
         Geometry geometry = new Geometry();
 
-        try (Stream<String> stream = Files.lines(Paths.get(filename))) {
-            stream.forEach((String line) -> {
-                if (!line.startsWith("#")) {
-                    String[] items = line.split("\\s+");
+        Stream<String> stream = Files.lines(Paths.get(filename));
+        stream.forEach((String line) -> {
+            if (!line.startsWith("#")) {
+                String[] items = line.split("\\s+");
 
-                    switch(items[0]) {
-                        // Per-vertex color does not seem supported
+                switch(items[0]) {
+                    // Per-vertex color does not seem supported
 
-                        case "o":   // Object name
-                            // Ignore
-                            break;
+                    case "o":   // Object name
+                        // Ignore
+                        break;
 
-                        case "v":   // Vertex
-                            vertices.add(new Vector3f(
-                                    Float.parseFloat(items[1]),
-                                    Float.parseFloat(items[2]),
-                                    Float.parseFloat(items[3])
-                            ));
-                            break;
+                    case "v":   // Vertex
+                        vertices.add(new Vector3f(
+                                Float.parseFloat(items[1]),
+                                Float.parseFloat(items[2]),
+                                Float.parseFloat(items[3])
+                        ));
+                        break;
 
-                        case "vn":  // Normal
-                            normals.add(new Vector3f(
-                                    Float.parseFloat(items[1]),
-                                    Float.parseFloat(items[2]),
-                                    Float.parseFloat(items[3])
-                            ));
+                    case "vn":  // Normal
+                        normals.add(new Vector3f(
+                                Float.parseFloat(items[1]),
+                                Float.parseFloat(items[2]),
+                                Float.parseFloat(items[3])
+                        ));
 
-                            break;
+                        break;
 
-                        case "vt":  // UV
-                            uvs.add(new Vector2f(
-                                    Float.parseFloat(items[1]),
-                                    Float.parseFloat(items[2])
-                            ));
-                            break;
+                    case "vt":  // UV
+                        uvs.add(new Vector2f(
+                                Float.parseFloat(items[1]),
+                                Float.parseFloat(items[2])
+                        ));
+                        break;
 
-                        case "f":   // Face
-                            Face face = new Face(items);
+                    case "f":   // Face
+                        Face face = new Face(items);
 
-                            for (int i=0; i<3; i++) {
-                                if (!pointMap.containsKey(items[i+1])) {
-                                    Point p = new Point();
+                        for (int i=0; i<3; i++) {
+                            if (!pointMap.containsKey(items[i+1])) {
+                                Point p = new Point();
 
-                                    p.index = points.size();
-                                    p.vertex = vertices.get(face.p[i]);
-                                    if (face.n[i] > -1)
-                                        p.normal = normals.get(face.n[i]);
-                                    if (face.t[i] > -1)
-                                        p.uv = uvs.get(face.t[i]);
+                                p.index = points.size();
+                                p.vertex = vertices.get(face.p[i]);
+                                if (face.n[i] > -1)
+                                    p.normal = normals.get(face.n[i]);
+                                if (face.t[i] > -1)
+                                    p.uv = uvs.get(face.t[i]);
 
-                                    pointMap.put(items[i+1], p);
-                                    points.add(p);
-                                }
+                                pointMap.put(items[i+1], p);
+                                points.add(p);
                             }
+                        }
 
-                            int a = pointMap.get(items[1]).index;
-                            int b = pointMap.get(items[2]).index;
-                            int c = pointMap.get(items[3]).index;
+                        int a = pointMap.get(items[1]).index;
+                        int b = pointMap.get(items[2]).index;
+                        int c = pointMap.get(items[3]).index;
 
-                            geometry.addTriangle(new Triangle(a, b, c));
-                            break;
+                        geometry.addTriangle(new Triangle(a, b, c));
+                        break;
 
-                        case "s":   // Smoothing
-                            // Ignore
-                            break;
+                    case "s":   // Smoothing
+                        // Ignore
+                        break;
 
-                        case "mtllib":  // Material file
-                            // TODO:  Load material?
-                            // Materials currently ignored and should be loaded separately.
-                            break;
+                    case "mtllib":  // Material file
+                        // TODO:  Load material?
+                        // Materials currently ignored and should be loaded separately.
+                        break;
 
-                        case "usemtl":  // Material name
-                            // TODO: Load material?
-                            break;
+                    case "usemtl":  // Material name
+                        // TODO: Load material?
+                        break;
 
-                        default:
-                            break;
-                    }
+                    default:
+                        break;
                 }
-
-            });
-
-            for (Point point : points) {
-                geometry.addVertex(point.vertex);
-                if (point.normal != null)
-                    geometry.addNormal(point.normal);
-                if (point.uv != null)
-                    geometry.addUv(point.uv);
             }
 
-            return geometry;
-        } catch (IOException e) {
-            e.printStackTrace();
+        });
+
+        for (Point point : points) {
+            geometry.addVertex(point.vertex);
+            if (point.normal != null)
+                geometry.addNormal(point.normal);
+            if (point.uv != null)
+                geometry.addUv(point.uv);
         }
-        return null;
+
+        return geometry;
     }
 }
