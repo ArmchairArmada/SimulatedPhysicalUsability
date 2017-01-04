@@ -1,8 +1,8 @@
 {
-    "vertexShader": "data/graphics/vertex_shader.glsl",
-    "fragmentShader": "data/graphics/fragment_shader2.glsl",
+    "vertexShader": "vertex_shader.glsl",
+    "fragmentShader": "fragment_shader2.glsl",
     "properties": {
-        "textures": ["data/graphics/floor_tile.png"],
+        "textures": ["floor_tile.png"],
         "diffuseColor": [1.0, 1.0, 1.0, 1.0]
     }
 }

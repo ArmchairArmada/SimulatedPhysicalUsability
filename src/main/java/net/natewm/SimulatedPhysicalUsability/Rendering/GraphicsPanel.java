@@ -80,7 +80,6 @@ public class GraphicsPanel extends GLCanvas {
 
                 renderer.add(floorGroup, new MeshRenderNode(floorMesh));
 
-
                 for (int i=-20; i<21; i++) {
                     for (int j=-20; j<21; j++) {
                         MeshRenderNode node;
@@ -114,9 +113,6 @@ public class GraphicsPanel extends GLCanvas {
                 gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
                 x += 0.001f * dt;
 
-                //camera.setLookAt(10f-x, 40f - x, 15, 0, -5, 0, 0, 1, 0);
-
-                //for (MeshRenderNode node : nodes) {
                 nodes.parallelStream().forEach((node) -> {
                     node.getTransform().rotation.identity().rotateAxis(x, 0f, 1f, 0f);
                     node.getTransform().updateMatrix();

@@ -1,4 +1,4 @@
 {
-    "geometry": "data/graphics/monkey_lopoly.obj",
-    "material": "data/graphics/monkey_material.json"
+    "geometry": "monkey_lopoly.obj",
+    "material": "monkey_material.json"
 }
