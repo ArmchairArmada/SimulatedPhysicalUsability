@@ -44,4 +44,10 @@ public class Texture {
     public void use(GL3 gl) {
         gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
     }
+
+    public void dispose(GL3 gl) {
+        int[] textures = {textureID};
+        gl.glDeleteTextures(1, textures, 0);
+        textureID = 0;
+    }
 }

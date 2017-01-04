@@ -8,9 +8,12 @@ import com.jogamp.opengl.util.glsl.ShaderUtil;
  */
 public class Shader {
     int shaderID;
+    int shaderType;
 
     public Shader(GL3 gl, int shaderType, String[] sourceCode) throws Exception {
         shaderID = gl.glCreateShader(shaderType);
+        shaderType = shaderType;
+
         int[] codeLength;
 
         codeLength = new int[sourceCode.length];
@@ -31,5 +34,16 @@ public class Shader {
 
     public int getShaderID() {
         return shaderID;
+    }
+
+
+    public int getShaderType() {
+        return shaderType;
+    }
+
+
+    public void dispose(GL3 gl) {
+        gl.glDeleteShader(shaderID);
+        shaderID = 0;
     }
 }

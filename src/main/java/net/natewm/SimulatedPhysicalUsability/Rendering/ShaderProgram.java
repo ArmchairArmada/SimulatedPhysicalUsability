@@ -39,11 +39,22 @@ public class ShaderProgram {
         return programID;
     }
 
+    int getAttributeLocation(GL3 gl, String name) {
+        return gl.glGetAttribLocation(programID, name);
+    }
+
     public int getUniformLocation(GL3 gl, String name) {
         return gl.glGetUniformLocation(programID, name);
     }
 
     public void use(GL3 gl) {
         gl.glUseProgram(programID);
+    }
+
+    public void dispose(GL3 gl) {
+        gl.glDetachShader(programID, fragmentShader.getShaderID());
+        gl.glDetachShader(programID, vertexShader.getShaderID());
+        gl.glDeleteProgram(programID);
+        programID = 0;
     }
 }
