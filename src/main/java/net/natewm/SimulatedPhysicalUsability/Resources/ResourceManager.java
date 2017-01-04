@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.Resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jogamp.opengl.GL3;
 import net.natewm.SimulatedPhysicalUsability.Rendering.*;
+import org.joml.Vector4f;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -76,6 +77,7 @@ public class ResourceManager {
 
 
     public Material loadMaterial(String filename) throws Exception {
+        // TODO: Figure out how to using the same material with different property values
         if (materialMap.containsKey(filename))
             return materialMap.get(filename);
 
@@ -93,9 +95,56 @@ public class ResourceManager {
         }
 
         // TODO: Set additional material properties
+        // TODO: Find a cleaner way of doing this.
         // diffuseColor
+        if (materialDescription.getProperties().getDiffuseColor() != null) {
+            List<Double> color = materialDescription.getProperties().getDiffuseColor();
+            MaterialProperty4f property = new MaterialProperty4f(
+                    "diffuseColor",
+                    new Vector4f(
+                        color.get(0).floatValue(),
+                        color.get(1).floatValue(),
+                        color.get(2).floatValue(),
+                        color.get(3).floatValue()
+                    )
+            );
+            material.addProperty(gl, property);
+        }
+
         // specularColor
+        if (materialDescription.getProperties().getSpecularColor() != null) {
+            List<Double> color = materialDescription.getProperties().getSpecularColor();
+            MaterialProperty4f property = new MaterialProperty4f(
+                    "specularColor",
+                    new Vector4f(
+                            color.get(0).floatValue(),
+                            color.get(1).floatValue(),
+                            color.get(2).floatValue(),
+                            color.get(3).floatValue()
+                    )
+            );
+            material.addProperty(gl, property);
+        }
+
         // specularPower
+        if (materialDescription.getProperties().getSpecularPower() != null) {
+            double power = materialDescription.getProperties().getSpecularPower();
+            MaterialProperty1f property = new MaterialProperty1f(
+                    "specularPower",
+                    (float) power
+            );
+            material.addProperty(gl, property);
+        }
+
+        // specularIntensity
+        if (materialDescription.getProperties().getSpecularIntensity() != null) {
+            double power = materialDescription.getProperties().getSpecularIntensity();
+            MaterialProperty1f property = new MaterialProperty1f(
+                    "specularIntensity",
+                    (float) power
+            );
+            material.addProperty(gl, property);
+        }
 
         return material;
     }
