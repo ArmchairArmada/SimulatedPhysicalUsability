@@ -12,6 +12,10 @@ import org.joml.Vector3f;
  * Encapsulates node transformations.
  */
 public class Transform {
+    public static final Vector3f right = new Vector3f(1, 0, 0);
+    public static final Vector3f up = new Vector3f(0, 1, 0);
+    public static final Vector3f forward = new Vector3f(0, 0, 1);
+
     public Vector3f position = new Vector3f();
     public Quaternionf rotation = new Quaternionf();
     Matrix4f matrix = new Matrix4f();
