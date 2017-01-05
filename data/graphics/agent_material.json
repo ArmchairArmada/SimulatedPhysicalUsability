@@ -1,11 +1,8 @@
 {
-    "vertexShader": "vertex_shader.glsl",
-    "fragmentShader": "fragment_shader.glsl",
+    "vertexShader": "vertex_simple.glsl",
+    "fragmentShader": "fragment_simple.glsl",
     "properties": {
         "textures": [],
-        "diffuseColor": [0.1, 0.5, 1.0, 1.0],
-        "specularColor": [1.0, 1.0, 0.7, 1.0],
-        "specularPower": 25.0,
-        "specularIntensity": 0.5
+        "diffuseColor": [0.1, 0.5, 1.0, 1.0]
     }
 }

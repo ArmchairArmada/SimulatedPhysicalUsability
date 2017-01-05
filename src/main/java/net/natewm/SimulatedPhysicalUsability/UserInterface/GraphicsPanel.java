@@ -6,9 +6,12 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import net.natewm.SimulatedPhysicalUsability.Rendering.*;
 import net.natewm.SimulatedPhysicalUsability.Resources.*;
+import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
+import net.natewm.SimulatedPhysicalUsability.Simulation.AgentManager;
 import org.joml.Vector3f;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -44,7 +47,9 @@ public class GraphicsPanel extends GLCanvas {
 
             Renderer renderer = new Renderer();
             //RenderingSystem renderingSystem;
-            ArrayList<IRenderNode> nodes = new ArrayList<>();
+            //ArrayList<IRenderNode> nodes = new ArrayList<>();
+            //ArrayList<Agent> agents = new ArrayList<Agent>();
+            AgentManager agentManager = new AgentManager(renderer);
 
             Texture texture;
 
@@ -88,9 +93,10 @@ public class GraphicsPanel extends GLCanvas {
                 floorHandle = new RenderNodeHandle(new MeshRenderNode(floorMesh));
                 //renderingSystem.addRenderNode(floorGroup, floorHandle);
 
-                for (int i=-30; i<31; i++) {
-                    for (int j=-30; j<31; j++) {
+                for (int i=-100; i<101; i++) {
+                    for (int j=-100; j<101; j++) {
                         MeshRenderNode node;
+                        /*
                         if ((i+j) % 2 == 0) {
                             node = new MeshRenderNode(monkeyMesh);
                             monkeyHandle = new RenderNodeHandle(new MeshRenderNode(monkeyMesh));
@@ -100,15 +106,17 @@ public class GraphicsPanel extends GLCanvas {
                             node.getTransform().position.set(i, 1, j);
                         }
                         else {
+                        */
                             node = new MeshRenderNode(agentMesh);
                             agentHandle = new RenderNodeHandle(new MeshRenderNode(agentMesh));
                             //renderingSystem.addRenderNode(agentGroup, agentHandle);
                             //renderingSystem.setRenderNodePosition(agentHandle, new Vector3f(i, 1, j));
                             renderer.add(agentGroup, node);
                             node.getTransform().position.set(i, 0, j);
-                        }
+                            node.getTransform().rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
+                        //}
 
-                        nodes.add(node);
+                        agentManager.add(new Agent(node));
                     }
                 }
 
@@ -123,25 +131,16 @@ public class GraphicsPanel extends GLCanvas {
 
             public void display(GLAutoDrawable glAutoDrawable) {
                 long time = System.nanoTime();
-                float dt = (time - lastTime)/1000000.0f;
+                float dt = (float)((time - lastTime)/1000000000.0);
                 lastTime = time;
 
-                x += 0.001f * dt;
-
-                nodes.parallelStream().forEach((node) -> {
-                    node.getTransform().rotation.identity().rotateAxis(x, 0f, 1f, 0f);
-                    //renderingSystem.setRenderNodeRotation();
-                    node.getTransform().position.add(new Vector3f(0f, 0f, dt*0.001f).rotate(node.getTransform().rotation));
-                    node.getTransform().updateMatrix();
-                });
+                agentManager.update(dt);
 
                 renderer.render(gl, mouseCamera.getMatrix());
-                //renderingSystem.render(mouseCamera.getMatrix());
             }
 
             public void reshape(GLAutoDrawable glAutoDrawable, int x, int y, int width, int height) {
                 renderer.reshape(gl, x, y, width, height);
-                //renderingSystem.reshape(x, y, width, height);
             }
         });
 

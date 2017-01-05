@@ -2,6 +2,8 @@ package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.opengl.GL3;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 
@@ -16,7 +18,7 @@ public class Renderer {
     private ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
     private float fieldOfView = 49.0f;
     private float nearPlane = 0.1f;
-    private float farPlane = 1000.0f;
+    private float farPlane = 256.0f;
     private float[] clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
 
     private Matrix4f projection = new Matrix4f();
@@ -109,6 +111,12 @@ public class Renderer {
         renderGroups.get(renderGroup).remove(node);
     }
 
+    public void remove(IRenderNode node) {
+        for (ArrayList<IRenderNode> renderGroup : renderGroups) {
+            renderGroup.remove(node);
+        }
+    }
+
     /**
      * Renders the OpenGL scene.  This uses render groups to render all similar objects together.  Frustum culling is
      * used to not render any object that is fully off the screen.
@@ -117,6 +125,8 @@ public class Renderer {
      * @param camera Camera matrix
      */
     public void render(GL3 gl, Matrix4f camera) {
+        float r;
+        Vector4f center;
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
 
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
@@ -131,12 +141,13 @@ public class Renderer {
 
                 // Two loops are used, since I could not get locking to work to prevent OpenGL conflicts.
                 for (IRenderNode node : renderGroup) {
-                    // TODO: Use camera's far clipping plane
-                    if (node.getViewZ() < 1000f && node.getViewZ() > 0f
-                            && node.getViewCenter().x+node.getViewRadius() > -1.0f
-                            && node.getViewCenter().x-node.getViewRadius() < 1.0f
-                            && node.getViewCenter().y+node.getViewRadius() > -1.0f
-                            && node.getViewCenter().y-node.getViewRadius() < 1.0f) {
+                    center = node.getViewCenter();
+                    r = node.getViewRadius();
+                    if (node.getViewZ()-r < farPlane && node.getViewZ()+r > nearPlane
+                            && center.x+r > -1.0f
+                            && center.x-r < 1.0f
+                            && center.y+r > -1.0f
+                            && center.y-r < 1.0f) {
                         node.render(gl, node.getModelView(), projection);
                     }
                 }
