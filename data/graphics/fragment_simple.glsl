@@ -1,7 +1,5 @@
 #version 330
 
-uniform sampler2D texture0;
-
 in vec3 theNormal;
 in vec3 theColor;
 
