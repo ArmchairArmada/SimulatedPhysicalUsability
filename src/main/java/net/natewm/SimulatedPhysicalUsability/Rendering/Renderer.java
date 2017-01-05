@@ -143,7 +143,8 @@ public class Renderer {
                 for (IRenderNode node : renderGroup) {
                     center = node.getViewCenter();
                     r = node.getViewRadius();
-                    if (node.getViewZ()-r < farPlane && node.getViewZ()+r > nearPlane
+                    if (node.getViewZ()-node.getRadius() < farPlane
+                            && node.getViewZ()+node.getRadius() > 0
                             && center.x+r > -1.0f
                             && center.x-r < 1.0f
                             && center.y+r > -1.0f

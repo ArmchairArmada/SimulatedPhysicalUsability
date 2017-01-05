@@ -53,7 +53,10 @@ public class MeshRenderNode implements IRenderNode {
 
         // This was a guess based on an estimated focal length
         // TODO: Figure out how to use camera's real focal length
-        viewRadius = 4f*mesh.radius / viewZ;
+        if (viewZ > 0f)
+            viewRadius = 4f*mesh.radius / viewZ;
+        else
+            viewRadius = Float.POSITIVE_INFINITY;
     }
 
     public Matrix4f getModelView() {

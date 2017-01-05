@@ -89,13 +89,22 @@ public class GraphicsPanel extends GLCanvas {
                     e.printStackTrace();
                 }
 
-                renderer.add(floorGroup, new MeshRenderNode(floorMesh));
-                floorHandle = new RenderNodeHandle(new MeshRenderNode(floorMesh));
+                MeshRenderNode node;
+                for (int i=-8; i<9; i++) {
+                    for (int j=-8; j<9; j++) {
+                        node = new MeshRenderNode(floorMesh);
+                        node.getTransform().position.set(128*i, 0, 128*j);
+                        node.getTransform().updateMatrix();
+                        renderer.add(floorGroup, node);
+                    }
+                }
+
+                //renderer.add(floorGroup, new MeshRenderNode(floorMesh));
+                //floorHandle = new RenderNodeHandle(new MeshRenderNode(floorMesh));
                 //renderingSystem.addRenderNode(floorGroup, floorHandle);
 
                 for (int i=-100; i<101; i++) {
                     for (int j=-100; j<101; j++) {
-                        MeshRenderNode node;
                         /*
                         if ((i+j) % 2 == 0) {
                             node = new MeshRenderNode(monkeyMesh);
