@@ -43,7 +43,7 @@ public class GraphicsPanel extends GLCanvas {
             Mesh monkeyMesh, agentMesh, floorMesh;
             int monkeyGroup, agentGroup, floorGroup;
 
-            RenderNodeHandle monkeyHandle, agentHandle, floorHandle;
+            //RenderNodeHandle monkeyHandle, agentHandle, floorHandle;
 
             Renderer renderer = new Renderer();
             //RenderingSystem renderingSystem;
@@ -117,7 +117,7 @@ public class GraphicsPanel extends GLCanvas {
                         else {
                         */
                             node = new MeshRenderNode(agentMesh);
-                            agentHandle = new RenderNodeHandle(new MeshRenderNode(agentMesh));
+                            //agentHandle = new RenderNodeHandle(new MeshRenderNode(agentMesh));
                             //renderingSystem.addRenderNode(agentGroup, agentHandle);
                             //renderingSystem.setRenderNodePosition(agentHandle, new Vector3f(i, 1, j));
                             renderer.add(agentGroup, node);
