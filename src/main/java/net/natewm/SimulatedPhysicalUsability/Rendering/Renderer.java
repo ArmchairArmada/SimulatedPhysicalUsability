@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -30,8 +31,8 @@ public class Renderer {
     }
 
     public void init(GL3 gl) {
-        gl.glEnable(gl.GL_DEPTH_TEST);
-        gl.glEnable(gl.GL_CULL_FACE);
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        gl.glEnable(GL.GL_CULL_FACE);
         gl.glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     }
 
@@ -127,7 +128,7 @@ public class Renderer {
     public void render(GL3 gl, Matrix4f camera) {
         float r;
         Vector4f center;
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
             if (renderGroup.size() > 0) {

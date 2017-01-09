@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.glsl.ShaderUtil;
 
@@ -89,12 +90,13 @@ public class Material {
      * @param gl OpenGL
      */
     public void use(GL3 gl) {
+        // TODO: Consider using the methods 'bind'/'unbind' for consistency, instead of 'use'
         shaderProgram.use(gl);
 
         for (int i=0; i<textures.size(); i++) {
             gl.glUniform1i(textureLocations.get(i), i);
-            gl.glActiveTexture(gl.GL_TEXTURE0 + i);
-            gl.glBindTexture(gl.GL_TEXTURE_2D, textures.get(i).getTextureID());
+            gl.glActiveTexture(GL.GL_TEXTURE0 + i);
+            gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get(i).getTextureID());
         }
 
         useProperties(gl);

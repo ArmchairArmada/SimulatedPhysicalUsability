@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import net.natewm.SimulatedPhysicalUsability.Rendering.*;
 import org.joml.Vector4f;
@@ -163,7 +164,7 @@ public class ResourceManager {
         if (vertexShaderMap.containsKey(filename))
             return vertexShaderMap.get(filename);
 
-        vertexShaderMap.put(filename, new Shader(gl, gl.GL_VERTEX_SHADER, getLines(filename)));
+        vertexShaderMap.put(filename, new Shader(gl, GL3.GL_VERTEX_SHADER, getLines(filename)));
         return vertexShaderMap.get(filename);
     }
 
@@ -172,7 +173,7 @@ public class ResourceManager {
         if (fragmentShaderMap.containsKey(filename))
             return fragmentShaderMap.get(filename);
 
-        vertexShaderMap.put(filename, new Shader(gl, gl.GL_FRAGMENT_SHADER, getLines(filename)));
+        vertexShaderMap.put(filename, new Shader(gl, GL3.GL_FRAGMENT_SHADER, getLines(filename)));
         return vertexShaderMap.get(filename);
     }
 

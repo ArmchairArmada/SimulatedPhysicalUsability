@@ -18,7 +18,26 @@ public class Transform {
 
     public Vector3f position = new Vector3f();
     public Quaternionf rotation = new Quaternionf();
-    Matrix4f matrix = new Matrix4f();
+    private Matrix4f matrix = new Matrix4f();
+    private boolean dirty = true;
+
+    public Transform() {
+    }
+
+    public Transform(Transform transform) {
+        position = new Vector3f(transform.position);
+        rotation = new Quaternionf(transform.rotation);
+    }
+
+    public void setPosition(float x, float y, float z) {
+        position.set(x, y, z);
+        dirty = true;
+    }
+
+    public void setAxisRotation(float angle, float x, float y, float z) {
+        rotation.setAngleAxis(angle, x, y, z);
+        dirty = true;
+    }
 
     /**
      * Gets matrix, which is the result of position and rotation.
@@ -26,6 +45,10 @@ public class Transform {
      * @return Matrix
      */
     public Matrix4f getMatrix() {
+        if (dirty) {
+            dirty = false;
+            updateMatrix();
+        }
         return matrix;
     }
 
