@@ -1,7 +1,9 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
+import com.sun.prism.impl.BufferUtil;
 import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
 import org.joml.Matrix4f;
 
@@ -16,7 +18,7 @@ import java.nio.IntBuffer;
  * OpenGL mesh
  */
 public class Mesh {
-    IntBuffer vao;      // Vertex array object id
+    int vao;            // Vertex array object id
     IntBuffer vbo;      // Vertex buffer object id
 
     Material material;  // Material to use with mesh
@@ -62,6 +64,18 @@ public class Mesh {
         genVAO(gl, geometry);
     }
 
+    public int getVao() {
+        return vao;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
     /**
      * Counts the number of buffers that need to be created for OpenGL.
      *
@@ -92,25 +106,27 @@ public class Mesh {
         int nextIndex = 2;
         int enabledBuffers = countEnabledBuffers();
 
-        vao = Buffers.newDirectIntBuffer(1);
+        IntBuffer vaoBuffer = BufferUtil.newIntBuffer(1); //Buffers.newDirectIntBuffer(1);
         vbo = Buffers.newDirectIntBuffer(enabledBuffers);
 
-        gl.glGenVertexArrays(1, vao);
-        gl.glBindVertexArray(vao.get(0));
+        gl.glGenVertexArrays(1, vaoBuffer);
+        vao = vaoBuffer.get(0);
+
+        gl.glBindVertexArray(vao);
 
         gl.glGenBuffers(enabledBuffers, vbo);
         triangleID = vbo.get(0);
         vertexId = vbo.get(1);
 
         // TRIANGLES
-        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, triangleID);
-        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * Integer.BYTES, triangleBuffer, gl.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, triangleID);
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * Integer.BYTES, triangleBuffer, GL.GL_STATIC_DRAW);
 
         // VERTEX POSITIONS
         attrib = material.getShaderProgram().getAttributeLocation(gl, "position");
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
-        gl.glBufferData(gl.GL_ARRAY_BUFFER, vertexBuffer.capacity() * Float.BYTES, vertexBuffer, gl.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vertexId);
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexBuffer.capacity() * Float.BYTES, vertexBuffer, GL.GL_STATIC_DRAW);
+        gl.glVertexAttribPointer(attrib, 3, GL.GL_FLOAT, false, 0, 0);
         gl.glEnableVertexAttribArray(attrib);
 
         // NORMALS
@@ -118,9 +134,9 @@ public class Mesh {
             normalId = vbo.get(nextIndex);
             nextIndex++;
             attrib = material.getShaderProgram().getAttributeLocation(gl, "normal");
-            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, normalId);
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, normalBuffer.capacity() * Float.BYTES, normalBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalId);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, normalBuffer.capacity() * Float.BYTES, normalBuffer, GL.GL_STATIC_DRAW);
+            gl.glVertexAttribPointer(attrib, 3, GL.GL_FLOAT, false, 0, 0);
             gl.glEnableVertexAttribArray(attrib);
         }
 
@@ -129,20 +145,20 @@ public class Mesh {
             colorId = vbo.get(nextIndex);
             nextIndex++;
             attrib = material.getShaderProgram().getAttributeLocation(gl, "color");
-            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, colorId);
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, colorBuffer.capacity() * Float.BYTES, colorBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, colorId);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, colorBuffer.capacity() * Float.BYTES, colorBuffer, GL.GL_STATIC_DRAW);
+            gl.glVertexAttribPointer(attrib, 3, GL.GL_FLOAT, false, 0, 0);
             gl.glEnableVertexAttribArray(attrib);
         }
 
         // UV
         if (hasUvs) {
             uvId = vbo.get(nextIndex);
-            nextIndex++;
+            //nextIndex++;
             attrib = material.getShaderProgram().getAttributeLocation(gl, "uv");
-            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, uvId);
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(attrib, 2, gl.GL_FLOAT, false, 0, 0);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, uvId);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, GL.GL_STATIC_DRAW);
+            gl.glVertexAttribPointer(attrib, 2, GL.GL_FLOAT, false, 0, 0);
             gl.glEnableVertexAttribArray(attrib);
         }
     }
@@ -158,7 +174,8 @@ public class Mesh {
         gl.glBindVertexArray(0);
 
         gl.glDeleteBuffers(vbo.capacity(), vbo);
-        gl.glDeleteVertexArrays(vao.capacity(), vao);
+        int[] vaoArray = {vao};
+        gl.glDeleteVertexArrays(1, vaoArray, 0);
     }
 
     /**
@@ -167,9 +184,9 @@ public class Mesh {
      * @param gl OpenGL
      */
     public void bind(GL3 gl) {
-        gl.glBindVertexArray(vao.get(0));
-        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, triangleID);
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
+        gl.glBindVertexArray(vao);
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, triangleID);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vertexId);
         //gl.glEnableVertexAttribArray(0);
         //gl.glEnableVertexAttribArray(2);
         material.use(gl);
@@ -197,7 +214,7 @@ public class Mesh {
      */
     public void render(GL3 gl) {
         //material.useProperties(gl);
-        gl.glDrawElements(gl.GL_TRIANGLES, elementCount, gl.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(GL.GL_TRIANGLES, elementCount, GL.GL_UNSIGNED_INT, 0);
     }
 
     /**
@@ -206,8 +223,8 @@ public class Mesh {
      * @param gl OpenGL
      */
     public void unbind(GL3 gl) {
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0);
-        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, 0);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.glBindVertexArray(0);
     }
 

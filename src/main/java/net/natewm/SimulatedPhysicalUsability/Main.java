@@ -1,7 +1,10 @@
 package net.natewm.SimulatedPhysicalUsability;
 
+import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import net.natewm.SimulatedPhysicalUsability.Graphics.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.Graphics.IAction;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.GraphicsPanel;
 
 import javax.swing.*;

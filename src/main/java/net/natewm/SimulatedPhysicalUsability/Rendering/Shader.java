@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.glsl.ShaderUtil;
 
@@ -25,8 +26,8 @@ public class Shader {
 
         // TODO: Better error checking and logging
         int status[] = new int[1];
-        gl.glGetShaderiv(shaderID, gl.GL_COMPILE_STATUS, status, 0);
-        if (status[0] == gl.GL_FALSE) {
+        gl.glGetShaderiv(shaderID, GL3.GL_COMPILE_STATUS, status, 0);
+        if (status[0] == GL.GL_FALSE) {
             throw new Exception(ShaderUtil.getShaderInfoLog(gl, shaderID));
         }
     }
