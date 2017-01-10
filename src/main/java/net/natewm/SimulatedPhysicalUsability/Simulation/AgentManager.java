@@ -56,6 +56,10 @@ public class AgentManager {
             }
         }
 
+        for (Agent agent : agents) {
+            agent.updateGraphics(graphicsEngine);
+        }
+
         //System.out.println(agents.size());
     }
 }

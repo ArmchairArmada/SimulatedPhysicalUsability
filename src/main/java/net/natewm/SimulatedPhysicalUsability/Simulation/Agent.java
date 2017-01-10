@@ -27,8 +27,11 @@ public class Agent {
         transform.position.add(new Vector3f(transform.forward).mul(dt).rotate(transform.rotation));
         //transform.updateMatrix();
 
-        graphicsEngine.setRenderNodeTransform(renderNodeHandle, transform);
+        //graphicsEngine.setRenderNodeTransform(renderNodeHandle, transform);
+    }
 
+    public void updateGraphics(GraphicsEngine graphicsEngine) {
+        graphicsEngine.setRenderNodeTransform(renderNodeHandle, transform);
     }
 
     public void dispose(GraphicsEngine graphicsEngine) {
