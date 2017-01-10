@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
+import com.sun.prism.impl.BufferUtil;
 import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
 import org.joml.Matrix4f;
 
@@ -16,7 +17,7 @@ import java.nio.IntBuffer;
  * OpenGL mesh
  */
 public class Mesh {
-    IntBuffer vao;      // Vertex array object id
+    int vao;      // Vertex array object id
     IntBuffer vbo;      // Vertex buffer object id
 
     Material material;  // Material to use with mesh
@@ -62,6 +63,10 @@ public class Mesh {
         genVAO(gl, geometry);
     }
 
+    public int getVao() {
+        return vao;
+    }
+
     /**
      * Counts the number of buffers that need to be created for OpenGL.
      *
@@ -92,11 +97,13 @@ public class Mesh {
         int nextIndex = 2;
         int enabledBuffers = countEnabledBuffers();
 
-        vao = Buffers.newDirectIntBuffer(1);
+        IntBuffer vaoBuffer = BufferUtil.newIntBuffer(1);
+        //vao = Buffers.newDirectIntBuffer(1);
         vbo = Buffers.newDirectIntBuffer(enabledBuffers);
 
-        gl.glGenVertexArrays(1, vao);
-        gl.glBindVertexArray(vao.get(0));
+        gl.glGenVertexArrays(1, vaoBuffer);
+        vao = vaoBuffer.get(0);
+        gl.glBindVertexArray(vao);
 
         gl.glGenBuffers(enabledBuffers, vbo);
         triangleID = vbo.get(0);
@@ -158,7 +165,9 @@ public class Mesh {
         gl.glBindVertexArray(0);
 
         gl.glDeleteBuffers(vbo.capacity(), vbo);
-        gl.glDeleteVertexArrays(vao.capacity(), vao);
+
+        int[] vaoArray = {vao};
+        gl.glDeleteVertexArrays(1, vaoArray, 0);
     }
 
     /**
@@ -167,7 +176,7 @@ public class Mesh {
      * @param gl OpenGL
      */
     public void bind(GL3 gl) {
-        gl.glBindVertexArray(vao.get(0));
+        gl.glBindVertexArray(vao);
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, triangleID);
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         //gl.glEnableVertexAttribArray(0);

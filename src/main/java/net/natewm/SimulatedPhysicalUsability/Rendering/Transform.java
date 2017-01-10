@@ -19,6 +19,7 @@ public class Transform {
     public Vector3f position = new Vector3f();
     public Quaternionf rotation = new Quaternionf();
     Matrix4f matrix = new Matrix4f();
+    boolean dirty = true;
 
     /**
      * Gets matrix, which is the result of position and rotation.
@@ -26,6 +27,9 @@ public class Transform {
      * @return Matrix
      */
     public Matrix4f getMatrix() {
+        if (dirty) {
+            updateMatrix();
+        }
         return matrix;
     }
 
@@ -34,5 +38,12 @@ public class Transform {
      */
     public void updateMatrix() {
         matrix.identity().translateLocal(position).rotate(rotation);
+        dirty = false;
+    }
+
+    public void set(Transform transform) {
+        position = transform.position;
+        rotation = transform.rotation;
+        dirty = true;
     }
 }

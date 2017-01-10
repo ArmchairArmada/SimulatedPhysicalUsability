@@ -24,6 +24,11 @@ public class MeshRenderNode implements IRenderNode {
         return transform;
     }
 
+    @Override
+    public int getGroupID() {
+        return mesh.getVao();
+    }
+
     public void bind(GL3 gl) {
         mesh.bind(gl);
     }
