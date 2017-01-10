@@ -93,8 +93,8 @@ public class SimulationThread {
             //floorHandle = new RenderNodeHandle(new MeshRenderNode(floorMesh));
             //renderingSystem.addRenderNode(floorGroup, floorHandle);
 
-            for (int i=-150; i<151; i++) {
-                for (int j=-150; j<151; j++) {
+            for (int i=-120; i<121; i++) {
+                for (int j=-120; j<121; j++) {
                         /*
                         if ((i+j) % 2 == 0) {
                             node = new MeshRenderNode(monkeyMesh);
