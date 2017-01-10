@@ -11,6 +11,8 @@ public interface IRenderNode {
 
     public Transform getTransform();
 
+    public int getGroupID();
+
     public void bind(GL3 gl);
 
     public void unbind(GL3 gl);

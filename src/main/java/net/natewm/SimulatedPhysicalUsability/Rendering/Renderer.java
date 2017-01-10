@@ -1,11 +1,14 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Nathan on 12/29/2016.
@@ -16,6 +19,7 @@ import java.util.ArrayList;
  */
 public class Renderer {
     private ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
+    private Map<Integer, Integer> renderIndexMap = new HashMap<>();
     private float fieldOfView = 49.0f;
     private float nearPlane = 0.1f;
     private float farPlane = 256.0f;
@@ -68,17 +72,6 @@ public class Renderer {
     }
 
     /**
-     * Creates a render group, which is a collection of objects with the same OpenGL settings.  This reduces OpenGL
-     * configuration switching for a slight performance benefit.
-     *
-     * @return An ID for the newly created render group.
-     */
-    public int createRenderGroup() {
-        renderGroups.add(new ArrayList<>());
-        return renderGroups.size()-1;
-    }
-
-    /**
      * Sets the projection matrix.
      *
      * @param fieldOfView Camera's field of view
@@ -94,23 +87,21 @@ public class Renderer {
     /**
      * Adds a render node to a group.
      *
-     * @param renderGroup Render group ID to add node to.
      * @param node        Render node to add.
      */
-    public void add(int renderGroup, IRenderNode node) {
-        renderGroups.get(renderGroup).add(node);
+    public void add(IRenderNode node) {
+        if (!renderIndexMap.containsKey(node.getGroupID())) {
+            renderIndexMap.put(node.getGroupID(), renderGroups.size());
+            renderGroups.add(new ArrayList<>());
+        }
+        renderGroups.get(renderIndexMap.get(node.getGroupID())).add(node);
     }
 
     /**
      * Removes a render node from a group.
      *
-     * @param renderGroup Render group ID to remove node from.
      * @param node        Render node to remove.
      */
-    public void remove(int renderGroup, IRenderNode node) {
-        renderGroups.get(renderGroup).remove(node);
-    }
-
     public void remove(IRenderNode node) {
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
             renderGroup.remove(node);
@@ -127,7 +118,7 @@ public class Renderer {
     public void render(GL3 gl, Matrix4f camera) {
         float r;
         Vector4f center;
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
             if (renderGroup.size() > 0) {

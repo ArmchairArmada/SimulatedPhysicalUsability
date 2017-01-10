@@ -2,6 +2,10 @@ package net.natewm.SimulatedPhysicalUsability;
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.IFrameEndReciever;
+import net.natewm.SimulatedPhysicalUsability.Simulation.AgentManager;
+import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.GraphicsPanel;
 
 import javax.swing.*;
@@ -31,11 +35,17 @@ public class Main extends JFrame {
         GLProfile glProfile = GLProfile.get(GLProfile.GL3);//GLProfile.getDefault();
         GLCapabilities glCapabilities = new GLCapabilities(glProfile);
 
-        GraphicsPanel graphicsPanel = new GraphicsPanel(glCapabilities);
+        GraphicsEngine graphicsEngine = new GraphicsEngine();
+        SimulationThread simulationThread = new SimulationThread(graphicsEngine);
+        graphicsEngine.setFrameReciever(simulationThread.getFrameEndReciever());
+
+        GraphicsPanel graphicsPanel = new GraphicsPanel(graphicsEngine, glCapabilities);
         add(graphicsPanel);
 
         pack();
         setVisible(true);
+
+        simulationThread.start();
     }
 
     public static void main(String[] args) {
