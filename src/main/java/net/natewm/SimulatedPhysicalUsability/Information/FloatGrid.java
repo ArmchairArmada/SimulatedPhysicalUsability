@@ -53,7 +53,7 @@ public class FloatGrid {
         if (byteBuffer == null)
             byteBuffer = BufferUtil.newByteBuffer(data.length);
 
-        //ByteBuffer byteBuffer = BufferUtil.newByteBuffer(data.length);
+        //ByteBuffer byteBuffer = BufferUtil.newByteBuffer(data.verticesLength);
         float min=Float.MAX_VALUE, max=Float.MIN_VALUE, v;
 
         for (int i=0; i<data.length; i++) {

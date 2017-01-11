@@ -4,17 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Nathan on 1/3/2017.
  */
 public class MeshDescription {
-    private String geometry;
+    private List<String> geometry;
+    //private String geometryLowRes = null;
     private String material;
 
-    public String getGeometry() {
+    public List<String> getGeometry() {
         return geometry;
     }
+
+    //public String getGeometryLowRes() {
+    //    return geometryLowRes;
+    //}
 
     public String getMaterial() {
         return material;

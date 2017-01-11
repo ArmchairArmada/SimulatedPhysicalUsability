@@ -145,7 +145,7 @@ public class Renderer {
                     && center.y+r > -1.0f
                     && center.y-r < 1.0f) {
                 node.bind(gl);
-                node.render(gl, node.getModelView(), projection);
+                node.render(gl, node.getModelView(), projection, (int)(node.getViewZ() / 48.0f));
                 node.unbind(gl);
             }
         }
@@ -170,7 +170,7 @@ public class Renderer {
                             && center.x-r < 1.0f
                             && center.y+r > -1.0f
                             && center.y-r < 1.0f) {
-                        node.render(gl, node.getModelView(), projection);
+                        node.render(gl, node.getModelView(), projection, (int)(node.getViewZ() / 48.0f));
                     }
                 }
                 renderGroup.get(0).unbind(gl);
