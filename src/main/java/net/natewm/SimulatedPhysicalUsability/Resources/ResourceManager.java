@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.Thread.sleep;
 
@@ -22,6 +24,8 @@ import static java.lang.Thread.sleep;
  * Created by Nathan on 1/3/2017.
  */
 public class ResourceManager {
+    private static final Logger LOGGER = Logger.getLogger(ResourceManager.class.getName());
+
     Map<String, Geometry> geometryMap = new HashMap<>();
     Map<String, MeshHandle> meshMap = new HashMap<>();
     Map<String, MaterialHandle> materialMap = new HashMap<>();
@@ -51,6 +55,8 @@ public class ResourceManager {
         if (geometryMap.containsKey(filename))
             return geometryMap.get(filename);
 
+        LOGGER.log(Level.FINE, "Loading Geometry: {0}", filename);
+
         if (keep) {
             geometryMap.put(filename, geometryLoader.load(filename));
             return geometryMap.get(filename);
@@ -70,6 +76,8 @@ public class ResourceManager {
             }
             meshHandle.set(handle);
         }
+
+        LOGGER.log(Level.FINE, "Loading Mesh: {0}", filename);
 
         Path path = Paths.get(filename);
         String dir = path.getParent() + "/";
@@ -113,6 +121,8 @@ public class ResourceManager {
             }
             materialHandle.set(handle);
         }
+
+        LOGGER.log(Level.FINE, "Loading Material: {0}", filename);
 
         Path path = Paths.get(filename);
         String dir = path.getParent() + "/";
@@ -259,6 +269,8 @@ public class ResourceManager {
             textureHandle.set(handle);
         }
 
+        LOGGER.log(Level.FINE, "Loading Texture: {0}", filename);
+
         //textureMap.put(filename, new Texture(gl, imageLoader.load(filename)));
         textureMap.put(filename, textureHandle);
         graphicsEngine.createTexture(textureHandle, imageLoader.load(filename));
@@ -277,6 +289,8 @@ public class ResourceManager {
             shaderHandle.set(handle);
         }
 
+        LOGGER.log(Level.FINE, "Loading Vertex Shader: {0}", filename);
+
         //vertexShaderMap.put(filename, new Shader(gl, gl.GL_VERTEX_SHADER, getLines(filename)));
         graphicsEngine.createShader(shaderHandle, GL3.GL_VERTEX_SHADER, getLines(filename));
         //return vertexShaderMap.get(filename);
@@ -292,6 +306,8 @@ public class ResourceManager {
             //return fragmentShaderMap.get(filename);
             shaderHandle.set(handle);
         }
+
+        LOGGER.log(Level.FINE, "Loading Fragment Shader: {0}", filename);
 
         //vertexShaderMap.put(filename, new Shader(gl, gl.GL_FRAGMENT_SHADER, getLines(filename)));
         graphicsEngine.createShader(shaderHandle, GL3.GL_FRAGMENT_SHADER, getLines(filename));
@@ -311,6 +327,8 @@ public class ResourceManager {
             shaderProgramHandle.set(handle);
         }
 
+        LOGGER.log(Level.FINE, "Loading ShaderProgram: {0}, {1}", new Object[]{vertexFilename, fragementFilename});
+
         //Shader vertexShader = loadVertexShader(vertexFilename);
         //Shader fragmentShader = loadFragmentShader(fragementFilename);
 
@@ -329,6 +347,8 @@ public class ResourceManager {
 
 
     public void disposeAll() {
+        LOGGER.log(Level.FINE, "Disposing resources.");
+
         for (ShaderProgramHandle shaderProgram : shaderProgramMap.values()) {
             //shaderProgram.dispose(gl);
             graphicsEngine.destroyShaderProgram(shaderProgram);

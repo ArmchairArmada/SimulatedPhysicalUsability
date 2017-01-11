@@ -24,6 +24,6 @@ void main() {
     
     float c = 0.0; //mod(floor((theUv.x + theUv.y) * 100),2);
     
-    vec3 materialColor = texture2D(texture0, theUv).rgb * theDiffuseColor.xyz;
+    vec3 materialColor = texture(texture0, theUv).rgb * theDiffuseColor.xyz;
     outColor = vec4((theColor + ambient + diffuse) * min(c*0.25+materialColor,1.0) + specular + ambient*rim, 1.0);
 }

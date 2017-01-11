@@ -9,5 +9,5 @@ in vec2 theUv;
 out vec4 outColor;
 
 void main() {
-    outColor = vec4(texture2D(texture0, theUv).rgb, 1.0);
+    outColor = vec4(texture(texture0, theUv).rgb, 1.0);
 }

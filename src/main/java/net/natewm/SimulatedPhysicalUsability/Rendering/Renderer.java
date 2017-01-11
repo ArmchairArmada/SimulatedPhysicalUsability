@@ -23,9 +23,10 @@ public class Renderer {
     private ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
     private Map<Integer, Integer> renderIndexMap = new HashMap<>();
     private float fieldOfView = 49.0f;
-    private float nearPlane = 0.1f;
+    private float nearPlane = 1.0f; // This was raised to reduce tearing on my laptop
     private float farPlane = 512.0f;
     private float[] clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
+    private float levelOfDetailScale = 0.15f;  // TODO: Allow configuration (maybe consider a config.json file?)
 
     private Matrix4f projection = new Matrix4f();
 
@@ -145,7 +146,7 @@ public class Renderer {
                     && center.y+r > -1.0f
                     && center.y-r < 1.0f) {
                 node.bind(gl);
-                node.render(gl, node.getModelView(), projection, (int)(node.getViewZ() / 48.0f));
+                node.render(gl, node.getModelView(), projection, (int)(levelOfDetailScale/r/node.getRadius()));
                 node.unbind(gl);
             }
         }
@@ -170,7 +171,7 @@ public class Renderer {
                             && center.x-r < 1.0f
                             && center.y+r > -1.0f
                             && center.y-r < 1.0f) {
-                        node.render(gl, node.getModelView(), projection, (int)(node.getViewZ() / 48.0f));
+                        node.render(gl, node.getModelView(), projection, (int)(levelOfDetailScale/r/node.getRadius()));
                     }
                 }
                 renderGroup.get(0).unbind(gl);
