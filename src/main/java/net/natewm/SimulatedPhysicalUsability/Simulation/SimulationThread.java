@@ -38,6 +38,8 @@ public class SimulationThread {
             float dt;
             long lastTime = System.nanoTime();
 
+            float tmp = 0f;
+
             while (running) {
                 time = System.nanoTime();
                 dt = (float)((time - lastTime)/1000000000.0);
@@ -47,14 +49,16 @@ public class SimulationThread {
 
                 agentManager.update(graphicsEngine, dt);
 
-                /*
+                tmp += dt;
                 for (int y=0; y<floatGrid.getHeight(); y++) {
                     for (int x=0; x<floatGrid.getWidth(); x++) {
-                        floatGrid.set(x, y, (float)Math.random());
+                        //floatGrid.set(x, y, (float)Math.random());
+                        //floatGrid.set(x, y, (float)(Math.sin((x+tmp)*0.1 * Math.cos((y-tmp)*0.2)) + Math.sin((y+tmp)*0.1 * Math.cos((x-tmp)*0.2))));
+                        floatGrid.set(x, y, (float)(Math.cos(Math.cos(0.2*x+tmp) + Math.cos(0.2*y+tmp) + 0.5*Math.cos(0.005*x*y+tmp))));
                     }
                 }
+
                 graphicsEngine.updateTexture(dataTextureHandle, floatGrid);
-                */
 
                 graphicsEngine.frameEnd();
 
@@ -78,7 +82,7 @@ public class SimulationThread {
             for (int y=0; y<floatGrid.getHeight(); y++) {
                 for (int x=0; x<floatGrid.getWidth(); x++) {
                     //floatGrid.set(x, y, (float)Math.random());
-                    floatGrid.set(x, y, (float)(Math.sin(x*0.3) + Math.sin(y*0.3)));
+                    floatGrid.set(x, y, (float)Math.sin((x-64) * (y-64) * 0.01));
                 }
             }
 

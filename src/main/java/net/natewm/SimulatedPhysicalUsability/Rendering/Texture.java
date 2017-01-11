@@ -2,12 +2,10 @@ package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
-import com.sun.prism.impl.BufferUtil;
 import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import net.natewm.SimulatedPhysicalUsability.Resources.Image;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 
 /**
  * Created by Nathan on 12/29/2016.
@@ -45,6 +43,7 @@ public class Texture {
     private void setFilters(GL3 gl, boolean quality) {
         // TODO: Allow configuring min and mag filters
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        //gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
         if (quality)
             gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR_MIPMAP_LINEAR);
         else
@@ -102,15 +101,21 @@ public class Texture {
     public void updateFloatGrid(GL3 gl, FloatGrid floatGrid) {
         //FloatBuffer floatBuffer = floatGrid.toFloatBuffer();
         ByteBuffer byteBuffer = floatGrid.toByteBuffer();
+        bind(gl);
         gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, 0, 0, width, height, GL3.GL_RED, GL.GL_UNSIGNED_BYTE, byteBuffer);
+        unbind(gl);
     }
 
     public int getTextureID() {
         return textureID;
     }
 
-    public void use(GL3 gl) {
+    public void bind(GL3 gl) {
         gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
+    }
+
+    public void unbind(GL3 gl) {
+        gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
     }
 
     public void dispose(GL3 gl) {

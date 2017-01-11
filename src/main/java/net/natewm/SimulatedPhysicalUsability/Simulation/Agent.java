@@ -22,9 +22,9 @@ public class Agent {
     }
 
     public void update(GraphicsEngine graphicsEngine, float dt) {
-        float turnAmount = ((float)Math.random() - 0.5f) * 20.0f * dt;
+        float turnAmount = ((float)Math.random() - 0.5f) * 5.0f * dt;
         transform.rotation.rotateAxis(turnAmount, 0, 1, 0);
-        transform.position.add(new Vector3f(transform.forward).mul(dt).rotate(transform.rotation));
+        transform.position.add(new Vector3f(transform.forward).mul(0.5f*dt).rotate(transform.rotation));
         //transform.updateMatrix();
 
         //graphicsEngine.setRenderNodeTransform(renderNodeHandle, transform);

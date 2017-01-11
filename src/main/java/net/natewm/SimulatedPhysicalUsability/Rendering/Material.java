@@ -19,12 +19,12 @@ import java.util.List;
 // TODO: Material properties.
 
 /*
-    Example of changes in use:
+    Example of changes in bind:
 
     MaterialLoader ml = new JSONMaterialLoader();
     Material m = ml.load("material.json");
     m.setProperty("diffuseColor", new Vector3f(1.0f, 0.5f, 0.0f));  // Override what was in the material
-    m.use(gl);
+    m.bind(gl);
 
     It would be nice to allow each render node to specify unique values for material properties.  For example, each
     instances of a mesh might be a different color.  If an asset manager is implemented, it would be easier to create
@@ -38,7 +38,7 @@ public class Material {
     ShaderProgram shaderProgram;
     int modelViewLocation;  // Shader's uniform location for modelView matrix
     int projectionLocation; // Shader's uniform location for projection matrix
-    ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will use
+    ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will bind
     ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
     ArrayList<MaterialProperty> materialProperties = new ArrayList<>();
 
@@ -85,11 +85,11 @@ public class Material {
     }
 
     /**
-     * Tells OpenGL to use this material.
+     * Tells OpenGL to bind this material.
      *
      * @param gl OpenGL
      */
-    public void use(GL3 gl) {
+    public void bind(GL3 gl) {
         shaderProgram.use(gl);
 
         for (int i=0; i<textures.size(); i++) {
@@ -113,5 +113,13 @@ public class Material {
 
     public void replaceTexture(GL3 gl, Texture texture, int number) {
         textures.set(number, texture);
+    }
+
+    public void unbind(GL3 gl) {
+        for (int i=0; i<textures.size(); i++) {
+            gl.glUniform1i(textureLocations.get(i), i);
+            gl.glActiveTexture(gl.GL_TEXTURE0 + i);
+            gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
+        }
     }
 }

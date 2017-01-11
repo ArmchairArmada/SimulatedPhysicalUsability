@@ -68,7 +68,7 @@ public class MeshRenderNode implements IRenderNode {
         viewCenter.mul(1/viewCenter.w);
 
         // This was a guess based on an estimated focal length
-        // TODO: Figure out how to use camera's real focal length
+        // TODO: Figure out how to bind camera's real focal length
         if (viewZ > 0f)
             viewRadius = 4f*mesh.radius / viewZ;
         else

@@ -24,7 +24,7 @@ public class Renderer {
     private Map<Integer, Integer> renderIndexMap = new HashMap<>();
     private float fieldOfView = 49.0f;
     private float nearPlane = 0.1f;
-    private float farPlane = 256.0f;
+    private float farPlane = 512.0f;
     private float[] clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
 
     private Matrix4f projection = new Matrix4f();

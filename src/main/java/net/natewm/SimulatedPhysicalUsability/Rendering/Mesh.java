@@ -20,7 +20,7 @@ public class Mesh {
     int vao;      // Vertex array object id
     IntBuffer vbo;      // Vertex buffer object id
 
-    Material material;  // Material to use with mesh
+    Material material;  // Material to bind with mesh
 
     int triangleID = 0; // ID for OpenGL buffer containing triangle vertex indices
     int vertexId = 0;   // ID for OpenGL buffer containing vertex position values
@@ -43,7 +43,7 @@ public class Mesh {
      *
      * @param gl       OpenGL
      * @param geometry Geometry to create mesh from
-     * @param material Material for the geometry to use
+     * @param material Material for the geometry to bind
      * @throws Exception Thrown if geometry is not consistent (same number of vertice properties as vertices)
      */
     public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
@@ -181,7 +181,7 @@ public class Mesh {
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         //gl.glEnableVertexAttribArray(0);
         //gl.glEnableVertexAttribArray(2);
-        material.use(gl);
+        material.bind(gl);
     }
 
     /**
@@ -215,6 +215,7 @@ public class Mesh {
      * @param gl OpenGL
      */
     public void unbind(GL3 gl) {
+        material.unbind(gl);
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.glBindVertexArray(0);
