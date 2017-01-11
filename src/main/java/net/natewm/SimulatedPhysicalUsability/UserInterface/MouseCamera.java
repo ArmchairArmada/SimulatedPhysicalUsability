@@ -1,9 +1,10 @@
-package net.natewm.SimulatedPhysicalUsability.Rendering;
+package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -34,6 +35,9 @@ public class MouseCamera {
     float rotateX = 0f;
     float rotateY = 0f;
     float distance = 10f;
+
+    Component component;
+
     Vector3f cameraCenter = new Vector3f();
     Quaternionf cameraAngle = new Quaternionf();
 
@@ -46,10 +50,11 @@ public class MouseCamera {
      * @param cameraRotateY  Initial rotation around Y axis
      * @param cameraDistance Initial zoom distance
      */
-    public MouseCamera(float cameraRotateX, float cameraRotateY, float cameraDistance) {
+    public MouseCamera(float cameraRotateX, float cameraRotateY, float cameraDistance, Component component) {
         this.rotateX = cameraRotateX;
         this.rotateY = cameraRotateY;
         this.distance = cameraDistance;
+        this.component = component;
 
         cameraAngle.identity().rotateAxis(rotateY, 0f, 1f, 0f).rotateAxis(rotateX, 1f, 0f, 0f);
         updateMatrix();
@@ -65,11 +70,30 @@ public class MouseCamera {
                 button = e.getButton();
                 previousX = e.getX();
                 previousY = e.getY();
+
+                switch (button) {
+                    case 1:
+                        component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        break;
+
+                    case 2:
+                        component.setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+                        break;
+
+                    case 3:
+                        component.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                        break;
+
+                    default:
+                        component.setCursor(Cursor.getDefaultCursor());
+                }
+
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 button = 0;
+                component.setCursor(Cursor.getDefaultCursor());
             }
 
             @Override
