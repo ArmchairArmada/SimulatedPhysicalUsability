@@ -4,7 +4,7 @@
     "properties": {
         "textures": [
             "floor_tile.png",
-            "heatmap.png",
+            "heatmap3.png",
             "rgb.png"
         ]
     }

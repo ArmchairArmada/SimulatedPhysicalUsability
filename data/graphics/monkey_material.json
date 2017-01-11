@@ -2,8 +2,8 @@
     "vertexShader": "vertex_shader.glsl",
     "fragmentShader": "fragment_shader.glsl",
     "properties": {
-        "textures": ["rgb.png"],
-        "diffuseColor": [1.0, 1.0, 1.0, 1.0],
+        "textures": ["monkey.png"],
+        "diffuseColor": [0.5, 0.5, 0.5, 1.0],
         "specularColor": [1.0, 1.0, 0.7, 1.0],
         "specularPower": 50.0,
         "specularIntensity": 0.25

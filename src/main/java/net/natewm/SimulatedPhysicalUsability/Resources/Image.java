@@ -49,16 +49,31 @@ public class Image {
         if (bufferedImage.getColorModel().hasAlpha()) {
             pixelFormat = GL.GL_RGBA;
 
-            // Convert from ARGB to RGBA
-            // TODO: Look into using a swizzle mask
             byteBuffer = BufferUtil.newByteBuffer(dataBuffer.capacity());
 
+            /*
             for (int i=0; i<dataBuffer.capacity(); i+=4) {
                 byteBuffer.put(dataBuffer.get(i+3));
                 byteBuffer.put(dataBuffer.get(i+2));
                 byteBuffer.put(dataBuffer.get(i+1));
                 byteBuffer.put(dataBuffer.get(i));
             }
+            */
+
+            int width = bufferedImage.getWidth();
+            int span = width * 4;
+            int height = bufferedImage.getHeight();
+            int index;
+            for (int y=0; y<bufferedImage.getHeight(); y++) {
+                for (int x=0; x<width; x++) {
+                    index = (height - y - 1) * span + x * 4;
+                    byteBuffer.put(dataBuffer.get(index+3));
+                    byteBuffer.put(dataBuffer.get(index+2));
+                    byteBuffer.put(dataBuffer.get(index+1));
+                    byteBuffer.put(dataBuffer.get(index));
+                }
+            }
+
             byteBuffer.flip();
         }
         else {
@@ -66,11 +81,25 @@ public class Image {
 
             byteBuffer = BufferUtil.newByteBuffer(dataBuffer.capacity());
 
-            for (int i=0; i<dataBuffer.capacity(); i+=3) {
+            /*for (int i=0; i<dataBuffer.capacity(); i+=3) {
                 byteBuffer.put(dataBuffer.get(i+2));
                 byteBuffer.put(dataBuffer.get(i+1));
                 byteBuffer.put(dataBuffer.get(i));
+            }*/
+
+            int width = bufferedImage.getWidth();
+            int span = width * 3;
+            int height = bufferedImage.getHeight();
+            int index;
+            for (int y=0; y<bufferedImage.getHeight(); y++) {
+                for (int x=0; x<width; x++) {
+                    index = (height - y - 1) * span + x * 3;
+                    byteBuffer.put(dataBuffer.get(index+2));
+                    byteBuffer.put(dataBuffer.get(index+1));
+                    byteBuffer.put(dataBuffer.get(index));
+                }
             }
+
             byteBuffer.flip();
 
             //byteBuffer = dataBuffer;
