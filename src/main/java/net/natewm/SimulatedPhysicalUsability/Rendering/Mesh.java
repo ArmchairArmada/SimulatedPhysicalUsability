@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.sun.prism.impl.BufferUtil;
 import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
@@ -17,8 +18,26 @@ import java.nio.IntBuffer;
  * OpenGL mesh
  */
 public class Mesh {
+    public class SubMeshInfo {
+        public int vertexStart;
+        public int vertexCount;
+        public int elementStart;
+        public int elementEnd;
+        public int elementCount;
+
+        public SubMeshInfo(int vertexStart, int vertexCount, int elementStart, int elementCount) {
+            this.vertexStart = vertexStart;
+            this.vertexCount = vertexCount;
+            this.elementStart = elementStart;
+            this.elementEnd = elementStart + elementCount;
+            this.elementCount = elementCount;
+        }
+    }
+
     int vao;      // Vertex array object id
     IntBuffer vbo;      // Vertex buffer object id
+
+    int maxElementCount = 0;
 
     Material material;  // Material to bind with mesh
 
@@ -32,9 +51,11 @@ public class Mesh {
     boolean hasColors;  // If the mesh has vertex color values
     boolean hasUvs;     // If the mesh has vertex texture coordinates
 
-    int triangleCount;  // Number of triangles in the mesh
-    int vertexCount;    // Number of vertices in the mesh
-    int elementCount;   // Number of elements in mesh (for glDrawElements)
+    //int triangleCount;  // Number of triangles in the mesh
+    //int vertexCount;    // Number of vertices in the mesh
+    //int elementCount;   // Number of elements in mesh (for glDrawElements)
+
+    SubMeshInfo[] subMeshInfos;
 
     float radius;       // Radius of a sphere that mesh can fully fit inside
 
@@ -48,7 +69,7 @@ public class Mesh {
      */
     public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
         if (!geometry.checkConsistancy())
-            throw new Exception("Inconsistant Geometry Buffer");
+            throw new Exception("Inconsistent Geometry Buffer");
 
         this.material = material;
 
@@ -56,9 +77,22 @@ public class Mesh {
         hasColors = geometry.colorsCount() > 0;
         hasUvs = geometry.uvCount() > 0;
 
-        triangleCount = geometry.trianglesCount();
-        vertexCount = geometry.vertexCount();
-        elementCount = triangleCount * 3;
+        maxElementCount = geometry.trianglesCount() * 3;
+
+        //triangleCount = geometry.trianglesCount();
+        //vertexCount = geometry.vertexCount();
+        //elementCount = triangleCount * 3;
+
+        subMeshInfos = new SubMeshInfo[geometry.getSubGeometryCount()];
+        for (int i=0; i<geometry.getSubGeometryCount(); i++) {
+            Geometry.SubGeometryInfo subGeometryInfo = geometry.getSubGeometryInfo(i);
+            subMeshInfos[i] = new SubMeshInfo(
+                    subGeometryInfo.verticesStart,
+                    subGeometryInfo.verticesLength,
+                    subGeometryInfo.trianglesStart * 3,
+                    subGeometryInfo.trianglesLength * 3
+            );
+        }
 
         genVAO(gl, geometry);
     }
@@ -204,9 +238,13 @@ public class Mesh {
      *
      * @param gl OpenGL
      */
-    public void render(GL3 gl) {
+    public void render(GL3 gl, int levelOfDetail) {
         //material.useProperties(gl);
-        gl.glDrawElements(gl.GL_TRIANGLES, elementCount, gl.GL_UNSIGNED_INT, 0);
+        levelOfDetail = Math.max(Math.min(levelOfDetail, subMeshInfos.length-1), 0);
+        //System.out.println(levelOfDetail);
+        //gl.glDrawElements(gl.GL_TRIANGLES, subMeshInfos[levelOfDetail].elementCount, gl.GL_UNSIGNED_INT, subMeshInfos[levelOfDetail].elementStart);
+        SubMeshInfo subMeshInfo = subMeshInfos[levelOfDetail];
+        gl.glDrawRangeElements(GL.GL_TRIANGLES, subMeshInfo.vertexStart, subMeshInfo.vertexStart+subMeshInfo.vertexCount, subMeshInfo.elementCount, GL.GL_UNSIGNED_INT, 4*subMeshInfo.elementStart);
     }
 
     /**
@@ -231,7 +269,7 @@ public class Mesh {
     public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         bind(gl);
         bindMatrices(gl, modelView, projection);
-        render(gl);
+        render(gl, 0);
         unbind(gl);
     }
 }

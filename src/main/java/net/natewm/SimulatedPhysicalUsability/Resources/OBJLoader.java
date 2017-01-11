@@ -57,6 +57,8 @@ public class OBJLoader implements IGeometryLoader {
 
         Geometry geometry = new Geometry();
 
+        geometry.startSubGeometry();
+
         Stream<String> stream = Files.lines(Paths.get(filename));
         stream.forEach((String line) -> {
             if (!line.startsWith("#")) {
@@ -146,6 +148,8 @@ public class OBJLoader implements IGeometryLoader {
             if (point.uv != null)
                 geometry.addUv(point.uv);
         }
+
+        geometry.finalizeSubGeometry();
 
         return geometry;
     }

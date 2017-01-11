@@ -48,10 +48,10 @@ public class MeshRenderNode implements IRenderNode {
         mesh.unbind(gl);
     }
 
-    public void render(GL3 gl, Matrix4f modelView, Matrix4f projection) {
+    public void render(GL3 gl, Matrix4f modelView, Matrix4f projection, int levelOfDetail) {
         //mesh.easyRender(gl,modelView, projection);
         mesh.bindMatrices(gl, modelView, projection);
-        mesh.render(gl);
+        mesh.render(gl, levelOfDetail);
     }
 
     public float getRadius() {
@@ -67,8 +67,8 @@ public class MeshRenderNode implements IRenderNode {
 
         viewCenter.mul(1/viewCenter.w);
 
-        // This was a guess based on an estimated focal length
-        // TODO: Figure out how to bind camera's real focal length
+        // This was a guess based on an estimated focal verticesLength
+        // TODO: Figure out how to bind camera's real focal verticesLength
         if (viewZ > 0f)
             viewRadius = 4f*mesh.radius / viewZ;
         else

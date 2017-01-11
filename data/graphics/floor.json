@@ -1,4 +1,4 @@
 {
-    "geometry": "floor2.obj",
+    "geometry": ["floor2.obj"],
     "material": "floor_material.json"
 }

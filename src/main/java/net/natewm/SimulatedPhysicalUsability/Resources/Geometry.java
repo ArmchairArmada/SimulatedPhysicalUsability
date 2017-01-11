@@ -19,16 +19,71 @@ import java.util.List;
  * buffers can be generated.
  */
 public class Geometry {
+    public class SubGeometryInfo {
+        public int verticesStart;
+        public int verticesLength = -1;
+        public int trianglesStart;
+        public int trianglesLength = -1;
+
+        public SubGeometryInfo(int verticesStart, int trianglesStart) {
+            this.verticesStart = verticesStart;
+            this.trianglesStart = trianglesStart;
+        }
+    }
+
     List<Vector3f> vertices = new ArrayList<Vector3f>();
     List<Vector3f> normals = new ArrayList<Vector3f>();
     List<Vector3f> colors = new ArrayList<Vector3f>();
     List<Vector2f> uv = new ArrayList<Vector2f>();
     List<Triangle> triangles = new ArrayList<Triangle>();
+    List<SubGeometryInfo> subGeometryInfos = new ArrayList<>();
 
     /**
      * General constructor.
      */
     public Geometry() {
+    }
+
+    public void startSubGeometry() {
+        subGeometryInfos.add(new SubGeometryInfo(vertices.size(), triangles.size()));
+    }
+
+    public void finalizeSubGeometry() {
+        SubGeometryInfo subGeometryInfo = subGeometryInfos.get(subGeometryInfos.size()-1);
+        subGeometryInfo.verticesLength = vertices.size() - subGeometryInfo.verticesStart;
+        subGeometryInfo.trianglesLength = triangles.size() - subGeometryInfo.trianglesStart;
+    }
+
+    public int getSubGeometryCount() {
+        return subGeometryInfos.size();
+    }
+
+    public SubGeometryInfo getSubGeometryInfo(int index) {
+        return subGeometryInfos.get(index);
+    }
+
+    public void appendGeometry(Geometry geometry) {
+        int vertexStart = vertices.size();
+
+        if (!subGeometryInfos.isEmpty() && subGeometryInfos.get(subGeometryInfos.size()-1).verticesLength == -1)
+            finalizeSubGeometry();
+
+        startSubGeometry();
+
+        vertices.addAll(geometry.vertices);
+        normals.addAll(geometry.normals);
+        uv.addAll(geometry.uv);
+
+        int a, b, c;
+        for (Triangle triangle : geometry.triangles) {
+            a = triangle.a + vertexStart;
+            b = triangle.b + vertexStart;
+            c = triangle.c + vertexStart;
+
+            addTriangle(new Triangle(a,b,c));
+        }
+
+        finalizeSubGeometry();
     }
 
     /**

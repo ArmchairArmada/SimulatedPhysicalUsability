@@ -1,4 +1,4 @@
 {
-    "geometry": "agent.obj",
+    "geometry": ["agent.obj", "agent_lopoly.obj", "agent_very_lopoly.obj"],
     "material": "agent_material.json"
 }

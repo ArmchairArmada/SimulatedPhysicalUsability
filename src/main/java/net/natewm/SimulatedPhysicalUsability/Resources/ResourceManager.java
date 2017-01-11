@@ -78,7 +78,17 @@ public class ResourceManager {
         MeshDescription meshDescription = MeshDescription.loadFromJSON(objectMapper, filename);
 
         // Load geometry
-        Geometry geometry = loadGeometry(dir + meshDescription.getGeometry(), false);
+        Geometry geometry = new Geometry();
+
+        for (String geometryFile : meshDescription.getGeometry()) {
+            Geometry tmpGeometry = loadGeometry(dir + geometryFile, false);
+            geometry.appendGeometry(tmpGeometry);
+        }
+
+        //if (meshDescription.getGeometryLowRes() != null) {
+        //    Geometry geometryLowRes = loadGeometry(dir + meshDescription.getGeometryLowRes(), false);
+        //    geometry.appendGeometry(geometryLowRes);
+        //}
 
         // Load material
         //Material material = loadMaterial(dir + meshDescription.getMaterial());

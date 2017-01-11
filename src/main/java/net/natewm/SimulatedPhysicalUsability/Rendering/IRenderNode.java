@@ -21,7 +21,7 @@ public interface IRenderNode {
 
     public void unbind(GL3 gl);
 
-    public void render(GL3 gl, Matrix4f modelView, Matrix4f projection);
+    public void render(GL3 gl, Matrix4f modelView, Matrix4f projection, int levelOfDetail);
 
     public float getRadius();
 
