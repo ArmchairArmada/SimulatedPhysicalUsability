@@ -23,13 +23,6 @@ public class Main extends JFrame {
             e.printStackTrace();
         }
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-            }
-        });
         setTitle("Simulated Physical Usability");
 
         GLProfile glProfile = GLProfile.get(GLProfile.GL3);//GLProfile.getDefault();
@@ -38,6 +31,16 @@ public class Main extends JFrame {
         GraphicsEngine graphicsEngine = new GraphicsEngine();
         SimulationThread simulationThread = new SimulationThread(graphicsEngine);
         graphicsEngine.setFrameReciever(simulationThread.getFrameEndReciever());
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                simulationThread.dispose();
+
+                super.windowClosing(e);
+            }
+        });
 
         GraphicsPanel graphicsPanel = new GraphicsPanel(graphicsEngine, glCapabilities);
         add(graphicsPanel);

@@ -1,12 +1,14 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.IFrameEndReciever;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshHandle;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshRenderNodeHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
+import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
+import net.natewm.SimulatedPhysicalUsability.Rendering.Texture;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
 import net.natewm.SimulatedPhysicalUsability.Resources.ResourceManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
@@ -20,6 +22,9 @@ public class SimulationThread {
         AgentManager agentManager = new AgentManager();
         boolean frameEnded = true;
         boolean running = true;
+
+        TextureHandle dataTextureHandle;
+        FloatGrid floatGrid = new FloatGrid(128, 128);
 
         public SimulationRunnable(GraphicsEngine graphicsEngine) {
             this.graphicsEngine = graphicsEngine;
@@ -41,6 +46,16 @@ public class SimulationThread {
                 frameEnded = false;
 
                 agentManager.update(graphicsEngine, dt);
+
+                /*
+                for (int y=0; y<floatGrid.getHeight(); y++) {
+                    for (int x=0; x<floatGrid.getWidth(); x++) {
+                        floatGrid.set(x, y, (float)Math.random());
+                    }
+                }
+                graphicsEngine.updateTexture(dataTextureHandle, floatGrid);
+                */
+
                 graphicsEngine.frameEnd();
 
                 while (!frameEnded) {
@@ -51,6 +66,8 @@ public class SimulationThread {
                     }
                 }
             }
+
+            dispose();
         }
 
         private void init() {
@@ -58,9 +75,22 @@ public class SimulationThread {
 
             graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
 
-            //MeshHandle monkeyMesh = resourceManager.loadMesh(graphicsEngine, "data/graphics/monkey.json");
-            //MeshHandle agentMesh = resourceManager.loadMesh(graphicsEngine, "data/graphics/agent.json");
-            //MeshHandle floorMesh = resourceManager.loadMesh(graphicsEngine, "data/graphics/floor.json");
+            for (int y=0; y<floatGrid.getHeight(); y++) {
+                for (int x=0; x<floatGrid.getWidth(); x++) {
+                    //floatGrid.set(x, y, (float)Math.random());
+                    floatGrid.set(x, y, (float)(Math.sin(x*0.3) + Math.sin(y*0.3)));
+                }
+            }
+
+            dataTextureHandle = new TextureHandle();
+            graphicsEngine.createTexture(dataTextureHandle, floatGrid, false);
+            /*
+            try {
+                resourceManager.loadTexture(textureHandle, "data/graphics/rgb.png");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            */
 
             MeshHandle monkeyMesh = new MeshHandle();
             MeshHandle agentMesh = new MeshHandle();
@@ -74,54 +104,29 @@ public class SimulationThread {
                 e.printStackTrace();
             }
 
-
             MeshRenderNodeHandle node = new MeshRenderNodeHandle();
             Transform transform;
             for (int i=-8; i<9; i++) {
                 for (int j=-8; j<9; j++) {
-                    //node = new MeshRenderNode(floorMesh);
                     graphicsEngine.createMeshRenderNode(node, floorMesh);
                     transform = new Transform();
                     transform.position.set(128*i, 0, 128*j);
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
-                    //renderer.add(node);
                 }
             }
+            graphicsEngine.setMeshNodeTexture(node, dataTextureHandle, 2);
 
-            //renderer.add(floorGroup, new MeshRenderNode(floorMesh));
-            //floorHandle = new RenderNodeHandle(new MeshRenderNode(floorMesh));
-            //renderingSystem.addRenderNode(floorGroup, floorHandle);
-
-            for (int i=-120; i<121; i++) {
-                for (int j=-120; j<121; j++) {
-                        /*
-                        if ((i+j) % 2 == 0) {
-                            node = new MeshRenderNode(monkeyMesh);
-                            monkeyHandle = new RenderNodeHandle(new MeshRenderNode(monkeyMesh));
-                            //renderingSystem.addRenderNode(monkeyGroup, monkeyHandle);
-                            //renderingSystem.setRenderNodePosition(monkeyHandle, new Vector3f(i, 1, j));
-                            renderer.add(monkeyGroup, node);
-                            node.getTransform().position.set(i, 1, j);
-                        }
-                        else {
-                        */
-                    //node = new MeshRenderNode(agentMesh);
+            for (int i=-100; i<101; i++) {
+                for (int j=-100; j<101; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh);
-                    //agentHandle = new RenderNodeHandle(new MeshRenderNode(agentMesh));
-                    //renderingSystem.addRenderNode(agentGroup, agentHandle);
-                    //renderingSystem.setRenderNodePosition(agentHandle, new Vector3f(i, 1, j));
-                    //renderer.add(node);
-                    //node.getTransform().position.set(i, 0, j);
-                    //node.getTransform().rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
 
                     transform = new Transform();
                     transform.position.set(i, 0, j);
                     transform.rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
-                    //}
 
                     agentManager.add(new Agent(node, transform));
                 }
@@ -142,11 +147,14 @@ public class SimulationThread {
         }
     }
 
+
+    Thread thread;
     SimulationRunnable runnable;
 
 
     public SimulationThread(GraphicsEngine graphicsEngine) {
         runnable = new SimulationRunnable(graphicsEngine);
+        thread = new Thread(runnable);
     }
 
     public IFrameEndReciever getFrameEndReciever() {
@@ -154,7 +162,10 @@ public class SimulationThread {
     }
 
     public void start() {
-        Thread t = new Thread(runnable);
-        t.start();
+        thread.start();
+    }
+
+    public void dispose() {
+        runnable.stop();
     }
 }

@@ -191,7 +191,7 @@ public class Mesh {
      * @param modelView  Model View matrix
      * @param projection Projection matrix
      */
-    public void bindMatricies(GL3 gl, Matrix4f modelView, Matrix4f projection) {
+    public void bindMatrices(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         float[] fa = new float[16];
         modelView.get(fa);
         gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, fa, 0);
@@ -229,7 +229,7 @@ public class Mesh {
      */
     public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         bind(gl);
-        bindMatricies(gl, modelView, projection);
+        bindMatrices(gl, modelView, projection);
         render(gl);
         unbind(gl);
     }

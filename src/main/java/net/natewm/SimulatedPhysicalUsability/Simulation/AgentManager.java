@@ -49,9 +49,9 @@ public class AgentManager {
             for (Agent agent : agents) {
                 agent.update(graphicsEngine, sdt);
 
-                if (Math.random() < sdt*0.1) {
-                    remove(agent);
-                }
+                //if (Math.random() < sdt*0.1) {
+                //    remove(agent);
+                //}
             //});
             }
         }

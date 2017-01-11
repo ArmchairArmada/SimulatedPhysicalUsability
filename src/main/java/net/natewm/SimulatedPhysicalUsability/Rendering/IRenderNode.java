@@ -11,6 +11,10 @@ public interface IRenderNode {
 
     public Transform getTransform();
 
+    public void setDynamic(boolean dynamic);
+
+    public boolean isDynamic();
+
     public int getGroupID();
 
     public void bind(GL3 gl);

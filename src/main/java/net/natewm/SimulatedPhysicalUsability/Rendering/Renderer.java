@@ -6,6 +6,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  * Renders an OpenGL scene.
  */
 public class Renderer {
+    private ArrayList<IRenderNode> dynamicNodes = new ArrayList<>();
     private ArrayList<ArrayList<IRenderNode>> renderGroups = new ArrayList<>();
     private Map<Integer, Integer> renderIndexMap = new HashMap<>();
     private float fieldOfView = 49.0f;
@@ -90,11 +92,16 @@ public class Renderer {
      * @param node        Render node to add.
      */
     public void add(IRenderNode node) {
-        if (!renderIndexMap.containsKey(node.getGroupID())) {
-            renderIndexMap.put(node.getGroupID(), renderGroups.size());
-            renderGroups.add(new ArrayList<>());
+        if (node.isDynamic()) {
+            dynamicNodes.add(node);
         }
-        renderGroups.get(renderIndexMap.get(node.getGroupID())).add(node);
+        else {
+            if (!renderIndexMap.containsKey(node.getGroupID())) {
+                renderIndexMap.put(node.getGroupID(), renderGroups.size());
+                renderGroups.add(new ArrayList<>());
+            }
+            renderGroups.get(renderIndexMap.get(node.getGroupID())).add(node);
+        }
     }
 
     /**
@@ -103,9 +110,10 @@ public class Renderer {
      * @param node        Render node to remove.
      */
     public void remove(IRenderNode node) {
-        for (ArrayList<IRenderNode> renderGroup : renderGroups) {
-            renderGroup.remove(node);
-        }
+        if (node.isDynamic())
+            dynamicNodes.remove(node);
+        else
+            renderGroups.get(node.getGroupID()).remove(node);
     }
 
     /**
@@ -119,6 +127,28 @@ public class Renderer {
         float r;
         Vector4f center;
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+        // This is being done in parallel, to speed up matrix multiplicaitons
+        dynamicNodes.parallelStream().forEach((node) -> {
+            //node.getTransform().updateMatrix();
+            node.updateView(camera, projection);
+        });
+
+        for (IRenderNode node : dynamicNodes) {
+            // Two loops are used, since I could not get locking to work to prevent OpenGL conflicts.
+            center = node.getViewCenter();
+            r = node.getViewRadius();
+            if (node.getViewZ()-node.getRadius() < farPlane
+                    && node.getViewZ()+node.getRadius() > 0
+                    && center.x+r > -1.0f
+                    && center.x-r < 1.0f
+                    && center.y+r > -1.0f
+                    && center.y-r < 1.0f) {
+                node.bind(gl);
+                node.render(gl, node.getModelView(), projection);
+                node.unbind(gl);
+            }
+        }
 
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
             if (renderGroup.size() > 0) {
