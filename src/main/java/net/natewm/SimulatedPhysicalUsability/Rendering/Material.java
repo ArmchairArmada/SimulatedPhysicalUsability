@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.glsl.ShaderUtil;
 
@@ -108,5 +109,9 @@ public class Material {
 
     public ShaderProgram getShaderProgram() {
         return shaderProgram;
+    }
+
+    public void replaceTexture(GL3 gl, Texture texture, int number) {
+        textures.set(number, texture);
     }
 }

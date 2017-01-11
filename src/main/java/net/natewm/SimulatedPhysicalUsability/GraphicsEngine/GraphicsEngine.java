@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.GraphicsEngine;
 
 import com.jogamp.opengl.GL3;
+import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import net.natewm.SimulatedPhysicalUsability.Rendering.*;
 import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Resources.Image;
@@ -94,6 +95,13 @@ public class GraphicsEngine {
         });
     }
 
+    public void replaceMaterialTexture(MaterialHandle materialHandle, TextureHandle textureHandle, int number) {
+        add((GL3 gl) -> {
+            materialHandle.material.replaceTexture(gl, textureHandle.texture, number);
+            return false;
+        });
+    }
+
     public void createMaterialProperty1f(MaterialPropertyHandle materialPropertyHandle, String name, float value) {
         add((GL3 gl) -> {
             materialPropertyHandle.materialProperty = new MaterialProperty1f(name, value);
@@ -161,6 +169,14 @@ public class GraphicsEngine {
         });
     }
 
+    public void addDynamicNodeToRenderer(RenderNodeHandle renderNodeHandle) {
+        add((GL3 gl) -> {
+            renderNodeHandle.renderNode.setDynamic(true);
+            renderer.add(renderNodeHandle.renderNode);
+            return false;
+        });
+    }
+
     public void removeNodeFromRenderer(RenderNodeHandle renderNodeHandle) {
         add((GL3 gl) -> {
             renderer.remove(renderNodeHandle.renderNode);
@@ -193,6 +209,48 @@ public class GraphicsEngine {
     public void createTexture(TextureHandle textureHandle, Image image) {
         add((GL3 gl) -> {
             textureHandle.texture = new Texture(gl, image);
+            return false;
+        });
+    }
+
+    public void createTexture(TextureHandle textureHandle, Image image, boolean quality) {
+        add((GL3 gl) -> {
+            textureHandle.texture = new Texture(gl, image, quality);
+            return false;
+        });
+    }
+
+    public void createTexture(TextureHandle textureHandle, FloatGrid floatGrid) {
+        add((GL3 gl) -> {
+            textureHandle.texture = new Texture(gl, floatGrid);
+            return false;
+        });
+    }
+
+    public void createTexture(TextureHandle textureHandle, FloatGrid floatGrid, boolean quality) {
+        add((GL3 gl) -> {
+            textureHandle.texture = new Texture(gl, floatGrid, quality);
+            return false;
+        });
+    }
+
+    public void updateTexture(TextureHandle textureHandle, FloatGrid floatGrid) {
+        add((GL3 gl) -> {
+            textureHandle.texture.updateFloatGrid(gl, floatGrid);
+            return false;
+        });
+    }
+
+    public void setMeshNodeTexture(MeshRenderNodeHandle meshRenderNodeHandle, TextureHandle textureHandle, int number) {
+        add((GL3 gl) -> {
+            ((MeshRenderNode)meshRenderNodeHandle.renderNode).setTexture(gl, textureHandle.texture, number);
+            return false;
+        });
+    }
+
+    public void updateMeshNodeFloatGridTexture(MeshRenderNodeHandle meshRenderNodeHandle, FloatGrid floatGrid, int number) {
+        add((GL3 gl) -> {
+            ((MeshRenderNode)meshRenderNodeHandle.renderNode).updateFloatGridTexture(gl, floatGrid, number);
             return false;
         });
     }

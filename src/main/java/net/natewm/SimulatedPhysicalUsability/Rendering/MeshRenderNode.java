@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Rendering;
 
 import com.jogamp.opengl.GL3;
+import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
@@ -15,6 +16,7 @@ public class MeshRenderNode implements IRenderNode {
     Matrix4f mvp = new Matrix4f();
     Vector4f viewCenter = new Vector4f();
     float viewRadius=0f, viewZ=0f;
+    boolean dynamic = false;
 
     public MeshRenderNode(Mesh mesh) {
         this.mesh = mesh;
@@ -22,6 +24,15 @@ public class MeshRenderNode implements IRenderNode {
 
     public Transform getTransform() {
         return transform;
+    }
+
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return dynamic;
     }
 
     @Override
@@ -39,7 +50,7 @@ public class MeshRenderNode implements IRenderNode {
 
     public void render(GL3 gl, Matrix4f modelView, Matrix4f projection) {
         //mesh.easyRender(gl,modelView, projection);
-        mesh.bindMatricies(gl, modelView, projection);
+        mesh.bindMatrices(gl, modelView, projection);
         mesh.render(gl);
     }
 
@@ -78,5 +89,13 @@ public class MeshRenderNode implements IRenderNode {
 
     public float getViewZ() {
         return viewZ;
+    }
+
+    public void updateFloatGridTexture(GL3 gl, FloatGrid floatGrid, int number) {
+        mesh.material.textures.get(number).updateFloatGrid(gl, floatGrid);
+    }
+
+    public void setTexture(GL3 gl, Texture texture, int number) {
+        mesh.material.textures.set(number, texture);
     }
 }

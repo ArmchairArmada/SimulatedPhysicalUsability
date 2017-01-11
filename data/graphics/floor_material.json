@@ -1,7 +1,11 @@
 {
     "vertexShader": "vertex_flat_texture.glsl",
-    "fragmentShader": "fragment_flat_texture.glsl",
+    "fragmentShader": "fragment_floor.glsl",
     "properties": {
-        "textures": ["floor_tile.png"]
+        "textures": [
+            "floor_tile.png",
+            "heatmap.png",
+            "rgb.png"
+        ]
     }
 }

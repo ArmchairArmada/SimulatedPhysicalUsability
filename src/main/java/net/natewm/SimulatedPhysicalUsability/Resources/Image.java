@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Resources;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL;
+import com.sun.prism.impl.BufferUtil;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -49,12 +50,13 @@ public class Image {
             pixelFormat = GL.GL_RGBA;
 
             // Convert from ARGB to RGBA
-            byteBuffer = Buffers.newDirectByteBuffer(dataBuffer.capacity());
+            // TODO: Look into using a swizzle mask
+            byteBuffer = BufferUtil.newByteBuffer(dataBuffer.capacity());
 
             for (int i=0; i<dataBuffer.capacity(); i+=4) {
-                byteBuffer.put(dataBuffer.get(i+1));
-                byteBuffer.put(dataBuffer.get(i+2));
                 byteBuffer.put(dataBuffer.get(i+3));
+                byteBuffer.put(dataBuffer.get(i+2));
+                byteBuffer.put(dataBuffer.get(i+1));
                 byteBuffer.put(dataBuffer.get(i));
             }
             byteBuffer.flip();
@@ -62,7 +64,16 @@ public class Image {
         else {
             pixelFormat = GL.GL_RGB;
 
-            byteBuffer = dataBuffer;
+            byteBuffer = BufferUtil.newByteBuffer(dataBuffer.capacity());
+
+            for (int i=0; i<dataBuffer.capacity(); i+=3) {
+                byteBuffer.put(dataBuffer.get(i+2));
+                byteBuffer.put(dataBuffer.get(i+1));
+                byteBuffer.put(dataBuffer.get(i));
+            }
+            byteBuffer.flip();
+
+            //byteBuffer = dataBuffer;
         }
     }
 }
