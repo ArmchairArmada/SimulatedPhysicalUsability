@@ -41,7 +41,7 @@ public class Texture {
     }
 
     private void setFilters(GL3 gl, boolean quality) {
-        // TODO: Allow configuring min and mag filters
+        // TODO: Allow configuring min and mag filters (Maybe in material json files)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
         //gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
         if (quality)

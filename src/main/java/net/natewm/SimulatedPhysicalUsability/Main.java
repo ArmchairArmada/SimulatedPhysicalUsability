@@ -11,11 +11,14 @@ import net.natewm.SimulatedPhysicalUsability.UserInterface.GraphicsPanel;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.*;
 
 /**
  * Created by Nathan on 12/21/2016.
  */
 public class Main extends JFrame {
+    private static final Logger LOGGER = Logger.getLogger("net.natewm.SimulatedPhysicalUsability");
+
     public Main() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -52,6 +55,19 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
+        final String format = "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS - %4$s - %2$-90s - %5$s%6$s%n";
+        final String key = "java.util.logging.SimpleFormatter.format";
+        System.setProperty(key, format);
+
+        Formatter formatter = new SimpleFormatter();
+        Handler handler = new ConsoleHandler();
+        handler.setFormatter(formatter);
+        handler.setLevel(Level.ALL);
+        LOGGER.addHandler(handler);
+        LOGGER.setLevel(Level.ALL);
+
+        LOGGER.log(Level.FINE, "Starting application.");
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Main main = new Main();
