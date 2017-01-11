@@ -1,19 +1,12 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.Rendering.*;
-import net.natewm.SimulatedPhysicalUsability.Resources.*;
-import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
-import net.natewm.SimulatedPhysicalUsability.Simulation.AgentManager;
-import org.joml.Vector3f;
 
+import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Created by Nathan on 12/22/2016.
@@ -34,7 +27,7 @@ public class GraphicsPanel extends GLCanvas {
 
         setPreferredSize(new Dimension(1000, 600));
 
-        mouseCamera = new MouseCamera(-0.8f, 0f, 20f);
+        mouseCamera = new MouseCamera(-0.8f, 0f, 20f, this);
 
         // TODO: Create camera controls
         addMouseListener(mouseCamera.getMouseListener());
