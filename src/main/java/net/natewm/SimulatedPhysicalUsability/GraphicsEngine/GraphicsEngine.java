@@ -73,23 +73,25 @@ public class GraphicsEngine {
 
     /**
      * Creates a material with the specified properties and stores it in the material handle.
-     *  @param material
+     *  @param materialHandle
      * @param shaderProgram
      * @param textures
      * @param properties
      */
-    public void createMaterial(MaterialHandle material, ShaderProgramHandle shaderProgram,
+    public void createMaterial(MaterialHandle materialHandle, ShaderProgramHandle shaderProgram,
                                List<TextureHandle> textures, List<MaterialPropertyHandle> properties) {
         add((GL3 gl) -> {
-            material.material = new Material(gl, shaderProgram.shaderProgram);
+            Material material = new Material(gl, shaderProgram.shaderProgram);
 
             for(TextureHandle texture : textures) {
-                material.material.addTexture(gl, texture.texture);
+                material.addTexture(gl, texture.texture);
             }
 
             for(MaterialPropertyHandle property : properties) {
-                material.material.addProperty(gl, property.materialProperty);
+                material.addProperty(gl, property.materialProperty);
             }
+
+            materialHandle.material = material;
 
             return false;
         });
@@ -241,6 +243,13 @@ public class GraphicsEngine {
         });
     }
 
+    public void makeMeshNodeMaterialUnique(MeshRenderNodeHandle meshRenderNodeHandle) {
+        add((GL3 gl) -> {
+            ((MeshRenderNode)meshRenderNodeHandle.renderNode).makeUniqueMaterial();
+            return false;
+        });
+    }
+
     public void setMeshNodeTexture(MeshRenderNodeHandle meshRenderNodeHandle, TextureHandle textureHandle, int number) {
         add((GL3 gl) -> {
             ((MeshRenderNode)meshRenderNodeHandle.renderNode).setTexture(gl, textureHandle.texture, number);
@@ -257,32 +266,36 @@ public class GraphicsEngine {
 
     public void destroyShaderProgram(ShaderProgramHandle shaderProgramHandle) {
         add((GL3 gl) -> {
-            shaderProgramHandle.shaderProgram.dispose(gl);
+            ShaderProgram shaderProgram = shaderProgramHandle.shaderProgram;
             shaderProgramHandle.shaderProgram = null;
+            shaderProgram.dispose(gl);
             return false;
         });
     }
 
     public void destroyShader(ShaderHandle shaderHandle) {
         add((GL3 gl) -> {
-            shaderHandle.shader.dispose(gl);
+            Shader shader = shaderHandle.shader;
             shaderHandle.shader = null;
+            shader.dispose(gl);
             return false;
         });
     }
 
     public void destroyTexture(TextureHandle textureHandle) {
         add((GL3 gl) -> {
-            textureHandle.texture.dispose(gl);
+            Texture texture = textureHandle.texture;
             textureHandle.texture = null;
+            texture.dispose(gl);
             return false;
         });
     }
 
     public void destroyMesh(MeshHandle meshHandle) {
         add((GL3 gl) -> {
-            meshHandle.mesh.dispose(gl);
+            Mesh mesh = meshHandle.mesh;
             meshHandle.mesh = null;
+            mesh.dispose(gl);
             return false;
         });
     }

@@ -58,8 +58,8 @@ public class SimulationThread {
 
                     for (int y=0; y<floatGrid.getHeight(); y++) {
                         for (int x=0; x<floatGrid.getWidth(); x++) {
-                            //floatGrid.set(x, y, (float)Math.random());
-                            //floatGrid.set(x, y, (float)(Math.sin((x+tmp)*0.1 * Math.cos((y-tmp)*0.2)) + Math.sin((y+tmp)*0.1 * Math.cos((x-tmp)*0.2))));
+                            //floatGrids.set(x, y, (float)Math.random());
+                            //floatGrids.set(x, y, (float)(Math.sin((x+tmp)*0.1 * Math.cos((y-tmp)*0.2)) + Math.sin((y+tmp)*0.1 * Math.cos((x-tmp)*0.2))));
                             floatGrid.set(x, y, (float)(Math.cos(Math.cos(0.2*x+runtime) + Math.cos(0.2*y+runtime) + 0.5*Math.cos(0.005*x*y+runtime))));
                         }
                     }
@@ -88,7 +88,7 @@ public class SimulationThread {
 
             for (int y=0; y<floatGrid.getHeight(); y++) {
                 for (int x=0; x<floatGrid.getWidth(); x++) {
-                    //floatGrid.set(x, y, (float)Math.random());
+                    //floatGrids.set(x, y, (float)Math.random());
                     floatGrid.set(x, y, (float)Math.sin((x-64) * (y-64) * 0.01));
                 }
             }

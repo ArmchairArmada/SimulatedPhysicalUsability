@@ -98,4 +98,8 @@ public class MeshRenderNode implements IRenderNode {
     public void setTexture(GL3 gl, Texture texture, int number) {
         mesh.material.textures.set(number, texture);
     }
+
+    public void makeUniqueMaterial() {
+        mesh.material = new Material(mesh.material);
+    }
 }
