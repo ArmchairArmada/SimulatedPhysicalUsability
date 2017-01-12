@@ -292,7 +292,13 @@ public class ResourceManager {
         LOGGER.log(Level.FINE, "Loading Vertex Shader: {0}", filename);
 
         //vertexShaderMap.put(filename, new Shader(gl, gl.GL_VERTEX_SHADER, getLines(filename)));
-        graphicsEngine.createShader(shaderHandle, GL3.GL_VERTEX_SHADER, getLines(filename));
+
+        Path path = Paths.get(filename);
+        String file = path.getFileName().toString();
+        String dir = path.getParent() + "/";
+
+        String[] lines = ShaderPreprocessor.load(dir, file);
+        graphicsEngine.createShader(shaderHandle, GL3.GL_VERTEX_SHADER, lines);
         //return vertexShaderMap.get(filename);
     }
 
@@ -309,8 +315,14 @@ public class ResourceManager {
 
         LOGGER.log(Level.FINE, "Loading Fragment Shader: {0}", filename);
 
+        Path path = Paths.get(filename);
+        String file = path.getFileName().toString();
+        String dir = path.getParent() + "/";
+
+        String[] lines = ShaderPreprocessor.load(dir, file);
+
         //vertexShaderMap.put(filename, new Shader(gl, gl.GL_FRAGMENT_SHADER, getLines(filename)));
-        graphicsEngine.createShader(shaderHandle, GL3.GL_FRAGMENT_SHADER, getLines(filename));
+        graphicsEngine.createShader(shaderHandle, GL3.GL_FRAGMENT_SHADER, lines);
         //return vertexShaderMap.get(filename);
     }
 
@@ -383,6 +395,7 @@ public class ResourceManager {
     }
 
 
+    /*
     private String[] getLines(String filename) throws IOException {
         List<String> lines;
         String[] linesArray;
@@ -395,4 +408,5 @@ public class ResourceManager {
         linesArray = lines.toArray(new String[0]);
         return linesArray;
     }
+    */
 }
