@@ -1,5 +1,7 @@
 #version 330
 
+%include partial_fragment_base.glsl
+
 uniform sampler2D texture0;  // Tiles
 uniform sampler2D texture1;  // Heatmap colors
 uniform sampler2D texture2;  // Heatmap grayscale
@@ -14,7 +16,5 @@ void main() {
     vec4 heatColor = texture(texture1, vec2(value,0));
     vec4 color = tileColor * heatColor;
     
-    float fog = clamp(pow(gl_FragCoord.z/gl_FragCoord.w/500.0, 1.5), 0.0, 1.0);
-    
-    outColor = mix(color, vec4(1,1,1,1), fog);
+    outColor = mixFog(color);
 }
