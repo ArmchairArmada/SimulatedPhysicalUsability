@@ -42,12 +42,22 @@ public class Material {
     ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
     ArrayList<MaterialProperty> materialProperties = new ArrayList<>();
 
-
     public Material(GL3 gl, ShaderProgram shaderProgram) {
         this.shaderProgram = shaderProgram;
         shaderProgram.use(gl);
         modelViewLocation = shaderProgram.getUniformLocation(gl, "modelView");
         projectionLocation = shaderProgram.getUniformLocation(gl, "projection");
+    }
+
+    public Material(Material material) {
+        shaderProgram = material.shaderProgram;
+        modelViewLocation = material.modelViewLocation;
+        projectionLocation = material.projectionLocation;
+        textures.addAll(material.textures);
+        textureLocations.addAll(material.textureLocations);
+        for (MaterialProperty property : materialProperties) {
+            materialProperties.add(property.clone());
+        }
     }
 
     /**

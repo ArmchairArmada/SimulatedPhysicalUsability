@@ -14,6 +14,10 @@ public class MaterialProperty1f extends MaterialProperty {
         this.value = value;
     }
 
+    public MaterialProperty clone() {
+        return new MaterialProperty1f(name, value);
+    }
+
     public float getValue() {
         return value;
     }

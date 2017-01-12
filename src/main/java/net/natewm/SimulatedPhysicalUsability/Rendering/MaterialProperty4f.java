@@ -14,6 +14,10 @@ public class MaterialProperty4f extends MaterialProperty {
         this.value = value;
     }
 
+    public MaterialProperty clone() {
+        return new MaterialProperty4f(name, value);
+    }
+
     public Vector4f getValue() {
         return value;
     }

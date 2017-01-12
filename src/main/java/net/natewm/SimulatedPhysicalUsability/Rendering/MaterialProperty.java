@@ -13,6 +13,10 @@ public class MaterialProperty {
         this.name = name;
     }
 
+    public MaterialProperty clone() {
+        return null;
+    }
+
     public String getName() {
         return name;
     }
