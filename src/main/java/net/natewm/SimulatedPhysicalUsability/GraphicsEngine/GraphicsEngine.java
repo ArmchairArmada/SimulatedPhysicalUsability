@@ -154,7 +154,7 @@ public class GraphicsEngine {
 
     public void setRendererClearColor(float[] color) {
         add((GL3 gl) -> {
-            renderer.setClearColor(color);
+            renderer.setClearColor(gl, color);
             return false;
         });
     }
@@ -234,6 +234,20 @@ public class GraphicsEngine {
     public void createTexture(TextureHandle textureHandle, FloatGrid floatGrid, boolean quality) {
         add((GL3 gl) -> {
             textureHandle.texture = new Texture(gl, floatGrid, quality);
+            return false;
+        });
+    }
+
+    public void setTextureOptions(TextureHandle textureHandle, int wrapS, int wrapT, int minFilter, int magFilter) {
+        add((GL3 gl) -> {
+            textureHandle.texture.setTextureOptions(gl, wrapS, wrapT, minFilter, magFilter);
+            return false;
+        });
+    }
+
+    public void setMaterialTextureOptions(MaterialHandle materialHandle, int textureNumber, int wrapS, int wrapT, int minFilter, int magFilter) {
+        add((GL3 gl) -> {
+            materialHandle.material.setTextureOptions(gl, textureNumber, wrapS, wrapT, minFilter, magFilter);
             return false;
         });
     }

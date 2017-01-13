@@ -1,13 +1,51 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
+import com.jogamp.opengl.GL;
+import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
+import net.natewm.SimulatedPhysicalUsability.Rendering.Material;
+import net.natewm.SimulatedPhysicalUsability.Rendering.Mesh;
+import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
+import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
 import org.joml.Vector3f;
 
 /**
  * Created by Nathan on 1/11/2017.
  */
 public class GroundGrid {
-    FloatGrid[] floatGrids = null;
+    private static final int DATA_TEXTURE_ID = 2;
+
+    private class GroundPanel {
+        public FloatGrid floatGrid = null;
+        public MeshRenderNodeHandle meshRenderNodeHandle = null;
+        public TextureHandle textureHandle;
+
+        public GroundPanel(GraphicsEngine graphicsEngine, float x, float y, int width, int height, MeshHandle meshHandle, MaterialHandle materialHandle) {
+            floatGrid = new FloatGrid(width, height);
+            meshRenderNodeHandle = new MeshRenderNodeHandle();
+            textureHandle = new TextureHandle();
+            Transform transform = new Transform();
+            transform.position.set(x, 0, y);
+
+            graphicsEngine.createMeshRenderNode(meshRenderNodeHandle, meshHandle, materialHandle);
+            graphicsEngine.makeMeshNodeMaterialUnique(meshRenderNodeHandle);
+            graphicsEngine.createTexture(textureHandle, floatGrid);
+            graphicsEngine.setMeshNodeTexture(meshRenderNodeHandle, textureHandle, DATA_TEXTURE_ID);
+            graphicsEngine.setTextureOptions(textureHandle, GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE, GL.GL_LINEAR, GL.GL_NEAREST);
+            graphicsEngine.setRenderNodeTransform(meshRenderNodeHandle, transform);
+            graphicsEngine.addDynamicNodeToRenderer(meshRenderNodeHandle);
+        }
+
+        public void updateTexture(GraphicsEngine graphicsEngine) {
+            graphicsEngine.updateTexture(textureHandle, floatGrid);
+        }
+    }
+
+    //FloatGrid[] floatGrids = null;
+    GraphicsEngine graphicsEngine;
+    MeshHandle meshHandle;
+    MaterialHandle materialHandle;
+    GroundPanel[] groundPanels = null;
     int width;
     int height;
     int gridWidth;
@@ -16,8 +54,12 @@ public class GroundGrid {
     int floorHeight;
     float offsetX;
     float offsetY;
+    int updateCount = 0;
 
-    public GroundGrid(int width, int height, int gridWidth, int gridHeight) {
+    public GroundGrid(GraphicsEngine graphicsEngine, MeshHandle meshHandle, MaterialHandle materialHandle, int width, int height, int gridWidth, int gridHeight) {
+        this.graphicsEngine = graphicsEngine;
+        this.meshHandle = meshHandle;
+        this.materialHandle = materialHandle;
         this.width = width;
         this.height = height;
         this.gridWidth = gridWidth;
@@ -27,50 +69,65 @@ public class GroundGrid {
         this.offsetX = -floorWidth/2.0f;
         this.offsetY = -floorHeight/2.0f;
 
-        floatGrids = new FloatGrid[width * height];
+        groundPanels = new GroundPanel[width * height];
+    }
+
+    public void update() {
+        GroundPanel groundPanel;
+        for (int y=0; y<height; y++) {
+            for (int x=0; x<width; x++) {
+                if ((x+y) % width == updateCount % width) {
+                    groundPanel = groundPanels[y * width + x];
+                    if (groundPanel != null) {
+                        groundPanel.updateTexture(graphicsEngine);
+                    }
+                }
+            }
+        }
+        updateCount++;
     }
 
     private int toGridX(float x) {
-        return (int)((x - offsetX) / width);
+        return (int)Math.floor((x - offsetX) / gridWidth);
     }
 
     private int toGridY(float y) {
-        return (int)((y - offsetY) / height);
+        return (int)Math.floor((y - offsetY) / gridHeight);
     }
 
-    private int toCellX(int gridX, float x) {
-        return (int)(x - offsetX - gridX * gridWidth);
+    private int toCellX(float x) {
+        return (int)(x - offsetX) % gridWidth;
     }
 
-    private int toCellY(int gridY, float y) {
-        return (int)(y - offsetY - gridY * gridHeight);
+    private int toCellY(float y) {
+        return (int)(y - offsetY) % gridHeight;
     }
 
-    private FloatGrid getGrid(int x, int y) {
+    private GroundPanel getPanel(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             return null;
 
-        FloatGrid grid = floatGrids[y * width + x];
+        GroundPanel panel = groundPanels[y * width + x];
 
-        if (grid == null) {
-            grid = new FloatGrid(gridWidth, gridHeight);
-            floatGrids[y * width + x] = grid;
+        if (panel == null) {
+            panel = new GroundPanel(graphicsEngine, x*gridWidth+offsetX+gridWidth/2.0f, y*gridHeight+offsetY+gridHeight/2.0f, gridWidth, gridHeight, meshHandle, materialHandle);
+            groundPanels[y * width + x] = panel;
         }
 
-        return grid;
+        return panel;
     }
 
     public void add(Vector3f position, float value) {
         int x = toGridX(position.x);
         int y = toGridY(position.z);
 
-        FloatGrid grid = getGrid(x, y);
+        GroundPanel panel = getPanel(x, y);
 
-        if (grid != null) {
-            int cellX = toCellX(x, position.x);
-            int cellY = toCellY(y, position.y);
+        if (panel != null) {
+            int cellX = toCellX(position.x);
+            int cellY = toCellY(position.z);
 
-            grid.set(cellX, cellY, grid.get(cellX, cellY) + value);
+            panel.floatGrid.set(cellX, cellY, panel.floatGrid.get(cellX, cellY) + value);
         }
     }
 
@@ -78,27 +135,27 @@ public class GroundGrid {
         int x = toGridX(position.x);
         int y = toGridY(position.z);
 
-        FloatGrid grid = getGrid(x, y);
+        GroundPanel panel = getPanel(x, y);
 
-        if (grid != null) {
-            int cellX = toCellX(x, position.x);
-            int cellY = toCellY(y, position.y);
+        if (panel != null) {
+            int cellX = toCellX(position.x);
+            int cellY = toCellY(position.z);
 
-            grid.set(cellX, cellY, value);
+            panel.floatGrid.set(cellX, cellY, value);
         }
     }
 
-    public float get(Vector3f position, float value) {
+    public float get(Vector3f position) {
         int x = toGridX(position.x);
         int y = toGridY(position.z);
 
-        FloatGrid grid = getGrid(x, y);
+        GroundPanel panel = getPanel(x, y);
 
-        if (grid != null) {
-            int cellX = toCellX(x, position.x);
-            int cellY = toCellY(y, position.y);
+        if (panel != null) {
+            int cellX = toCellX(position.x);
+            int cellY = toCellY(position.z);
 
-            return grid.get(cellX, cellY);
+            return panel.floatGrid.get(cellX, cellY);
         }
 
         return 0.0f;

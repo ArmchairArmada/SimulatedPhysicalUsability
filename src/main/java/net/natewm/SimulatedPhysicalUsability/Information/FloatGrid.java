@@ -64,9 +64,18 @@ public class FloatGrid {
                 max = v;
         }
 
+        /*
         for (int i=0; i<data.length; i++) {
             v = data[i];
             byteBuffer.put((byte)(1f + 253f*(v-min)/(max-min)));
+        }
+        */
+
+        for (int y=0; y<height; y++) {
+            for (int x=0; x<width; x++) {
+                v = data[(height - y - 1) * width + x];
+                byteBuffer.put((byte) (1f + 253f * (v - min) / (max - min)));
+            }
         }
 
         byteBuffer.flip();

@@ -11,7 +11,8 @@ in vec2 theUv;
 out vec4 outColor;
 
 void main() {
-    float value = mix(texture(texture2, theUv).r, texture(texture2, floor(theUv*128)/128).r, 0.5);
+    //float value = mix(texture(texture2, theUv).r, texture(texture2, floor(theUv*128)/128).r, 0.5);
+    float value = clamp(texture(texture2, theUv).r, 0, 1);
     vec4 tileColor = texture(texture0, theUv*128.0);
     vec4 heatColor = texture(texture1, vec2(value,0));
     vec4 color = tileColor * heatColor;

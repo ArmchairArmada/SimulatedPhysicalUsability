@@ -39,7 +39,7 @@ public class Renderer {
     public void init(GL3 gl) {
         gl.glEnable(gl.GL_DEPTH_TEST);
         gl.glEnable(gl.GL_CULL_FACE);
-        gl.glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+        setClearColor(gl, clearColor);
     }
 
     public float getFieldOfView() {
@@ -70,8 +70,9 @@ public class Renderer {
         return clearColor;
     }
 
-    public void setClearColor(float[] color) {
+    public void setClearColor(GL3 gl, float[] color) {
         clearColor = color;
+        gl.glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     }
 
     /**
