@@ -172,4 +172,8 @@ public class Material {
             gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
         }
     }
+
+    public void setTextureOptions(GL3 gl, int textureNumber, int wrapS, int wrapT, int minFilter, int magFilter) {
+        textures.get(textureNumber).setTextureOptions(gl, wrapS, wrapT, minFilter, magFilter);
+    }
 }

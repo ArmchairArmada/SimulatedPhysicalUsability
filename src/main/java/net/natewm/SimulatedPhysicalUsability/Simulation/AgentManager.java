@@ -28,7 +28,7 @@ public class AgentManager {
         toRemove.add(agent);
     }
 
-    public void update(GraphicsEngine graphicsEngine, float dt) {
+    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, float dt) {
         int steps = 1;
 
         if (dt < 0.1f)
@@ -47,7 +47,7 @@ public class AgentManager {
 
             //agents.parallelStream().forEach((agent) -> {
             for (Agent agent : agents) {
-                agent.update(graphicsEngine, sdt);
+                agent.update(graphicsEngine, groundGrid, sdt);
 
                 //if (Math.random() < sdt*0.1) {
                 //    remove(agent);

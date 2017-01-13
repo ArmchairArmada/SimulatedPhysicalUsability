@@ -40,6 +40,15 @@ public class Texture {
         gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
     }
 
+    public void setTextureOptions(GL3 gl, int wrapS, int wrapT, int minFilter, int magFilter) {
+        bind(gl);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, wrapS);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, wrapT);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, minFilter);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, magFilter);
+        unbind(gl);
+    }
+
     private void setFilters(GL3 gl, boolean quality) {
         // TODO: Allow configuring min and mag filters (Maybe in material json files)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);

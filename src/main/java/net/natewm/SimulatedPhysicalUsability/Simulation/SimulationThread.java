@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
+import com.jogamp.opengl.GL;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Material;
@@ -7,6 +8,7 @@ import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Texture;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
 import net.natewm.SimulatedPhysicalUsability.Resources.ResourceManager;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +19,21 @@ import static java.lang.Thread.sleep;
  * Created by Nathan on 1/9/2017.
  */
 public class SimulationThread {
+    private static final int GROUND_WIDTH = 8;
+    private static final int GROUND_HEIGHT = 8;
+    private static final int GROUND_GRID_WIDTH = 128;
+    private static final int GROUND_GRID_HEIGHT = 128;
+
     private class SimulationRunnable implements Runnable, IFrameEndReciever {
         GraphicsEngine graphicsEngine;
         ResourceManager resourceManager;
         AgentManager agentManager = new AgentManager();
+        GroundGrid groundGrid;
         boolean frameEnded = true;
         boolean running = true;
 
-        TextureHandle dataTextureHandle;
-        FloatGrid floatGrid = new FloatGrid(128, 128);
+        //TextureHandle dataTextureHandle;
+        //FloatGrid floatGrid = new FloatGrid(128, 128);
 
         public SimulationRunnable(GraphicsEngine graphicsEngine) {
             this.graphicsEngine = graphicsEngine;
@@ -51,8 +59,10 @@ public class SimulationThread {
 
                 frameEnded = false;
 
-                agentManager.update(graphicsEngine, dt);
+                agentManager.update(graphicsEngine, groundGrid, dt);
+                groundGrid.update();
 
+                /*
                 tmp -= dt;
                 if (tmp < 0f) {
                     tmp += 0.05f;
@@ -67,6 +77,7 @@ public class SimulationThread {
 
                     graphicsEngine.updateTexture(dataTextureHandle, floatGrid);
                 }
+                */
 
                 graphicsEngine.frameEnd();
 
@@ -87,6 +98,7 @@ public class SimulationThread {
 
             graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
 
+            /*
             for (int y=0; y<floatGrid.getHeight(); y++) {
                 for (int x=0; x<floatGrid.getWidth(); x++) {
                     //floatGrids.set(x, y, (float)Math.random());
@@ -96,6 +108,15 @@ public class SimulationThread {
 
             dataTextureHandle = new TextureHandle();
             graphicsEngine.createTexture(dataTextureHandle, floatGrid, false);
+
+            TextureHandle tmpHandle = new TextureHandle();
+            try {
+                resourceManager.loadTexture(tmpHandle, "data/graphics/heatmap2.png");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            */
+
             /*
             try {
                 resourceManager.loadTexture(textureHandle, "data/graphics/rgb.png");
@@ -121,21 +142,40 @@ public class SimulationThread {
                 e.printStackTrace();
             }
 
+            graphicsEngine.setMaterialTextureOptions(floorMaterial, 1, GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE, GL.GL_LINEAR, GL.GL_LINEAR);
+
+            groundGrid = new GroundGrid(graphicsEngine, floorMesh, floorMaterial, GROUND_WIDTH, GROUND_HEIGHT, GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT);
+            //groundGrid.set(new Vector3f(0,0,0), 1.0f);
+            //groundGrid.set(new Vector3f(1,0,1), 1.0f);
+            //groundGrid.set(new Vector3f(150,0,0), 1.0f);
+            //groundGrid.set(new Vector3f(200,0,200), 1.0f);
+            //groundGrid.set(new Vector3f(205,0,205), 1.0f);
+            //groundGrid.set(new Vector3f(206,0,206), 2.0f);
+            //groundGrid.update();
+
             MeshRenderNodeHandle node = new MeshRenderNodeHandle();
             Transform transform;
+            /*
             for (int i=-8; i<9; i++) {
                 for (int j=-8; j<9; j++) {
                     graphicsEngine.createMeshRenderNode(node, floorMesh, floorMaterial);
+
                     transform = new Transform();
                     transform.position.set(128*i, 0, 128*j);
                     graphicsEngine.setRenderNodeTransform(node, transform);
-                    graphicsEngine.addNodeToRenderer(node);
+                    //graphicsEngine.addNodeToRenderer(node);
+                    graphicsEngine.addDynamicNodeToRenderer(node);
+
+                    graphicsEngine.makeMeshNodeMaterialUnique(node);
+                    graphicsEngine.setMeshNodeTexture(node, dataTextureHandle, 2);
+                    if ((i + j) % 2 == 0)
+                        graphicsEngine.setMeshNodeTexture(node, tmpHandle, 1);
                 }
             }
-            graphicsEngine.setMeshNodeTexture(node, dataTextureHandle, 2);
+            */
 
-            for (int i=-100; i<101; i++) {
-                for (int j=-100; j<101; j++) {
+            for (int i=-50; i<51; i++) {
+                for (int j=-50; j<51; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 
