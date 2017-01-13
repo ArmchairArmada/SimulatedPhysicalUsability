@@ -60,6 +60,46 @@ public class Material {
         }
     }
 
+    public void initAttributes(GL3 gl, Mesh mesh) {
+        int attrib;
+
+        // VERTEX POSITIONS
+        attrib = shaderProgram.getAttributeLocation(gl, "position");
+        //System.out.println(attrib);
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, mesh.getVertexId());
+        gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+        gl.glEnableVertexAttribArray(attrib);
+
+        // NORMALS
+        attrib = shaderProgram.getAttributeLocation(gl, "normal");
+        //System.out.println(attrib);
+        if (attrib > -1 && mesh.hasNormals) {
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, mesh.getNormalId());
+            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(attrib);
+        }
+
+        /*
+        // COLORS
+        attrib = shaderProgram.getAttributeLocation(gl, "color");
+        //System.out.println(attrib);
+        if (attrib > -1 && mesh.hasColors) {
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, mesh.getColorId());
+            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(attrib);
+        }
+        */
+
+        // UV
+        attrib = shaderProgram.getAttributeLocation(gl, "uv");
+        //System.out.println(attrib);
+        if (attrib > -1 && mesh.hasUvs) {
+            gl.glBindBuffer(gl.GL_ARRAY_BUFFER, mesh.getUvId());
+            gl.glVertexAttribPointer(attrib, 2, gl.GL_FLOAT, false, 0, 0);
+            gl.glEnableVertexAttribArray(attrib);
+        }
+    }
+
     /**
      * Gets the model view uniform location.
      *
