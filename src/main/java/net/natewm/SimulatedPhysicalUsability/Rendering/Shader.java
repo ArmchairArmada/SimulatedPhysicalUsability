@@ -23,7 +23,6 @@ public class Shader {
         gl.glShaderSource(shaderID, codeLength.length, sourceCode, codeLength, 0);
         gl.glCompileShader(shaderID);
 
-        // TODO: Better error checking and logging
         int status[] = new int[1];
         gl.glGetShaderiv(shaderID, gl.GL_COMPILE_STATUS, status, 0);
         if (status[0] == gl.GL_FALSE) {

@@ -11,6 +11,8 @@ public interface IRenderNode {
 
     public Transform getTransform();
 
+    public void init(GL3 gl);
+
     public void setDynamic(boolean dynamic);
 
     public boolean isDynamic();

@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
+import net.natewm.SimulatedPhysicalUsability.Rendering.Material;
 import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Texture;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
@@ -103,14 +104,19 @@ public class SimulationThread {
             }
             */
 
-            MeshHandle monkeyMesh = new MeshHandle();
+            //MeshHandle monkeyMesh = new MeshHandle();
+            //MaterialHandle monkeyMaterial = new MaterialHandle();
+
             MeshHandle agentMesh = new MeshHandle();
+            MaterialHandle agentMaterial = new MaterialHandle();
+
             MeshHandle floorMesh = new MeshHandle();
+            MaterialHandle floorMaterial = new MaterialHandle();
 
             try {
-                resourceManager.loadMesh(monkeyMesh, "data/graphics/monkey.json");
-                resourceManager.loadMesh(agentMesh, "data/graphics/agent.json");
-                resourceManager.loadMesh(floorMesh, "data/graphics/floor.json");
+                //resourceManager.loadMesh(monkeyMesh, "data/graphics/monkey.json");
+                resourceManager.loadMesh(agentMesh, agentMaterial, "data/graphics/agent.json");
+                resourceManager.loadMesh(floorMesh, floorMaterial, "data/graphics/floor.json");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -119,7 +125,7 @@ public class SimulationThread {
             Transform transform;
             for (int i=-8; i<9; i++) {
                 for (int j=-8; j<9; j++) {
-                    graphicsEngine.createMeshRenderNode(node, floorMesh);
+                    graphicsEngine.createMeshRenderNode(node, floorMesh, floorMaterial);
                     transform = new Transform();
                     transform.position.set(128*i, 0, 128*j);
                     graphicsEngine.setRenderNodeTransform(node, transform);
@@ -131,7 +137,7 @@ public class SimulationThread {
             for (int i=-100; i<101; i++) {
                 for (int j=-100; j<101; j++) {
                     node = new MeshRenderNodeHandle();
-                    graphicsEngine.createMeshRenderNode(node, agentMesh);
+                    graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 
                     transform = new Transform();
                     transform.position.set(i, 0, j);

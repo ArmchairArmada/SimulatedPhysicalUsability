@@ -11,6 +11,7 @@ import org.joml.Vector4f;
 public class MeshRenderNode implements IRenderNode {
     Transform transform = new Transform();
     Mesh mesh;
+    Material material;
 
     Matrix4f modelView = new Matrix4f();
     Matrix4f mvp = new Matrix4f();
@@ -18,8 +19,14 @@ public class MeshRenderNode implements IRenderNode {
     float viewRadius=0f, viewZ=0f;
     boolean dynamic = false;
 
-    public MeshRenderNode(Mesh mesh) {
+    public MeshRenderNode(Mesh mesh, Material material) {
         this.mesh = mesh;
+        this.material = material;
+    }
+
+    public void init(GL3 gl) {
+        mesh.bind(gl);
+        material.initAttributes(gl, mesh);
     }
 
     public Transform getTransform() {
@@ -42,15 +49,17 @@ public class MeshRenderNode implements IRenderNode {
 
     public void bind(GL3 gl) {
         mesh.bind(gl);
+        material.bind(gl);
     }
 
     public void unbind(GL3 gl) {
         mesh.unbind(gl);
+        material.unbind(gl);
     }
 
     public void render(GL3 gl, Matrix4f modelView, Matrix4f projection, int levelOfDetail) {
         //mesh.easyRender(gl,modelView, projection);
-        mesh.bindMatrices(gl, modelView, projection);
+        mesh.bindMatrices(gl, material.getModelViewLocation(), material.getProjectionLocation(), modelView, projection);
         mesh.render(gl, levelOfDetail);
     }
 
@@ -92,14 +101,14 @@ public class MeshRenderNode implements IRenderNode {
     }
 
     public void updateFloatGridTexture(GL3 gl, FloatGrid floatGrid, int number) {
-        mesh.material.textures.get(number).updateFloatGrid(gl, floatGrid);
+        material.textures.get(number).updateFloatGrid(gl, floatGrid);
     }
 
     public void setTexture(GL3 gl, Texture texture, int number) {
-        mesh.material.textures.set(number, texture);
+        material.textures.set(number, texture);
     }
 
     public void makeUniqueMaterial() {
-        mesh.material = new Material(mesh.material);
+        material = new Material(material);
     }
 }

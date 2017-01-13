@@ -39,13 +39,13 @@ public class Mesh {
 
     int maxElementCount = 0;
 
-    Material material;  // Material to bind with mesh
+    //Material material;  // Material to bind with mesh
 
-    int triangleID = 0; // ID for OpenGL buffer containing triangle vertex indices
-    int vertexId = 0;   // ID for OpenGL buffer containing vertex position values
-    int normalId = 0;   // ID for OpenGL buffer containing vertex normal values
-    int colorId = 0;    // ID for OpenGL buffer containing vertex color values
-    int uvId = 0;       // ID for OpenGL buffer containing texture coordinate values
+    int triangleID = -1; // ID for OpenGL buffer containing triangle vertex indices
+    int vertexId = -1;   // ID for OpenGL buffer containing vertex position values
+    int normalId = -1;   // ID for OpenGL buffer containing vertex normal values
+    int colorId = -1;    // ID for OpenGL buffer containing vertex color values
+    int uvId = -1;       // ID for OpenGL buffer containing texture coordinate values
 
     boolean hasNormals; // If the mesh has vertex normal vectors
     boolean hasColors;  // If the mesh has vertex color values
@@ -64,14 +64,13 @@ public class Mesh {
      *
      * @param gl       OpenGL
      * @param geometry Geometry to create mesh from
-     * @param material Material for the geometry to bind
      * @throws Exception Thrown if geometry is not consistent (same number of vertice properties as vertices)
      */
-    public Mesh(GL3 gl, Geometry geometry , Material material) throws Exception {
+    public Mesh(GL3 gl, Geometry geometry) throws Exception {
         if (!geometry.checkConsistancy())
             throw new Exception("Inconsistent Geometry Buffer");
 
-        this.material = material;
+        //this.material = material;
 
         hasNormals = geometry.normalsCount() > 0;
         hasColors = geometry.colorsCount() > 0;
@@ -101,6 +100,22 @@ public class Mesh {
         return vao;
     }
 
+    public int getVertexId() {
+        return vertexId;
+    }
+
+    public int getNormalId() {
+        return normalId;
+    }
+
+    public int getColorId() {
+        return colorId;
+    }
+
+    public int getUvId() {
+        return uvId;
+    }
+
     /**
      * Counts the number of buffers that need to be created for OpenGL.
      *
@@ -127,7 +142,7 @@ public class Mesh {
         FloatBuffer uvBuffer = geometry.makeUvBuffer();
         IntBuffer triangleBuffer = geometry.makeTriangleBuffer();
         radius = geometry.getRadius();
-        int attrib = 0;
+        //int attrib = 0;
         int nextIndex = 2;
         int enabledBuffers = countEnabledBuffers();
 
@@ -148,43 +163,43 @@ public class Mesh {
         gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, triangleBuffer.capacity() * Integer.BYTES, triangleBuffer, gl.GL_STATIC_DRAW);
 
         // VERTEX POSITIONS
-        attrib = material.getShaderProgram().getAttributeLocation(gl, "position");
+        //attrib = material.getShaderProgram().getAttributeLocation(gl, "position");
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         gl.glBufferData(gl.GL_ARRAY_BUFFER, vertexBuffer.capacity() * Float.BYTES, vertexBuffer, gl.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
-        gl.glEnableVertexAttribArray(attrib);
+        //gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+        //gl.glEnableVertexAttribArray(attrib);
 
         // NORMALS
         if (hasNormals) {
             normalId = vbo.get(nextIndex);
             nextIndex++;
-            attrib = material.getShaderProgram().getAttributeLocation(gl, "normal");
+            //attrib = material.getShaderProgram().getAttributeLocation(gl, "normal");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, normalId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, normalBuffer.capacity() * Float.BYTES, normalBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(attrib);
+            //gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            //gl.glEnableVertexAttribArray(attrib);
         }
 
         // COLORS
         if (hasColors) {
             colorId = vbo.get(nextIndex);
             nextIndex++;
-            attrib = material.getShaderProgram().getAttributeLocation(gl, "color");
+            //attrib = material.getShaderProgram().getAttributeLocation(gl, "color");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, colorId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, colorBuffer.capacity() * Float.BYTES, colorBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(attrib);
+            //gl.glVertexAttribPointer(attrib, 3, gl.GL_FLOAT, false, 0, 0);
+            //gl.glEnableVertexAttribArray(attrib);
         }
 
         // UV
         if (hasUvs) {
             uvId = vbo.get(nextIndex);
             nextIndex++;
-            attrib = material.getShaderProgram().getAttributeLocation(gl, "uv");
+            //attrib = material.getShaderProgram().getAttributeLocation(gl, "uv");
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, uvId);
             gl.glBufferData(gl.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, gl.GL_STATIC_DRAW);
-            gl.glVertexAttribPointer(attrib, 2, gl.GL_FLOAT, false, 0, 0);
-            gl.glEnableVertexAttribArray(attrib);
+            //gl.glVertexAttribPointer(attrib, 2, gl.GL_FLOAT, false, 0, 0);
+            //gl.glEnableVertexAttribArray(attrib);
         }
     }
 
@@ -215,7 +230,7 @@ public class Mesh {
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, vertexId);
         //gl.glEnableVertexAttribArray(0);
         //gl.glEnableVertexAttribArray(2);
-        material.bind(gl);
+        //material.bind(gl);
     }
 
     /**
@@ -225,12 +240,12 @@ public class Mesh {
      * @param modelView  Model View matrix
      * @param projection Projection matrix
      */
-    public void bindMatrices(GL3 gl, Matrix4f modelView, Matrix4f projection) {
+    public void bindMatrices(GL3 gl, int modelViewLocation, int projectionLocation, Matrix4f modelView, Matrix4f projection) {
         float[] fa = new float[16];
         modelView.get(fa);
-        gl.glUniformMatrix4fv(material.getModelViewLocation(), 1, false, fa, 0);
+        gl.glUniformMatrix4fv(modelViewLocation, 1, false, fa, 0);
         projection.get(fa);
-        gl.glUniformMatrix4fv(material.getProjectionLocation(), 1, false, fa, 0);
+        gl.glUniformMatrix4fv(projectionLocation, 1, false, fa, 0);
     }
 
     /**
@@ -253,23 +268,9 @@ public class Mesh {
      * @param gl OpenGL
      */
     public void unbind(GL3 gl) {
-        material.unbind(gl);
+        //material.unbind(gl);
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl.glBindVertexArray(0);
-    }
-
-    /**
-     * Simpler, though less efficient rendering, by binding and unbinding everything that is needed.
-     *
-     * @param gl         OpenGL
-     * @param modelView  Model view matrix
-     * @param projection Projection matrix
-     */
-    public void easyRender(GL3 gl, Matrix4f modelView, Matrix4f projection) {
-        bind(gl);
-        bindMatrices(gl, modelView, projection);
-        render(gl, 0);
-        unbind(gl);
     }
 }

@@ -118,10 +118,10 @@ public class GraphicsEngine {
         });
     }
 
-    public void createMesh(MeshHandle meshHandle, Geometry geometry, MaterialHandle materialHandle) {
+    public void createMesh(MeshHandle meshHandle, Geometry geometry) {
         add((GL3 gl) -> {
             try {
-                meshHandle.mesh = new Mesh(gl, geometry, materialHandle.material);
+                meshHandle.mesh = new Mesh(gl, geometry);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -129,9 +129,11 @@ public class GraphicsEngine {
         });
     }
 
-    public void createMeshRenderNode(MeshRenderNodeHandle meshRenderNodeHandle, MeshHandle meshHandle) {
+    public void createMeshRenderNode(MeshRenderNodeHandle meshRenderNodeHandle, MeshHandle meshHandle, MaterialHandle materialHandle) {
         add((GL3 gl) -> {
-            meshRenderNodeHandle.renderNode = new MeshRenderNode(meshHandle.mesh);
+            MeshRenderNode meshRenderNode = new MeshRenderNode(meshHandle.mesh, materialHandle.material);
+            meshRenderNode.init(gl);
+            meshRenderNodeHandle.renderNode = meshRenderNode;
             return false;
         });
     }

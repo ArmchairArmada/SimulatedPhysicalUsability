@@ -67,7 +67,7 @@ public class ResourceManager {
     }
 
 
-    public void loadMesh(MeshHandle meshHandle, String filename) throws Exception {
+    public void loadMesh(MeshHandle meshHandle, MaterialHandle materialHandle, String filename) throws Exception {
         if (meshMap.containsKey(filename)) {
             //return meshMap.get(filename);
             MeshHandle handle = meshMap.get(filename);
@@ -100,13 +100,12 @@ public class ResourceManager {
 
         // Load material
         //Material material = loadMaterial(dir + meshDescription.getMaterial());
-        MaterialHandle materialHandle = new MaterialHandle();
         loadMaterial(materialHandle, dir + meshDescription.getMaterial());
 
         // Construct mesh
         //meshMap.put(filename, new Mesh(gl, geometry, material));
         meshMap.put(filename, meshHandle);
-        graphicsEngine.createMesh(meshHandle, geometry, materialHandle);
+        graphicsEngine.createMesh(meshHandle, geometry);
         //return meshMap.get(filename);
     }
 
