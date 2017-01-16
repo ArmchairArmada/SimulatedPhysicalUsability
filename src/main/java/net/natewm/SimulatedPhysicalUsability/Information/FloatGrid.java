@@ -19,6 +19,9 @@ public class FloatGrid {
     int width;
     int height;
 
+    float min;
+    float max;
+
     public FloatGrid(int width, int height) {
         data =  new float[width*height];
         this.width = width;
@@ -32,6 +35,14 @@ public class FloatGrid {
 
     public int getHeight() {
         return height;
+    }
+
+    public float getMin() {
+        return min;
+    }
+
+    public float getMax() {
+        return max;
     }
 
     public float get(int x, int y) {
@@ -49,32 +60,33 @@ public class FloatGrid {
         //return data.capacity();
     }
 
-    public ByteBuffer toByteBuffer() {
-        if (byteBuffer == null)
-            byteBuffer = BufferUtil.newByteBuffer(data.length);
+    public void updateMinMax() {
+        float v;
+        min=Float.MAX_VALUE;
+        max=Float.MIN_VALUE;
 
-        //ByteBuffer byteBuffer = BufferUtil.newByteBuffer(data.verticesLength);
-        float min=Float.MAX_VALUE, max=Float.MIN_VALUE, v;
-
-        for (int i=0; i<data.length; i++) {
-            v = data[i];
+        for (float aData : data) {
+            v = aData;
             if (v < min)
                 min = v;
             if (v > max)
                 max = v;
         }
+    }
 
-        /*
-        for (int i=0; i<data.length; i++) {
-            v = data[i];
-            byteBuffer.put((byte)(1f + 253f*(v-min)/(max-min)));
-        }
-        */
+    public ByteBuffer toByteBuffer(float minValue, float maxValue) {
+        float v;
+
+        if (byteBuffer == null)
+            byteBuffer = BufferUtil.newByteBuffer(data.length);
 
         for (int y=0; y<height; y++) {
             for (int x=0; x<width; x++) {
                 v = data[(height - y - 1) * width + x];
-                byteBuffer.put((byte) (1f + 253f * (v - min) / (max - min)));
+                // Scale to be from 0 to 1
+                v = Math.min(Math.max((v - minValue) / (maxValue - minValue), 0f), 1f);
+                // Convert to byte value
+                byteBuffer.put((byte) (255.0f * v));
             }
         }
 

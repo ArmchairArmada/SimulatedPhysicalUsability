@@ -24,12 +24,12 @@ public class Texture {
         fromImage(gl, image, quality);
     }
 
-    public Texture(GL3 gl, FloatGrid floatGrid) {
-        fromFloatGrid(gl, floatGrid, true);
+    public Texture(GL3 gl, ByteBuffer byteBuffer, int width, int height, boolean quality) {
+        fromByteBuffer(gl, byteBuffer, width, height, quality);
     }
 
-    public Texture(GL3 gl, FloatGrid floatGrid, boolean quality) {
-        fromFloatGrid(gl, floatGrid, quality);
+    public Texture(GL3 gl, ByteBuffer byteBuffer, int width, int height) {
+        fromByteBuffer(gl, byteBuffer, width, height, true);
     }
 
     private void genTexture(GL3 gl) {
@@ -86,17 +86,11 @@ public class Texture {
             setQuality(gl);
     }
 
-    private void fromFloatGrid(GL3 gl, FloatGrid floatGrid, boolean quality) {
-        //FloatBuffer floatBuffer = floatGrid.toFloatBuffer();
-        ByteBuffer byteBuffer = floatGrid.toByteBuffer();
-
+    private void fromByteBuffer(GL3 gl, ByteBuffer byteBuffer, int width, int height, boolean quality) {
         genTexture(gl);
 
-        width = floatGrid.getWidth();
-        height = floatGrid.getHeight();
-
-        //gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL3.GL_RED, width, height,
-        //        0, GL3.GL_RED, GL.GL_FLOAT, floatBuffer);
+        this.width = width;
+        this.height = height;
 
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL3.GL_RED, width, height,
                 0, GL3.GL_RED, GL.GL_UNSIGNED_BYTE, byteBuffer);
@@ -107,9 +101,7 @@ public class Texture {
             setQuality(gl);
     }
 
-    public void updateFloatGrid(GL3 gl, FloatGrid floatGrid) {
-        //FloatBuffer floatBuffer = floatGrid.toFloatBuffer();
-        ByteBuffer byteBuffer = floatGrid.toByteBuffer();
+    public void updateByteBuffer(GL3 gl, ByteBuffer byteBuffer) {
         bind(gl);
         gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, 0, 0, width, height, GL3.GL_RED, GL.GL_UNSIGNED_BYTE, byteBuffer);
         unbind(gl);

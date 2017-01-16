@@ -8,6 +8,7 @@ import net.natewm.SimulatedPhysicalUsability.Resources.Image;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -224,16 +225,16 @@ public class GraphicsEngine {
         });
     }
 
-    public void createTexture(TextureHandle textureHandle, FloatGrid floatGrid) {
+    public void createTexture(TextureHandle textureHandle, ByteBuffer byteBuffer, int width, int height, boolean quality) {
         add((GL3 gl) -> {
-            textureHandle.texture = new Texture(gl, floatGrid);
+            textureHandle.texture = new Texture(gl, byteBuffer, width, height, quality);
             return false;
         });
     }
 
-    public void createTexture(TextureHandle textureHandle, FloatGrid floatGrid, boolean quality) {
+    public void createTexture(TextureHandle textureHandle, ByteBuffer byteBuffer, int width, int height) {
         add((GL3 gl) -> {
-            textureHandle.texture = new Texture(gl, floatGrid, quality);
+            textureHandle.texture = new Texture(gl, byteBuffer, width, height);
             return false;
         });
     }
@@ -252,9 +253,9 @@ public class GraphicsEngine {
         });
     }
 
-    public void updateTexture(TextureHandle textureHandle, FloatGrid floatGrid) {
+    public void updateTexture(TextureHandle textureHandle, ByteBuffer byteBuffer) {
         add((GL3 gl) -> {
-            textureHandle.texture.updateFloatGrid(gl, floatGrid);
+            textureHandle.texture.updateByteBuffer(gl, byteBuffer);
             return false;
         });
     }
@@ -273,9 +274,9 @@ public class GraphicsEngine {
         });
     }
 
-    public void updateMeshNodeFloatGridTexture(MeshRenderNodeHandle meshRenderNodeHandle, FloatGrid floatGrid, int number) {
+    public void updateMeshNodeByteBufferTexture(MeshRenderNodeHandle meshRenderNodeHandle, int number, ByteBuffer byteBuffer) {
         add((GL3 gl) -> {
-            ((MeshRenderNode)meshRenderNodeHandle.renderNode).updateFloatGridTexture(gl, floatGrid, number);
+            ((MeshRenderNode)meshRenderNodeHandle.renderNode).updateByteBufferTexture(gl, number, byteBuffer);
             return false;
         });
     }
