@@ -9,6 +9,8 @@ import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
 import org.joml.Vector3f;
 
+import java.nio.ByteBuffer;
+
 /**
  * Created by Nathan on 1/11/2017.
  */
@@ -27,17 +29,19 @@ public class GroundGrid {
             Transform transform = new Transform();
             transform.position.set(x, 0, y);
 
+            ByteBuffer byteBuffer = floatGrid.toByteBuffer(0f, 1f);
+
             graphicsEngine.createMeshRenderNode(meshRenderNodeHandle, meshHandle, materialHandle);
             graphicsEngine.makeMeshNodeMaterialUnique(meshRenderNodeHandle);
-            graphicsEngine.createTexture(textureHandle, floatGrid);
+            graphicsEngine.createTexture(textureHandle, byteBuffer, floatGrid.getWidth(), floatGrid.getHeight());
             graphicsEngine.setMeshNodeTexture(meshRenderNodeHandle, textureHandle, DATA_TEXTURE_ID);
             graphicsEngine.setTextureOptions(textureHandle, GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE, GL.GL_LINEAR, GL.GL_NEAREST);
             graphicsEngine.setRenderNodeTransform(meshRenderNodeHandle, transform);
             graphicsEngine.addDynamicNodeToRenderer(meshRenderNodeHandle);
         }
 
-        public void updateTexture(GraphicsEngine graphicsEngine) {
-            graphicsEngine.updateTexture(textureHandle, floatGrid);
+        public void updateTexture(GraphicsEngine graphicsEngine, float min, float max) {
+            graphicsEngine.updateTexture(textureHandle, floatGrid.toByteBuffer(min, max));
         }
     }
 
@@ -74,17 +78,31 @@ public class GroundGrid {
 
     public void update() {
         GroundPanel groundPanel;
+
+        updateCount++;
+
+        float min = Float.MAX_VALUE;
+        float max = Float.MIN_VALUE;
+        for (GroundPanel panel : groundPanels) {
+            if (panel != null) {
+                min = Math.min(panel.floatGrid.getMin(), min);
+                max = Math.max(panel.floatGrid.getMax(), max);
+            }
+        }
+
         for (int y=0; y<height; y++) {
             for (int x=0; x<width; x++) {
                 if ((x+y) % width == updateCount % width) {
                     groundPanel = groundPanels[y * width + x];
                     if (groundPanel != null) {
-                        groundPanel.updateTexture(graphicsEngine);
+                        groundPanel.floatGrid.updateMinMax();
+
+                        if (updateCount > width)
+                            groundPanel.updateTexture(graphicsEngine, min, max);
                     }
                 }
             }
         }
-        updateCount++;
     }
 
     private int toGridX(float x) {

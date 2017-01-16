@@ -5,6 +5,8 @@ import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+import java.nio.ByteBuffer;
+
 /**
  * Created by Nathan on 12/29/2016.
  */
@@ -100,8 +102,8 @@ public class MeshRenderNode implements IRenderNode {
         return viewZ;
     }
 
-    public void updateFloatGridTexture(GL3 gl, FloatGrid floatGrid, int number) {
-        material.textures.get(number).updateFloatGrid(gl, floatGrid);
+    public void updateByteBufferTexture(GL3 gl, int number, ByteBuffer byteBuffer) {
+        material.textures.get(number).updateByteBuffer(gl, byteBuffer);
     }
 
     public void setTexture(GL3 gl, Texture texture, int number) {
