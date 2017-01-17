@@ -6,11 +6,15 @@ import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
 import net.natewm.SimulatedPhysicalUsability.Resources.Image;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Nathan on 12/29/2016.
  */
 public class Texture {
+    private static final Logger LOGGER = Logger.getLogger(Texture.class.getName());
+
     static float anisotropy = -1f;
     int textureID;
     int width;
@@ -64,6 +68,7 @@ public class Texture {
             float[] fLargest = {-1f};
             gl.glGetFloatv(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, fLargest, 0);
             anisotropy = fLargest[0];
+            LOGGER.log(Level.FINE, "Using ansiotropy level {0}", anisotropy);
         }
 
         gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
