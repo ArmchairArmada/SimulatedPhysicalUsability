@@ -62,7 +62,6 @@ public class MouseCamera {
         mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
             }
 
             @Override

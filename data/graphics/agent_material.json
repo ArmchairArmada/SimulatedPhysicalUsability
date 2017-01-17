@@ -1,6 +1,6 @@
 {
-    "vertexShader": "vertex_simple.glsl",
-    "fragmentShader": "fragment_simple.glsl",
+    "vertexShader": "vertex_simple_vertexshading.glsl",
+    "fragmentShader": "fragment_simple_vertexshading.glsl",
     "properties": {
         "textures": [],
         "diffuseColor": [0.3, 0.5, 0.7, 1.0]
