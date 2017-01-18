@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.FPSAnimator;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import java.awt.*;
 public class GraphicsPanel extends GLCanvas {
     private final GraphicsEngine graphicsEngine;
     private GL3 gl;
-    private Animator animator;
+    private FPSAnimator animator;
 
     private MouseCamera mouseCamera;
 
@@ -24,8 +25,6 @@ public class GraphicsPanel extends GLCanvas {
         super(glCapabilities);
 
         this.graphicsEngine = graphicsEngine;
-
-        setPreferredSize(new Dimension(1000, 600));
 
         mouseCamera = new MouseCamera(-0.8f, 0f, 20f, this);
 
@@ -57,7 +56,7 @@ public class GraphicsPanel extends GLCanvas {
             }
         });
 
-        animator = new Animator(this);
+        animator = new FPSAnimator(this, 70);
         animator.start();
     }
 }

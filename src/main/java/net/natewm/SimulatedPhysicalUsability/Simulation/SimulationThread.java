@@ -35,8 +35,9 @@ public class SimulationThread {
         //TextureHandle dataTextureHandle;
         //FloatGrid floatGrid = new FloatGrid(128, 128);
 
-        public SimulationRunnable(GraphicsEngine graphicsEngine) {
+        public SimulationRunnable(GraphicsEngine graphicsEngine, ResourceManager resourceManager) {
             this.graphicsEngine = graphicsEngine;
+            this.resourceManager = resourceManager;
         }
 
         @Override
@@ -94,8 +95,6 @@ public class SimulationThread {
         }
 
         private void init() {
-            resourceManager = new ResourceManager(graphicsEngine);
-
             graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
 
             /*
@@ -209,8 +208,8 @@ public class SimulationThread {
     SimulationRunnable runnable;
 
 
-    public SimulationThread(GraphicsEngine graphicsEngine) {
-        runnable = new SimulationRunnable(graphicsEngine);
+    public SimulationThread(GraphicsEngine graphicsEngine, ResourceManager resourceManager) {
+        runnable = new SimulationRunnable(graphicsEngine, resourceManager);
         thread = new Thread(runnable);
     }
 
