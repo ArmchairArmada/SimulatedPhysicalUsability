@@ -2,7 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshRenderNodeHandle;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Renderer;
+import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
 import org.joml.Vector3f;
 
