@@ -1,8 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.IFrameEndReciever;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Renderer;
+import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,16 @@ public class AgentManager {
     List<Agent> toRemove = new ArrayList<>();
 
     public AgentManager() {
+    }
+
+    public void reset(GraphicsEngine graphicsEngine) {
+        for (Agent agent : agents) {
+            agent.dispose(graphicsEngine);
+        }
+
+        agents = new ArrayList<>();
+        toAdd = new ArrayList<>();
+        toRemove = new ArrayList<>();
     }
 
     public void add(Agent agent) {
@@ -45,14 +54,11 @@ public class AgentManager {
             agents.addAll(toAdd);
             toAdd.clear();
 
-            //agents.parallelStream().forEach((agent) -> {
             for (Agent agent : agents) {
                 agent.update(graphicsEngine, groundGrid, sdt);
 
-                //if (Math.random() < sdt*0.1) {
+                //if (Math.random() < 0.01)
                 //    remove(agent);
-                //}
-            //});
             }
         }
 

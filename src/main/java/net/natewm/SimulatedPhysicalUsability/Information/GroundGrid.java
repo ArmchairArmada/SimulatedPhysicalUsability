@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.Simulation;
+package net.natewm.SimulatedPhysicalUsability.Information;
 
 import com.jogamp.opengl.GL;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
@@ -43,6 +43,11 @@ public class GroundGrid {
         public void updateTexture(GraphicsEngine graphicsEngine, float min, float max) {
             graphicsEngine.updateTexture(textureHandle, floatGrid.toByteBuffer(min, max));
         }
+
+        public void dispose(GraphicsEngine graphicsEngine) {
+            graphicsEngine.removeNodeFromRenderer(meshRenderNodeHandle);
+            graphicsEngine.destroyTexture(textureHandle);
+        }
     }
 
     //FloatGrid[] floatGrids = null;
@@ -72,6 +77,16 @@ public class GroundGrid {
         this.floorHeight = height * gridHeight;
         this.offsetX = -floorWidth/2.0f;
         this.offsetY = -floorHeight/2.0f;
+
+        groundPanels = new GroundPanel[width * height];
+    }
+
+    public void reset() {
+        for (GroundPanel panel : groundPanels) {
+            if (panel != null) {
+                panel.dispose(graphicsEngine);
+            }
+        }
 
         groundPanels = new GroundPanel[width * height];
     }

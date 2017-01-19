@@ -1,13 +1,16 @@
 package net.natewm.SimulatedPhysicalUsability;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.IFrameEndReciever;
+import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MaterialHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshHandle;
 import net.natewm.SimulatedPhysicalUsability.Resources.ResourceManager;
-import net.natewm.SimulatedPhysicalUsability.Simulation.AgentManager;
+import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.GraphicsPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.SimulationControlPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +23,11 @@ import java.util.logging.*;
 public class Main extends JFrame {
     private static final Logger LOGGER = Logger.getLogger("net.natewm.SimulatedPhysicalUsability");
 
+    private static final int GROUND_WIDTH = 8;
+    private static final int GROUND_HEIGHT = 8;
+    private static final int GROUND_GRID_WIDTH = 128;
+    private static final int GROUND_GRID_HEIGHT = 128;
+
     public Main() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -29,6 +37,43 @@ public class Main extends JFrame {
 
         setTitle("Simulated Physical Usability");
 
+        // DONE MOCK USER INTERFACE
+
+        GLProfile glProfile = GLProfile.get(GLProfile.GL3);//GLProfile.getDefault();
+        GLCapabilities glCapabilities = new GLCapabilities(glProfile);
+
+        GraphicsEngine graphicsEngine = new GraphicsEngine();
+        graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
+
+        ResourceManager resourceManager = new ResourceManager(graphicsEngine);
+
+        MeshHandle floorMesh = new MeshHandle();
+        MaterialHandle floorMaterial = new MaterialHandle();
+
+        try {
+            resourceManager.loadMesh(floorMesh, floorMaterial, "data/graphics/floor.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        graphicsEngine.setMaterialTextureOptions(floorMaterial, 1, GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE, GL.GL_LINEAR, GL.GL_LINEAR);
+        GroundGrid groundGrid = new GroundGrid(graphicsEngine, floorMesh, floorMaterial, GROUND_WIDTH, GROUND_HEIGHT, GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT);
+
+        SimulationThread simulationThread = new SimulationThread(graphicsEngine, resourceManager, groundGrid);
+        graphicsEngine.setFrameReciever(simulationThread.getFrameEndReciever());
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                simulationThread.dispose();
+
+                super.windowClosing(e);
+            }
+        });
+
+        GraphicsPanel graphicsPanel = new GraphicsPanel(graphicsEngine, glCapabilities);
+        graphicsPanel.setPreferredSize(new Dimension(800, 600));
 
         // MOCK USER INTERFACE LAYOUT
         // TODO: Split UI components into separate classes
@@ -75,39 +120,12 @@ public class Main extends JFrame {
 
         simulationTabPanel.setLayout(layout);
 
-        JPanel simulationControls = new JPanel();
+        SimulationControlPanel simulationControls = new SimulationControlPanel(simulationThread, groundGrid);
         simulationControls.setMinimumSize(new Dimension(250, 0));
         simulationControls.setMaximumSize(new Dimension(250, 1000000));
         simulationControls.setPreferredSize(new Dimension(250, 600));
 
         simulationTabPanel.add(simulationControls, gridBagConstraints);
-
-
-        // DONE MOCK USER INTERFACE
-
-        GLProfile glProfile = GLProfile.get(GLProfile.GL3);//GLProfile.getDefault();
-        GLCapabilities glCapabilities = new GLCapabilities(glProfile);
-
-        GraphicsEngine graphicsEngine = new GraphicsEngine();
-
-        ResourceManager resourceManager = new ResourceManager(graphicsEngine);
-
-        SimulationThread simulationThread = new SimulationThread(graphicsEngine, resourceManager);
-        graphicsEngine.setFrameReciever(simulationThread.getFrameEndReciever());
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                simulationThread.dispose();
-
-
-                super.windowClosing(e);
-            }
-        });
-
-        GraphicsPanel graphicsPanel = new GraphicsPanel(graphicsEngine, glCapabilities);
-        graphicsPanel.setPreferredSize(new Dimension(800, 600));
 
         gridBagConstraints.gridx = 1;
         gridBagConstraints.weightx = 1000000;

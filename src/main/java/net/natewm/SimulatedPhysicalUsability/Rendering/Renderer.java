@@ -115,7 +115,7 @@ public class Renderer {
         if (node.isDynamic())
             dynamicNodes.remove(node);
         else
-            renderGroups.get(node.getGroupID()).remove(node);
+            renderGroups.get(renderIndexMap.get(node.getGroupID())).remove(node);
     }
 
     /**
