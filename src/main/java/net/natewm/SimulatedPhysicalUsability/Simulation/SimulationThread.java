@@ -1,8 +1,10 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
+import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Resources.ResourceManager;
 
 import static java.lang.Thread.sleep;
@@ -80,6 +82,22 @@ public class SimulationThread {
         }
 
         private void init() {
+            // TODO: Remove this temp garbage
+            Walls walls = new Walls();
+            Geometry geometry = walls.generateGeometry();
+            MeshHandle wallMesh = new MeshHandle();
+            MaterialHandle wallMaterial = new MaterialHandle();
+            MeshRenderNodeHandle wallNode = new MeshRenderNodeHandle();
+            try {
+                resourceManager.loadMaterial(wallMaterial, "data/graphics/wall_material.json");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            graphicsEngine.createMesh(wallMesh, geometry);
+            graphicsEngine.createMeshRenderNode(wallNode, wallMesh, wallMaterial);
+            graphicsEngine.addNodeToRenderer(wallNode);
+
+
             MeshHandle agentMesh = new MeshHandle();
             MaterialHandle agentMaterial = new MaterialHandle();
 
