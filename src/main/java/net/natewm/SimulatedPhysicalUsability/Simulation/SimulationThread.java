@@ -20,6 +20,8 @@ public class SimulationThread {
         boolean running = true;
         boolean paused = false;
         int speed = 1;
+        boolean doStop = false;
+        boolean doInit = false;
 
         public SimulationRunnable(GraphicsEngine graphicsEngine, ResourceManager resourceManager, GroundGrid groundGrid) {
             this.graphicsEngine = graphicsEngine;
@@ -29,7 +31,7 @@ public class SimulationThread {
 
         @Override
         public void run() {
-            init();
+            //init();
 
             long time;
             float dt;
@@ -44,6 +46,16 @@ public class SimulationThread {
                 runtime += dt;
 
                 frameEnded = false;
+
+                if (doStop) {
+                    doStop = false;
+                    agentManager.reset(graphicsEngine);
+                }
+
+                if (doInit) {
+                    doInit = false;
+                    init();
+                }
 
                 if (!paused) {
                     for (int i=0; i<speed; i++) {
@@ -110,13 +122,16 @@ public class SimulationThread {
         }
 
         public synchronized void stopSimulation() {
-            agentManager.reset(graphicsEngine);
             paused = true;
+            doStop = true;
+            //agentManager.reset(graphicsEngine);
         }
 
         public synchronized void startSimulation() {
-            agentManager.reset(graphicsEngine);
-            init();
+            //agentManager.reset(graphicsEngine);
+            //init();
+            doStop = true;
+            doInit = true;
             paused = false;
             speed = 1;
         }

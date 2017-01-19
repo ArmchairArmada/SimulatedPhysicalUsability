@@ -57,7 +57,8 @@ public class Main extends JFrame {
         }
 
         graphicsEngine.setMaterialTextureOptions(floorMaterial, 1, GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE, GL.GL_LINEAR, GL.GL_LINEAR);
-        GroundGrid groundGrid = new GroundGrid(graphicsEngine, floorMesh, floorMaterial, GROUND_WIDTH, GROUND_HEIGHT, GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT);
+        GroundGrid groundGrid = new GroundGrid(graphicsEngine, floorMesh, floorMaterial, GROUND_WIDTH, GROUND_HEIGHT,
+                GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT, GROUND_WIDTH * 2);
 
         SimulationThread simulationThread = new SimulationThread(graphicsEngine, resourceManager, groundGrid);
         graphicsEngine.setFrameReciever(simulationThread.getFrameEndReciever());
