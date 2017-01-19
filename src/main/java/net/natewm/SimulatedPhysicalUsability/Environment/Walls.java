@@ -1,7 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
-import net.natewm.SimulatedPhysicalUsability.Rendering.Triangle;
-import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Triangle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;

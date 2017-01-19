@@ -1,11 +1,10 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
-import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
-import net.natewm.SimulatedPhysicalUsability.Resources.ResourceManager;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 
 import static java.lang.Thread.sleep;
 
@@ -13,9 +12,8 @@ import static java.lang.Thread.sleep;
  * Created by Nathan on 1/9/2017.
  */
 public class SimulationThread {
-    private class SimulationRunnable implements Runnable, IFrameEndReciever {
+    private class SimulationRunnable implements Runnable, IFrameEndReceiver {
         GraphicsEngine graphicsEngine;
-        ResourceManager resourceManager;
         AgentManager agentManager = new AgentManager();
         GroundGrid groundGrid;
         boolean frameEnded = true;
@@ -25,9 +23,8 @@ public class SimulationThread {
         boolean doStop = false;
         boolean doInit = false;
 
-        public SimulationRunnable(GraphicsEngine graphicsEngine, ResourceManager resourceManager, GroundGrid groundGrid) {
+        public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid) {
             this.graphicsEngine = graphicsEngine;
-            this.resourceManager = resourceManager;
             this.groundGrid = groundGrid;
         }
 
@@ -82,27 +79,11 @@ public class SimulationThread {
         }
 
         private void init() {
-            // TODO: Remove this temp garbage
-            Walls walls = new Walls();
-            Geometry geometry = walls.generateGeometry();
-            MeshHandle wallMesh = new MeshHandle();
-            MaterialHandle wallMaterial = new MaterialHandle();
-            MeshRenderNodeHandle wallNode = new MeshRenderNodeHandle();
-            try {
-                resourceManager.loadMaterial(wallMaterial, "data/graphics/wall_material.json");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            graphicsEngine.createMesh(wallMesh, geometry);
-            graphicsEngine.createMeshRenderNode(wallNode, wallMesh, wallMaterial);
-            graphicsEngine.addNodeToRenderer(wallNode);
-
-
             MeshHandle agentMesh = new MeshHandle();
             MaterialHandle agentMaterial = new MaterialHandle();
 
             try {
-                resourceManager.loadMesh(agentMesh, agentMaterial, "data/graphics/agent.json");
+                graphicsEngine.loadMesh(agentMesh, agentMaterial, "data/graphics/agent.json");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -127,7 +108,7 @@ public class SimulationThread {
         }
 
         private void dispose() {
-            resourceManager.disposeAll();
+            graphicsEngine.removeAllNodesFromRenderer();
         }
 
         @Override
@@ -169,12 +150,12 @@ public class SimulationThread {
     SimulationRunnable runnable;
 
 
-    public SimulationThread(GraphicsEngine graphicsEngine, ResourceManager resourceManager, GroundGrid groundGrid) {
-        runnable = new SimulationRunnable(graphicsEngine, resourceManager, groundGrid);
+    public SimulationThread(GraphicsEngine graphicsEngine, GroundGrid groundGrid) {
+        runnable = new SimulationRunnable(graphicsEngine, groundGrid);
         thread = new Thread(runnable);
     }
 
-    public IFrameEndReciever getFrameEndReciever() {
+    public IFrameEndReceiver getFrameEndReciever() {
         return runnable;
     }
 

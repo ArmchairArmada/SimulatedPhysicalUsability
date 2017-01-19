@@ -1,9 +1,9 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshRenderNodeHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
 import org.joml.Vector3f;
 
 import static java.lang.Thread.sleep;

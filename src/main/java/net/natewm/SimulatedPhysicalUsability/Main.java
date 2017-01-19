@@ -4,14 +4,11 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MaterialHandle;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshHandle;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.MeshRenderNodeHandle;
-import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
-import net.natewm.SimulatedPhysicalUsability.Resources.Geometry;
-import net.natewm.SimulatedPhysicalUsability.Resources.ResourceManager;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MaterialHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.GraphicsPanel;
@@ -50,13 +47,13 @@ public class Main extends JFrame {
         GraphicsEngine graphicsEngine = new GraphicsEngine();
         graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
 
-        ResourceManager resourceManager = new ResourceManager(graphicsEngine);
+        //ResourceManager resourceManager = new ResourceManager(graphicsEngine);
 
         MeshHandle floorMesh = new MeshHandle();
         MaterialHandle floorMaterial = new MaterialHandle();
 
         try {
-            resourceManager.loadMesh(floorMesh, floorMaterial, "data/graphics/floor.json");
+            graphicsEngine.loadMesh(floorMesh, floorMaterial, "data/graphics/floor.json");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,8 +62,8 @@ public class Main extends JFrame {
         GroundGrid groundGrid = new GroundGrid(graphicsEngine, floorMesh, floorMaterial, GROUND_WIDTH, GROUND_HEIGHT,
                 GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT, GROUND_WIDTH * 2);
 
-        SimulationThread simulationThread = new SimulationThread(graphicsEngine, resourceManager, groundGrid);
-        graphicsEngine.setFrameReciever(simulationThread.getFrameEndReciever());
+        SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid);
+        graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -149,6 +146,21 @@ public class Main extends JFrame {
 
         pack();
         setVisible(true);
+
+        // TODO: Remove this temp garbage
+        Walls walls = new Walls();
+        Geometry geometry = walls.generateGeometry();
+        MeshHandle wallMesh = new MeshHandle();
+        MaterialHandle wallMaterial = new MaterialHandle();
+        MeshRenderNodeHandle wallNode = new MeshRenderNodeHandle();
+        try {
+            graphicsEngine.loadMaterial(wallMaterial, "data/graphics/wall_material.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        graphicsEngine.createMesh(wallMesh, geometry);
+        graphicsEngine.createMeshRenderNode(wallNode, wallMesh, wallMaterial);
+        graphicsEngine.addNodeToRenderer(wallNode);
 
         simulationThread.start();
     }
