@@ -64,8 +64,10 @@ public class GroundGrid {
     float offsetX;
     float offsetY;
     int updateCount = 0;
+    int updateSkip;
 
-    public GroundGrid(GraphicsEngine graphicsEngine, MeshHandle meshHandle, MaterialHandle materialHandle, int width, int height, int gridWidth, int gridHeight) {
+    public GroundGrid(GraphicsEngine graphicsEngine, MeshHandle meshHandle, MaterialHandle materialHandle, int width,
+                      int height, int gridWidth, int gridHeight, int updateSkip) {
         this.graphicsEngine = graphicsEngine;
         this.meshHandle = meshHandle;
         this.materialHandle = materialHandle;
@@ -77,6 +79,7 @@ public class GroundGrid {
         this.floorHeight = height * gridHeight;
         this.offsetX = -floorWidth/2.0f;
         this.offsetY = -floorHeight/2.0f;
+        this.updateSkip = updateSkip;
 
         groundPanels = new GroundPanel[width * height];
     }
@@ -89,12 +92,13 @@ public class GroundGrid {
         }
 
         groundPanels = new GroundPanel[width * height];
+        updateCount = 0;
     }
 
     public void update() {
         GroundPanel groundPanel;
 
-        updateCount++;
+        updateCount = (updateCount + 1) % updateSkip;
 
         float min = Float.MAX_VALUE;
         float max = Float.MIN_VALUE;
@@ -105,16 +109,12 @@ public class GroundGrid {
             }
         }
 
-        for (int y=0; y<height; y++) {
-            for (int x=0; x<width; x++) {
-                if ((x+y) % width == updateCount % width) {
-                    groundPanel = groundPanels[y * width + x];
-                    if (groundPanel != null) {
-                        groundPanel.floatGrid.updateMinMax();
-
-                        if (updateCount > width)
-                            groundPanel.updateTexture(graphicsEngine, min, max);
-                    }
+        for (int i=0; i<groundPanels.length; i++) {
+            if (i % updateSkip == updateCount) {
+                groundPanel = groundPanels[i];
+                if (groundPanel != null) {
+                    groundPanel.floatGrid.updateMinMax();
+                    groundPanel.updateTexture(graphicsEngine, min, max);
                 }
             }
         }

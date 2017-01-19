@@ -14,6 +14,9 @@ public class SimulationControlPanel extends JPanel {
     private SimulationThread simulationThread;
     private GroundGrid groundGrid;
 
+    private boolean stopped = true;
+    private int speed = 1;
+
     public SimulationControlPanel(SimulationThread simulationThread, GroundGrid groundGrid) {
         JButton button;
 
@@ -24,17 +27,10 @@ public class SimulationControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                stopped = true;
+                speed = 1;
                 simulationThread.stopSimulation();
                 groundGrid.reset();
-            }
-        });
-        add(button);
-
-        button = new JButton("Start");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                simulationThread.startSimulation();
             }
         });
         add(button);
@@ -52,16 +48,25 @@ public class SimulationControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                simulationThread.playSimulation(1);
+                if (stopped) {
+                    stopped = false;
+                    simulationThread.startSimulation();
+                    groundGrid.reset();
+                }
+                simulationThread.playSimulation(speed);
             }
         });
         add(button);
 
-        button = new JButton("Fast");
+        button = new JButton("Slower");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                simulationThread.playSimulation(2);
+                speed--;
+                if (speed < 1)
+                    speed = 1;
+
+                simulationThread.playSimulation(speed);
             }
         });
         add(button);
@@ -70,16 +75,8 @@ public class SimulationControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                simulationThread.playSimulation(4);
-            }
-        });
-        add(button);
-
-        button = new JButton("Fastest");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                simulationThread.playSimulation(8);
+                speed++;
+                simulationThread.playSimulation(speed);
             }
         });
         add(button);
