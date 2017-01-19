@@ -1,6 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 
 import java.util.ArrayList;

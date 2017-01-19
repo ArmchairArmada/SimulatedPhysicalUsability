@@ -1,12 +1,8 @@
 package net.natewm.SimulatedPhysicalUsability.Information;
 
 import com.jogamp.opengl.GL;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.*;
-import net.natewm.SimulatedPhysicalUsability.Information.FloatGrid;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Material;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Mesh;
-import net.natewm.SimulatedPhysicalUsability.Rendering.MeshRenderNode;
-import net.natewm.SimulatedPhysicalUsability.Rendering.Transform;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
 import org.joml.Vector3f;
 
 import java.nio.ByteBuffer;

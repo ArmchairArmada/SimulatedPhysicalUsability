@@ -2,12 +2,8 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.FPSAnimator;
-import net.natewm.SimulatedPhysicalUsability.GraphicsEngine.GraphicsEngine;
-
-import javax.swing.*;
-import java.awt.*;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 
 /**
  * Created by Nathan on 12/22/2016.
