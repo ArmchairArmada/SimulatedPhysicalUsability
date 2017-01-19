@@ -52,10 +52,10 @@ public class ResourceManager {
 
 
     public Geometry loadGeometry(String filename, boolean keep) throws IOException {
+        LOGGER.log(Level.FINE, "Loading Geometry: {0}", filename);
+
         if (geometryMap.containsKey(filename))
             return geometryMap.get(filename);
-
-        LOGGER.log(Level.FINE, "Loading Geometry: {0}", filename);
 
         if (keep) {
             geometryMap.put(filename, geometryLoader.load(filename));
@@ -67,7 +67,9 @@ public class ResourceManager {
     }
 
 
-    public void loadMesh(MeshHandle meshHandle, MaterialHandle materialHandle, String filename) throws Exception {
+    public synchronized void loadMesh(MeshHandle meshHandle, MaterialHandle materialHandle, String filename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading Mesh: {0}", filename);
+
         if (meshMap.containsKey(filename)) {
             //return meshMap.get(filename);
             MeshHandle handle = meshMap.get(filename);
@@ -75,9 +77,10 @@ public class ResourceManager {
                 sleep(1);
             }
             meshHandle.set(handle);
+            return;
         }
 
-        LOGGER.log(Level.FINE, "Loading Mesh: {0}", filename);
+        meshMap.put(filename, meshHandle);
 
         Path path = Paths.get(filename);
         String dir = path.getParent() + "/";
@@ -104,13 +107,14 @@ public class ResourceManager {
 
         // Construct mesh
         //meshMap.put(filename, new Mesh(gl, geometry, material));
-        meshMap.put(filename, meshHandle);
         graphicsEngine.createMesh(meshHandle, geometry);
         //return meshMap.get(filename);
     }
 
 
-    public void loadMaterial(MaterialHandle materialHandle, String filename) throws Exception {
+    public synchronized void loadMaterial(MaterialHandle materialHandle, String filename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading Material: {0}", filename);
+
         // TODO: Figure out how to using the same material with different property values
         if (materialMap.containsKey(filename)) {
             //return materialMap.get(filename);
@@ -119,9 +123,9 @@ public class ResourceManager {
                 sleep(1);
             }
             materialHandle.set(handle);
+            return;
         }
-
-        LOGGER.log(Level.FINE, "Loading Material: {0}", filename);
+        materialMap.put(filename, materialHandle);
 
         Path path = Paths.get(filename);
         String dir = path.getParent() + "/";
@@ -258,7 +262,9 @@ public class ResourceManager {
     }
 
 
-    public void loadTexture(TextureHandle textureHandle, String filename) throws Exception {
+    public synchronized void loadTexture(TextureHandle textureHandle, String filename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading Texture: {0}", filename);
+
         if (textureMap.containsKey(filename)) {
             TextureHandle handle = textureMap.get(filename);
             while (handle.getTexture() == null) {
@@ -266,19 +272,22 @@ public class ResourceManager {
             }
             //return textureMap.get(filename);
             textureHandle.set(handle);
+            return;
         }
 
-        LOGGER.log(Level.FINE, "Loading Texture: {0}", filename);
+        textureMap.put(filename, textureHandle);
 
         //textureMap.put(filename, new Texture(gl, imageLoader.load(filename)));
-        textureMap.put(filename, textureHandle);
+
         graphicsEngine.createTexture(textureHandle, imageLoader.load(filename));
 
         //return textureMap.get(filename);
     }
 
 
-    public void loadVertexShader(ShaderHandle shaderHandle, String filename) throws Exception {
+    public synchronized void loadVertexShader(ShaderHandle shaderHandle, String filename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading Vertex Shader: {0}", filename);
+
         if (vertexShaderMap.containsKey(filename)) {
             ShaderHandle handle = vertexShaderMap.get(filename);
             while (handle.getShader() == null) {
@@ -286,9 +295,10 @@ public class ResourceManager {
             }
             //return vertexShaderMap.get(filename);
             shaderHandle.set(handle);
+            return;
         }
 
-        LOGGER.log(Level.FINE, "Loading Vertex Shader: {0}", filename);
+        vertexShaderMap.put(filename, shaderHandle);
 
         //vertexShaderMap.put(filename, new Shader(gl, gl.GL_VERTEX_SHADER, getLines(filename)));
 
@@ -302,7 +312,9 @@ public class ResourceManager {
     }
 
 
-    public void loadFragmentShader(ShaderHandle shaderHandle, String filename) throws Exception {
+    public synchronized void loadFragmentShader(ShaderHandle shaderHandle, String filename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading Fragment Shader: {0}", filename);
+
         if (fragmentShaderMap.containsKey(filename)) {
             ShaderHandle handle = fragmentShaderMap.get(filename);
             while (handle.getShader() == null) {
@@ -310,9 +322,9 @@ public class ResourceManager {
             }
             //return fragmentShaderMap.get(filename);
             shaderHandle.set(handle);
+            return;
         }
-
-        LOGGER.log(Level.FINE, "Loading Fragment Shader: {0}", filename);
+        fragmentShaderMap.put(filename, shaderHandle);
 
         Path path = Paths.get(filename);
         String file = path.getFileName().toString();
@@ -326,7 +338,9 @@ public class ResourceManager {
     }
 
 
-    public void loadShaderProgram(ShaderProgramHandle shaderProgramHandle, String vertexFilename, String fragementFilename) throws Exception {
+    public synchronized void loadShaderProgram(ShaderProgramHandle shaderProgramHandle, String vertexFilename, String fragementFilename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading ShaderProgram: {0}, {1}", new Object[]{vertexFilename, fragementFilename});
+
         String key = vertexFilename + ":" + fragementFilename;
 
         if (shaderProgramMap.containsKey(key)) {
@@ -336,9 +350,9 @@ public class ResourceManager {
             }
             //return shaderProgramMap.get(key);
             shaderProgramHandle.set(handle);
+            return;
         }
-
-        LOGGER.log(Level.FINE, "Loading ShaderProgram: {0}, {1}", new Object[]{vertexFilename, fragementFilename});
+        shaderProgramMap.put(key, shaderProgramHandle);
 
         //Shader vertexShader = loadVertexShader(vertexFilename);
         //Shader fragmentShader = loadFragmentShader(fragementFilename);
@@ -350,14 +364,13 @@ public class ResourceManager {
         loadFragmentShader(fragmentShaderHandle, fragementFilename);
 
         //shaderProgramMap.put(key, new ShaderProgram(gl, vertexShader, fragmentShader));
-        shaderProgramMap.put(key, shaderProgramHandle);
         graphicsEngine.createShaderProgram(shaderProgramHandle, vertexShaderHandle, fragmentShaderHandle);
 
         //return shaderProgramMap.get(key);
     }
 
 
-    public void disposeAll() {
+    public synchronized void disposeAll() {
         LOGGER.log(Level.FINE, "Disposing resources.");
 
         for (ShaderProgramHandle shaderProgram : shaderProgramMap.values()) {
