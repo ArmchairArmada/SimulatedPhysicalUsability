@@ -17,8 +17,8 @@ public class GraphicsPanel extends GLCanvas {
 
     private MouseCamera mouseCamera;
 
-    public GraphicsPanel(GraphicsEngine graphicsEngine, GLCapabilities glCapabilities) {
-        super(glCapabilities);
+    public GraphicsPanel(GraphicsEngine graphicsEngine) {
+        super(graphicsEngine.getGlCapabilities());
 
         this.graphicsEngine = graphicsEngine;
 
