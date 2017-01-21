@@ -1,6 +1,8 @@
 package net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine;
 
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLProfile;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.*;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Image;
@@ -24,7 +26,15 @@ public class GraphicsEngine {
     private Renderer renderer = new Renderer();
     private Matrix4f cameraMatrix = new Matrix4f();
 
+    private GLCapabilities glCapabilities;
+
     public GraphicsEngine() {
+        GLProfile glProfile = GLProfile.get(GLProfile.GL3);//GLProfile.getDefault();
+        glCapabilities = new GLCapabilities(glProfile);
+    }
+
+    public GLCapabilities getGlCapabilities() {
+        return glCapabilities;
     }
 
     public void setFrameReceiver(IFrameEndReceiver frameEndReceiver) {

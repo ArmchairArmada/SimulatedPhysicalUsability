@@ -62,11 +62,9 @@ public class GroundGrid {
     int updateCount = 0;
     int updateSkip;
 
-    public GroundGrid(GraphicsEngine graphicsEngine, MeshHandle meshHandle, MaterialHandle materialHandle, int width,
+    public GroundGrid(GraphicsEngine graphicsEngine, int width,
                       int height, int gridWidth, int gridHeight, int updateSkip) {
         this.graphicsEngine = graphicsEngine;
-        this.meshHandle = meshHandle;
-        this.materialHandle = materialHandle;
         this.width = width;
         this.height = height;
         this.gridWidth = gridWidth;
@@ -76,6 +74,17 @@ public class GroundGrid {
         this.offsetX = -floorWidth/2.0f;
         this.offsetY = -floorHeight/2.0f;
         this.updateSkip = updateSkip;
+
+        meshHandle = new MeshHandle();
+        materialHandle = new MaterialHandle();
+
+        try {
+            graphicsEngine.loadMesh(meshHandle, materialHandle, "data/graphics/floor.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        graphicsEngine.setMaterialTextureOptions(materialHandle, 1, GL.GL_CLAMP_TO_EDGE, GL.GL_CLAMP_TO_EDGE, GL.GL_LINEAR, GL.GL_LINEAR);
 
         groundPanels = new GroundPanel[width * height];
     }
