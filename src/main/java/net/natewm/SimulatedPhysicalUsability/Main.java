@@ -3,10 +3,16 @@ package net.natewm.SimulatedPhysicalUsability;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.Environment.MazeGenerator;
+import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MaterialHandle;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
+import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
+import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.MainWindow;
 
@@ -32,6 +38,7 @@ public class Main {
         final String key = "java.util.logging.SimpleFormatter.format";
         System.setProperty(key, format);
 
+
         Formatter formatter = new SimpleFormatter();
         Handler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
@@ -49,7 +56,29 @@ public class Main {
                 GroundGrid groundGrid = new GroundGrid(graphicsEngine, GROUND_WIDTH, GROUND_HEIGHT,
                         GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT, GROUND_WIDTH * 2);
 
-                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid);
+
+                // TODO: Remove this temp garbage
+                MazeGenerator mazeGenerator = new MazeGenerator(64, 64, 0.2f);
+                Walls walls = mazeGenerator.generate(); //new Walls();
+
+                Geometry geometry = walls.generateGeometry();
+                MeshHandle wallMesh = new MeshHandle();
+                MaterialHandle wallMaterial = new MaterialHandle();
+                MeshRenderNodeHandle wallNode = new MeshRenderNodeHandle();
+                try {
+                    graphicsEngine.loadMaterial(wallMaterial, "data/graphics/wall_material.json");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                graphicsEngine.createMesh(wallMesh, geometry);
+                graphicsEngine.createMeshRenderNode(wallNode, wallMesh, wallMaterial);
+                graphicsEngine.addNodeToRenderer(wallNode);
+
+
+                CollisionGrid<Agent> collisionGrid = new CollisionGrid<>(walls);
+
+
+                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid);
                 graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
 
 

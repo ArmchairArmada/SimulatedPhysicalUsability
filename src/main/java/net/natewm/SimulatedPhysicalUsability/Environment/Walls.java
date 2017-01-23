@@ -14,7 +14,7 @@ public class Walls {
     private static final float WALL_THICKNESS = 0.1f;
     private static final float WALL_HEIGHT = 0.5f;
 
-    public class Wall {
+    public static class Wall {
         public float startX;
         public float startY;
         public float endX;
@@ -30,12 +30,54 @@ public class Walls {
 
 
     private List<Wall> walls = new ArrayList<Wall>();
+    private float minX = Float.MAX_VALUE;
+    private float minY = Float.MAX_VALUE;
+    private float maxX = Float.MIN_VALUE;
+    private float maxY = Float.MIN_VALUE;;
 
 
     public Walls() {
-        walls.add(new Wall(0,0, 1, 0));
-        walls.add(new Wall(0,0, 0, 1));
-        //walls.add(new Wall(0,0, 1, 1));
+    }
+
+
+    public void addWall(Wall wall) {
+        walls.add(wall);
+
+        minX = Math.min(minX, wall.startX);
+        minX = Math.min(minX, wall.endX);
+
+        minY = Math.min(minY, wall.startY);
+        minY = Math.min(minY, wall.endY);
+
+        maxX = Math.max(maxX, wall.startX);
+        maxX = Math.max(maxX, wall.endX);
+
+        maxY = Math.max(maxY, wall.startY);
+        maxY = Math.max(maxY, wall.endY);
+    }
+
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+
+    public float getMinX() {
+        return minX;
+    }
+
+
+    public float getMinY() {
+        return minY;
+    }
+
+
+    public float getMaxX() {
+        return maxX;
+    }
+
+
+    public float getMaxY() {
+        return maxY;
     }
 
 

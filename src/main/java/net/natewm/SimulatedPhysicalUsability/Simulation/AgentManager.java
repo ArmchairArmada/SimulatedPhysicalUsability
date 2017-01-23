@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 
@@ -37,7 +38,7 @@ public class AgentManager {
         toRemove.add(agent);
     }
 
-    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, float dt) {
+    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, float dt) {
         int steps = 1;
 
         if (dt < 0.1f)
@@ -55,7 +56,7 @@ public class AgentManager {
             toAdd.clear();
 
             for (Agent agent : agents) {
-                agent.update(graphicsEngine, groundGrid, sdt);
+                agent.update(graphicsEngine, groundGrid, collisionGrid, sdt);
 
                 //if (Math.random() < 0.01)
                 //    remove(agent);
