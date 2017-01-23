@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import net.natewm.SimulatedPhysicalUsability.Environment.MazeGenerator;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MaterialHandle;
@@ -113,21 +114,6 @@ public class MainWindow extends JFrame {
 
         pack();
         setVisible(true);
-
-        // TODO: Remove this temp garbage
-        Walls walls = new Walls();
-        Geometry geometry = walls.generateGeometry();
-        MeshHandle wallMesh = new MeshHandle();
-        MaterialHandle wallMaterial = new MaterialHandle();
-        MeshRenderNodeHandle wallNode = new MeshRenderNodeHandle();
-        try {
-            graphicsEngine.loadMaterial(wallMaterial, "data/graphics/wall_material.json");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        graphicsEngine.createMesh(wallMesh, geometry);
-        graphicsEngine.createMeshRenderNode(wallNode, wallMesh, wallMaterial);
-        graphicsEngine.addNodeToRenderer(wallNode);
 
         simulationThread.start();
     }
