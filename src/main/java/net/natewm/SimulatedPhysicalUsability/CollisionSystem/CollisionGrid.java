@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.CollisionSystem;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
+import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.List;
  * Created by Nathan on 1/22/2017.
  */
 public class CollisionGrid<T> {
+    public static int HORIZONTAL = 1;
+    public static int VERTICAL = 2;
+
     private class Cell {
         public boolean topWall = false;
         public boolean leftWall = false;
@@ -66,8 +70,40 @@ public class CollisionGrid<T> {
         }
     }
 
-    private boolean isInBounds(float x, float y) {
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public float getMinX() {
+        return minX;
+    }
+
+    public float getMinY() {
+        return minY;
+    }
+
+    public float getMaxX() {
+        return maxX;
+    }
+
+    public float getMaxY() {
+        return maxY;
+    }
+
+    public boolean isInBounds(float x, float y) {
         return x >= minX && x < maxX && y >= minY && y < maxY;
+    }
+
+    public boolean hasTopWall(int x, int y) {
+        return ((Cell)cells[y * width + x]).topWall;
+    }
+
+    public boolean hasLeftWall(int x, int y) {
+        return ((Cell)cells[y * width + x]).leftWall;
     }
 
     private int calcIndex(float x, float y) {
@@ -99,6 +135,24 @@ public class CollisionGrid<T> {
         return EMPTY_LIST;
     }
 
+    public List<T> getSurroundingList(float x, float y) {
+        List<T> output = new ArrayList<T>();
+        int cx = (int)Math.floor(x - minX);
+        int cy = (int)Math.floor(y - minY);
+        int sx = Math.max(cx-1, 0);
+        int sy = Math.max(cy-1, 0);
+        int ex = Math.min(cx+2, width);
+        int ey = Math.min(cy+2, height);
+
+        for (int j=sy; j<ey; j++) {
+            for (int i=sx; i<ex; i++) {
+                output.addAll(((Cell)cells[j * width + i]).items);
+            }
+        }
+
+        return output;
+    }
+
     public List<T> getList(Rect rect) {
         // TODO: Change to using callback function?
         List<T> output = new ArrayList<T>();
@@ -121,67 +175,38 @@ public class CollisionGrid<T> {
         return output;
     }
 
-    public boolean hitWall(float startX, float startY, float endX, float endY) {
+    public int hitWall(float startX, float startY, float endX, float endY) {
         float x = startX;
         float y = startY;
         float ox;
         float oy;
-        int dx = (int)(endX - startX);
-        int dy = (int)(endY - startY);
+        float dxf = (endX - startX);
+        float dyf = (endY - startY);
+        int dx = (int)dxf;
+        int dy = (int)dyf;
         float stepX;
         float stepY;
         int steps;
-        boolean horizontal;
-        boolean vertical;
+        //boolean horizontal;
+        //boolean vertical;
 
-
-        ox = startX;
-        oy = startY;
-        x = endX;
-        y = endY;
-        dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
-        dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
-
-        horizontal = false;
-        vertical = false;
-
-        //System.out.println(x + ", " + y);
-
-        if (ox > minX && ox < maxX && oy > minY && oy < maxY
-        && x > minX && x < maxX && y > minY && y < maxY) {
-            if (dx < 0) {
-                vertical = ((Cell) cells[calcIndex(ox, oy)]).leftWall
-                        | ((Cell) cells[calcIndex(ox, y)]).leftWall;
-            } else if (dx > 0) {
-                vertical = ((Cell) cells[calcIndex(x, oy)]).leftWall
-                        | ((Cell) cells[calcIndex(x, y)]).leftWall;
-            }
-
-            if (dy < 0) {
-                horizontal = ((Cell) cells[calcIndex(ox, oy)]).topWall
-                        | ((Cell) cells[calcIndex(x, oy)]).topWall;
-            } else if (dy > 0) {
-                horizontal = ((Cell) cells[calcIndex(ox, y)]).topWall
-                        | ((Cell) cells[calcIndex(x, y)]).topWall;
-            }
-
-            if (horizontal || vertical) {
-                return true;
-            }
-        }
-
+        int wallsHit = 0;
 
         /*
-        if (Math.abs(dx) > Math.abs(dy)) {
+
+        if (dxf == 0f && dyf == 0f) {
+            return false;
+        }
+        else if (Math.abs(dxf) > Math.abs(dyf)) {
             // Changes more in X direction than in Y
-            stepX = Math.copySign(1f, dx);
-            stepY = dy / Math.abs(dx);
-            steps = (int)(dx / stepX);
+            stepX = Math.copySign(1f, dxf);
+            stepY = dy / Math.abs(dxf);
+            steps = (int)(dxf / stepX);
         }
         else {
-            stepX = dx / Math.abs(dy);
-            stepY = Math.copySign(1f, dy);
-            steps = (int)(dy / stepY);
+            stepX = dx / Math.abs(dyf);
+            stepY = Math.copySign(1f, dyf);
+            steps = (int)(dyf / stepY);
         }
 
         for (int i=0; i<steps; i++) {
@@ -189,13 +214,16 @@ public class CollisionGrid<T> {
             oy = y;
             x += stepX;
             y += stepY;
-            dx = x - ox;
-            dy = y - oy;
+            dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
+            dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
 
             horizontal = false;
             vertical = false;
 
-            if (x >=0 && x < width && y >= 0 && y < height) {
+            //System.out.println(x + ", " + y);
+
+            if (ox > minX && ox < maxX && oy > minY && oy < maxY
+                    && x > minX && x < maxX && y > minY && y < maxY) {
                 if (dx < 0) {
                     vertical = ((Cell) cells[calcIndex(ox, oy)]).leftWall
                             | ((Cell) cells[calcIndex(ox, y)]).leftWall;
@@ -217,8 +245,84 @@ public class CollisionGrid<T> {
                 }
             }
         }
+
+        ox = x;
+        oy = y;
+        x = endX;
+        y = endY;
+        dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
+        dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
+
+        horizontal = false;
+        vertical = false;
+
+        //System.out.println(x + ", " + y);
+
+        if (ox > minX && ox < maxX && oy > minY && oy < maxY
+                && x > minX && x < maxX && y > minY && y < maxY) {
+            if (dx < 0) {
+                vertical = ((Cell) cells[calcIndex(ox, oy)]).leftWall
+                        | ((Cell) cells[calcIndex(ox, y)]).leftWall;
+            } else if (dx > 0) {
+                vertical = ((Cell) cells[calcIndex(x, oy)]).leftWall
+                        | ((Cell) cells[calcIndex(x, y)]).leftWall;
+            }
+
+            if (dy < 0) {
+                horizontal = ((Cell) cells[calcIndex(ox, oy)]).topWall
+                        | ((Cell) cells[calcIndex(x, oy)]).topWall;
+            } else if (dy > 0) {
+                horizontal = ((Cell) cells[calcIndex(ox, y)]).topWall
+                        | ((Cell) cells[calcIndex(x, y)]).topWall;
+            }
+
+            if (horizontal || vertical) {
+                return true;
+            }
+        }
+
         */
 
-        return false;
+
+        ox = startX;
+        oy = startY;
+        x = endX;
+        y = endY;
+        dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
+        dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
+
+        //horizontal = false;
+        //vertical = false;
+
+        //System.out.println(x + ", " + y);
+
+        if (ox > minX && ox < maxX && oy > minY && oy < maxY
+        && x > minX && x < maxX && y > minY && y < maxY) {
+            if (dx < 0) {
+                if (((Cell) cells[calcIndex(ox, oy)]).leftWall || ((Cell) cells[calcIndex(ox, y)]).leftWall) {
+                    wallsHit |= VERTICAL;
+                }
+            } else if (dx > 0) {
+                if(((Cell) cells[calcIndex(x, oy)]).leftWall || ((Cell) cells[calcIndex(x, y)]).leftWall) {
+                    wallsHit |= VERTICAL;
+                }
+            }
+
+            if (dy < 0) {
+                if (((Cell) cells[calcIndex(ox, oy)]).topWall || ((Cell) cells[calcIndex(x, oy)]).topWall) {
+                    wallsHit |= HORIZONTAL;
+                }
+            } else if (dy > 0) {
+                if (((Cell) cells[calcIndex(ox, y)]).topWall || ((Cell) cells[calcIndex(x, y)]).topWall) {
+                    wallsHit |= HORIZONTAL;
+                }
+            }
+
+            if (wallsHit > 0) {
+                return wallsHit;
+            }
+        }
+
+        return wallsHit;
     }
 }
