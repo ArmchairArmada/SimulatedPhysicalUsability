@@ -115,6 +115,12 @@ public class NavigationGrid {
             }
         }
 
+        for (int i=0; i<grid.length; i++) {
+            if (grid[i] == null) {
+                grid[i] = new Vector2f();
+            }
+        }
+
         vectorGrids.add(grid);
     }
 
