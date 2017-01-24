@@ -59,7 +59,7 @@ public class Main {
 
 
                 // TODO: Remove this temp garbage
-                MazeGenerator mazeGenerator = new MazeGenerator(90, 90, 0.15f);
+                MazeGenerator mazeGenerator = new MazeGenerator(90, 90, 0.05f);
                 Walls walls = mazeGenerator.generate(); //new Walls();
 
                 Geometry geometry = walls.generateGeometry();

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Walls {
     private static final float WALL_THICKNESS = 0.1f;
-    private static final float WALL_HEIGHT = 0.5f;
+    private static final float WALL_HEIGHT = 0.2f;
 
     public static class Wall {
         public float startX;
