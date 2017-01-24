@@ -1,5 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
+import net.natewm.SimulatedPhysicalUsability.Utils.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +48,14 @@ public class MazeGenerator {
 
         recursiveMaze(cells, halfHeight, halfWidth, 0, 0);
 
-        for (int i=0; i<cells.length; i++) {
-            if (Math.random() < removeWallProbability)
-                ((Cell)cells[i]).topWall = false;
+        for (int y=1; y<height; y++) {
+            for (int x=1; x<width; x++) {
+                if (Math.random() < removeWallProbability)
+                    ((Cell) cells[y*width+x]).topWall = false;
 
-            if (Math.random() < removeWallProbability)
-                ((Cell)cells[i]).leftWall = false;
+                if (Math.random() < removeWallProbability)
+                    ((Cell) cells[y*width+x]).leftWall = false;
+            }
         }
 
         for (int y=0; y<height; y++) {
@@ -77,20 +81,6 @@ public class MazeGenerator {
         }
 
         return walls;
-    }
-
-    private void shuffle(Object[] array) {
-        int i = array.length;
-        int index;
-        Object tmp;
-
-        while (i > 0) {
-            index = (int)(Math.random() * i);
-            i--;
-            tmp = array[i];
-            array[i] = array[index];
-            array[index] = tmp;
-        }
     }
 
     private void recursiveMaze(Cell[] cells, int x, int y, int dx, int dy) {
@@ -125,7 +115,7 @@ public class MazeGenerator {
                 new Dir(0, 1),
         };
 
-        shuffle(dirs);
+        ArrayUtils.shuffle(dirs);
 
         for(Dir dir : dirs) {
             recursiveMaze(cells, x+dir.dx, y+dir.dy, dir.dx, dir.dy);
