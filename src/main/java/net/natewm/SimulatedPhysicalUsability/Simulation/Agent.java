@@ -8,7 +8,6 @@ import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
 import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -18,10 +17,11 @@ import static java.lang.Thread.sleep;
  * Created by Nathan on 1/4/2017.
  */
 public class Agent {
-    private static final float WALKING_SPEED = 5.0f;
+    private static final float WALKING_SPEED = 8.0f;
     private static final float TURN_RATE = 10.0f;
     private static final float RADIUS = 0.3f;
-    private static final float FRICTION = 4.0f;
+    private static final float FRICTION = 6.0f;
+    private static final float AGENT_FRICTION = 0.01f;
     private static final float PUSH = 2.5f;
 
     MeshRenderNodeHandle renderNodeHandle;
@@ -54,6 +54,8 @@ public class Agent {
 
         collisionGrid.remove(x, y, this);
 
+        float px = 0f;
+        float py = 0f;
         float distance;
         List<Agent> agents = collisionGrid.getSurroundingList(x, y);
         for (Agent agent : agents) {
@@ -61,13 +63,20 @@ public class Agent {
             //if (rect.isOverlapping(agent.rect)) {
             if (distance <= RADIUS*2) {
                 distance = distance * distance * distance * distance;
-                vx += dt * PUSH * (x - agent.x) / distance;
-                vy += dt * PUSH * (y - agent.y) / distance;
+                px += dt * PUSH * (x - agent.x) / distance;
+                py += dt * PUSH * (y - agent.y) / distance;
             }
         }
 
-        vx -= vx * FRICTION * dt;
-        vy -= vy * FRICTION * dt;
+        distance = (float)Math.hypot(px, py);
+        vx -= vx * distance;
+        vy -= vy * distance;
+
+        vx += px;
+        vy += py;
+
+        vx -= vx * FRICTION * AGENT_FRICTION * dt;
+        vy -= vy * FRICTION * AGENT_FRICTION * dt;
 
         distance = (float)Math.hypot(vx, vy);
         if (distance > 2f) {

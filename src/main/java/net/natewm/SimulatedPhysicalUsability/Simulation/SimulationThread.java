@@ -50,6 +50,9 @@ public class SimulationThread {
                 lastTime = time;
                 runtime += dt;
 
+                if (dt > 0.03f)
+                    dt = 0.03f;
+
                 frameEnded = false;
 
                 if (doStop) {
