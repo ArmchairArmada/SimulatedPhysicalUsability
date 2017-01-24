@@ -50,6 +50,7 @@ public class NavigationGrid {
 
     public CollisionGrid collisionGrid;
 
+    public List<Vector2f> locations = new ArrayList<>();
     public List<Vector2f[]> vectorGrids = new ArrayList<>();
 
     public NavigationGrid(CollisionGrid collisionGrid) {
@@ -63,7 +64,16 @@ public class NavigationGrid {
         maxY = collisionGrid.getMaxY();
     }
 
+    public int getLocationCount() {
+        return vectorGrids.size();
+    }
+
+    public Vector2f getLocation(int locationIndex) {
+        return locations.get(locationIndex);
+    }
+
     public void addLocation(float x, float y) {
+        locations.add(new Vector2f(x,y));
         generateNavigationGrid(xIndex(x), yIndex(y));
     }
 

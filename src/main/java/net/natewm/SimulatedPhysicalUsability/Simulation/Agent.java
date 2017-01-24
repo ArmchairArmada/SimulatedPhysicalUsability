@@ -19,13 +19,15 @@ import static java.lang.Thread.sleep;
 public class Agent {
     private static final float WALKING_SPEED = 8.0f;
     private static final float TURN_RATE = 10.0f;
-    private static final float RADIUS = 0.3f;
+    private static final float RADIUS = 0.2f;
     private static final float FRICTION = 6.0f;
-    private static final float AGENT_FRICTION = 0.01f;
-    private static final float PUSH = 2.5f;
+    private static final float AGENT_FRICTION = 0.000001f;
+    private static final float PUSH = 2.0f;
 
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
+
+    int navGridID;
 
     float angle = 360f * (float)Math.random();
     float x = 0f;
@@ -36,7 +38,7 @@ public class Agent {
     float speedVariation = (float)(1.0 + Math.random()*0.2);
     Rect rect = new Rect(0,0, RADIUS*2, RADIUS*2);
 
-    public Agent(MeshRenderNodeHandle renderNodeHandle, Transform transform) {
+    public Agent(NavigationGrid navigationGrid, MeshRenderNodeHandle renderNodeHandle, Transform transform) {
         this.renderNodeHandle = renderNodeHandle;
         //transform = renderNodeHandle.getTransform();
         this.transform = transform;
@@ -45,6 +47,8 @@ public class Agent {
 
         x = transform.position.x;
         y = transform.position.z;
+
+        navGridID = (int)(Math.random() * navigationGrid.getLocationCount());
     }
 
     public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, NavigationGrid navigationGrid, float dt) {
@@ -88,7 +92,7 @@ public class Agent {
         //angle += turnAmount;
         //transform.rotation.rotateAxis(turnAmount, 0, 1, 0);
 
-        Vector2f navVec = navigationGrid.getVector(0, x, y);
+        Vector2f navVec = navigationGrid.getVector(navGridID, x, y);
 
         vx += navVec.x * WALKING_SPEED * speedVariation * dt;
         vy += navVec.y * WALKING_SPEED * speedVariation * dt;
@@ -128,7 +132,8 @@ public class Agent {
         collisionGrid.put(x, y, this);
 
         // TODO: Use real exit locations
-        if (x > 0 && x < 1 && y > 0 && y < 1) {
+        Vector2f loc = navigationGrid.getLocation(navGridID);
+        if (x > loc.x && x <= loc.x+1 && y > loc.y && y <= loc.y+1) {
             agentManager.remove(this);
         }
 
