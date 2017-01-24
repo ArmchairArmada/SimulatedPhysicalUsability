@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Navigation;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.Utils.ArrayUtils;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -84,34 +85,69 @@ public class NavigationGrid {
 
             node = frontier.remove();
 
-            //System.out.println(node.x + ", " + node.y + ", " + node.fromX + ", " + node.fromY + ", " + node.distance);
-            //System.out.println(width + ", " + height);
+            if (grid[node.y*width+node.x] == null) {
+                //System.out.println(node.x + ", " + node.y + ", " + node.fromX + ", " + node.fromY + ", " + node.distance);
+                //System.out.println(width + ", " + height);
 
-            //grid[node.y*width+node.x] = new Vector2f(node.x-node.fromX, node.y-node.fromY);
-            grid[node.y*width+node.x] = new Vector2f(node.fromX-node.x, node.fromY-node.y);
+                //grid[node.y*width+node.x] = new Vector2f(node.x-node.fromX, node.y-node.fromY);
+                grid[node.y * width + node.x] = new Vector2f(node.fromX - node.x, node.fromY - node.y);
 
-            if (node.y > 0 && !collisionGrid.hasTopWall(node.x, node.y)) {
-                if (node.y-1 >= 0 && grid[(node.y-1)*width+node.x] == null) {
-                    frontier.add(new Node(node.x, node.y-1, node.x, node.y, node.distance+1f));
+                Integer[] dirs = {0, 1, 2, 3};
+                ArrayUtils.shuffle(dirs);
+
+
+                for (Integer dir : dirs) {
+                    if (dir == 0 && node.y > 0 && !collisionGrid.hasTopWall(node.x, node.y)) {
+                        if (node.y - 1 >= 0 && grid[(node.y - 1) * width + node.x] == null) {
+                            frontier.add(new Node(node.x, node.y - 1, node.x, node.y, node.distance + 1f));
+                        }
+                    }
+
+                    if (dir == 1 && node.y < height - 1 && !collisionGrid.hasTopWall(node.x, node.y + 1)) {
+                        if (node.y + 1 >= 0 && grid[(node.y + 1) * width + node.x] == null) {
+                            frontier.add(new Node(node.x, node.y + 1, node.x, node.y, node.distance + 1f));
+                        }
+                    }
+
+                    if (dir == 2 && node.x > 0 && !collisionGrid.hasLeftWall(node.x, node.y)) {
+                        if (node.x - 1 >= 0 && grid[node.y * width + node.x - 1] == null) {
+                            frontier.add(new Node(node.x - 1, node.y, node.x, node.y, node.distance + 1f));
+                        }
+                    }
+
+                    if (dir == 3 && node.x < width - 1 && !collisionGrid.hasLeftWall(node.x + 1, node.y)) {
+                        if (node.x + 1 >= 0 && grid[node.y * width + node.x + 1] == null) {
+                            frontier.add(new Node(node.x + 1, node.y, node.x, node.y, node.distance + 1f));
+                        }
+                    }
                 }
-            }
 
-            if (node.y < height-1 && !collisionGrid.hasTopWall(node.x, node.y+1)) {
-                if (node.y+1 >= 0 && grid[(node.y+1)*width+node.x] == null) {
-                    frontier.add(new Node(node.x, node.y+1, node.x, node.y, node.distance+1f));
-                }
-            }
 
-            if (node.x > 0 && !collisionGrid.hasLeftWall(node.x, node.y)) {
-                if (node.x-1 >= 0 && grid[node.y*width+node.x-1] == null) {
-                    frontier.add(new Node(node.x-1, node.y, node.x, node.y, node.distance+1f));
+                /*
+                if (node.y > 0 && !collisionGrid.hasTopWall(node.x, node.y)) {
+                    if (node.y - 1 >= 0 && grid[(node.y - 1) * width + node.x] == null) {
+                        frontier.add(new Node(node.x, node.y - 1, node.x, node.y, node.distance + 1f));
+                    }
                 }
-            }
 
-            if (node.x < width-1 && !collisionGrid.hasLeftWall(node.x+1, node.y)) {
-                if (node.x+1 >= 0 && grid[node.y*width+node.x+1] == null) {
-                    frontier.add(new Node(node.x+1, node.y, node.x, node.y, node.distance+1f));
+                if (node.y < height - 1 && !collisionGrid.hasTopWall(node.x, node.y + 1)) {
+                    if (node.y + 1 >= 0 && grid[(node.y + 1) * width + node.x] == null) {
+                        frontier.add(new Node(node.x, node.y + 1, node.x, node.y, node.distance + 1f));
+                    }
                 }
+
+                if (node.x > 0 && !collisionGrid.hasLeftWall(node.x, node.y)) {
+                    if (node.x - 1 >= 0 && grid[node.y * width + node.x - 1] == null) {
+                        frontier.add(new Node(node.x - 1, node.y, node.x, node.y, node.distance + 1f));
+                    }
+                }
+
+                if (node.x < width - 1 && !collisionGrid.hasLeftWall(node.x + 1, node.y)) {
+                    if (node.x + 1 >= 0 && grid[node.y * width + node.x + 1] == null) {
+                        frontier.add(new Node(node.x + 1, node.y, node.x, node.y, node.distance + 1f));
+                    }
+                }
+                */
             }
         }
 
