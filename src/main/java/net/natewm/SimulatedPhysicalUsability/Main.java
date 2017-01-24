@@ -12,6 +12,7 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshH
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
+import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.MainWindow;
@@ -58,7 +59,7 @@ public class Main {
 
 
                 // TODO: Remove this temp garbage
-                MazeGenerator mazeGenerator = new MazeGenerator(64, 64, 0.2f);
+                MazeGenerator mazeGenerator = new MazeGenerator(90, 90, 0.15f);
                 Walls walls = mazeGenerator.generate(); //new Walls();
 
                 Geometry geometry = walls.generateGeometry();
@@ -78,7 +79,11 @@ public class Main {
                 CollisionGrid<Agent> collisionGrid = new CollisionGrid<>(walls);
 
 
-                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid);
+                NavigationGrid navigationGrid = new NavigationGrid(collisionGrid);
+                navigationGrid.addLocation(0f, 0f);
+
+
+                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid, navigationGrid);
                 graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
 
 
