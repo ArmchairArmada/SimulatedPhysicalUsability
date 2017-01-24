@@ -111,7 +111,7 @@ public class SimulationThread {
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
 
-                    agentManager.add(new Agent(node, transform));
+                    agentManager.add(new Agent(navigationGrid, node, transform));
                 }
             }
         }

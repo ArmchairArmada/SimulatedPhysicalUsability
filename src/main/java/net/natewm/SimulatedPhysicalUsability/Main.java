@@ -59,7 +59,7 @@ public class Main {
 
 
                 // TODO: Remove this temp garbage
-                MazeGenerator mazeGenerator = new MazeGenerator(60, 60, 1.1f);
+                MazeGenerator mazeGenerator = new MazeGenerator(60, 60, 0.15f);
                 Walls walls = mazeGenerator.generate(); //new Walls();
 
                 Geometry geometry = walls.generateGeometry();
@@ -80,7 +80,11 @@ public class Main {
 
 
                 NavigationGrid navigationGrid = new NavigationGrid(collisionGrid);
-                navigationGrid.addLocation(0f, 0f);
+                //navigationGrid.addLocation(0f, 0f);
+                navigationGrid.addLocation(-25f, -25f);
+                navigationGrid.addLocation(-25f, 25f);
+                navigationGrid.addLocation(25f, -25f);
+                navigationGrid.addLocation(25f, 25f);
 
 
                 SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid, navigationGrid);
