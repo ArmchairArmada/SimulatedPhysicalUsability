@@ -7,6 +7,7 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshR
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
 import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
+import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
 import java.util.List;
@@ -19,10 +20,10 @@ import static java.lang.Thread.sleep;
 public class Agent {
     private static final float WALKING_SPEED = 8.0f;
     private static final float TURN_RATE = 10.0f;
-    private static final float RADIUS = 0.2f;
+    private static final float RADIUS = 0.3f;
     private static final float FRICTION = 6.0f;
     private static final float AGENT_FRICTION = 0.000001f;
-    private static final float PUSH = 2.0f;
+    private static final float PUSH = 1.2f;
 
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
@@ -122,7 +123,9 @@ public class Agent {
 
         transform.position.set(x, 0, y);
         //angle = (float)Math.atan2(vx, vy);
-        transform.rotation.setAngleAxis(angle, 0f, 1f, 0f);
+        //transform.rotation.setAngleAxis(angle, 0f, 1f, 0f);
+        //transform.rotation.setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f);
+        transform.rotation.nlerp(new Quaternionf().setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f), 5.0f*dt);
 
         rect.x = x - RADIUS;
         rect.y = y - RADIUS;
