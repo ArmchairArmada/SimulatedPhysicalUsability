@@ -23,7 +23,7 @@ public class Agent {
     private static final float RADIUS = 0.3f;
     private static final float FRICTION = 6.0f;
     private static final float AGENT_FRICTION = 0.000001f;
-    private static final float PUSH = 1.2f;
+    private static final float PUSH = 1.25f;
 
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
