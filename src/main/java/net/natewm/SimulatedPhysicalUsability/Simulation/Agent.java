@@ -20,31 +20,32 @@ import static java.lang.Thread.sleep;
 public class Agent {
     private static final float WALKING_SPEED = 8.0f;
     private static final float TURN_RATE = 10.0f;
-    private static final float RADIUS = 0.3f;
-    private static final float FRICTION = 6.0f;
-    private static final float AGENT_FRICTION = 0.000001f;
-    private static final float PUSH = 1.25f;
+    private static final float RADIUS = 0.25f;
+    private static final float FRICTION = 3.5f;
+    private static final float DRUNKENNESS = 0.05f;
+    //private static final float AGENT_FRICTION = 1.0f;
+    private static final float PUSH = 1.5f;
 
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
 
     int navGridID;
 
-    float angle = 360f * (float)Math.random();
+    //float angle = 360f * (float)Math.random();
     float x = 0f;
     float y = 0f;
     float vx = 0f;
     float vy = 0f;
 
     float speedVariation = (float)(1.0 + Math.random()*0.2);
-    Rect rect = new Rect(0,0, RADIUS*2, RADIUS*2);
+    //Rect rect = new Rect(0,0, RADIUS*2, RADIUS*2);
 
     public Agent(NavigationGrid navigationGrid, MeshRenderNodeHandle renderNodeHandle, Transform transform) {
         this.renderNodeHandle = renderNodeHandle;
         //transform = renderNodeHandle.getTransform();
         this.transform = transform;
-        rect.x = transform.position.x - RADIUS;
-        rect.y = transform.position.z - RADIUS;
+        //rect.x = transform.position.x - RADIUS;
+        //rect.y = transform.position.z - RADIUS;
 
         x = transform.position.x;
         y = transform.position.z;
@@ -53,6 +54,8 @@ public class Agent {
     }
 
     public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, NavigationGrid navigationGrid, float dt) {
+        // TODO: Seriously clean this up!!!
+
         int wallsHit;
         float ox = x;
         float oy = y;
@@ -70,6 +73,9 @@ public class Agent {
                 distance = distance * distance * distance * distance;
                 px += dt * PUSH * (x - agent.x) / distance;
                 py += dt * PUSH * (y - agent.y) / distance;
+
+                //vx -= vx * distance * AGENT_FRICTION * dt;
+                //vy -= vy * distance * AGENT_FRICTION * dt;
             }
         }
 
@@ -80,13 +86,17 @@ public class Agent {
         vx += px;
         vy += py;
 
-        vx -= vx * FRICTION * AGENT_FRICTION * dt;
-        vy -= vy * FRICTION * AGENT_FRICTION * dt;
+        // TODO: Figure out what I intended to do with AGENT_FRICTION
+        //vx -= vx * FRICTION * AGENT_FRICTION * dt;
+        //vy -= vy * FRICTION * AGENT_FRICTION * dt;
+
+        vx -= vx * FRICTION * dt;
+        vy -= vy * FRICTION * dt;
 
         distance = (float)Math.hypot(vx, vy);
-        if (distance > 2f) {
-            vx = 2f * vx/distance;
-            vy = 2f * vy/distance;
+        if (distance > 3f) {
+            vx = 3f * vx/distance;
+            vy = 3f * vy/distance;
         }
 
         //float turnAmount = ((float)Math.random() - 0.5f) * TURN_RATE * dt;
@@ -98,10 +108,16 @@ public class Agent {
         vx += navVec.x * WALKING_SPEED * speedVariation * dt;
         vy += navVec.y * WALKING_SPEED * speedVariation * dt;
 
-        angle = (float)Math.atan2(vx, vy);
+        //angle = (float)Math.atan2(vx, vy);
 
         //vx += Math.sin(angle) * WALKING_SPEED * speedVariation * dt;
         //vy += Math.cos(angle) * WALKING_SPEED * speedVariation * dt;
+
+        float angle = (float) Math.atan2(vx, vy);
+        float magnitude = (float) Math.hypot(vx, vy);
+        angle += (Math.random() - 0.5)*DRUNKENNESS;
+        vx = (float) (magnitude * Math.sin(angle));
+        vy = (float) (magnitude * Math.cos(angle));
 
         x += vx * dt;
         y += vy * dt;
@@ -112,13 +128,13 @@ public class Agent {
         if ((wallsHit & CollisionGrid.HORIZONTAL) > 0) {
             y = oy;
             vy = -vy;
-            angle = (float)Math.atan2(vx, vy);
+            //angle = (float)Math.atan2(vx, vy);
         }
 
         if ((wallsHit & CollisionGrid.VERTICAL) > 0) {
             x = ox;
             vx = -vx;
-            angle = (float)Math.atan2(vx, vy);
+            //angle = (float)Math.atan2(vx, vy);
         }
 
         transform.position.set(x, 0, y);
@@ -127,8 +143,8 @@ public class Agent {
         //transform.rotation.setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f);
         transform.rotation.nlerp(new Quaternionf().setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f), 5.0f*dt);
 
-        rect.x = x - RADIUS;
-        rect.y = y - RADIUS;
+        //rect.x = x - RADIUS;
+        //rect.y = y - RADIUS;
 
         groundGrid.add(transform.position, dt);
 
