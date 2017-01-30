@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
@@ -21,9 +22,9 @@ public class AgentManager {
     public AgentManager() {
     }
 
-    public void reset(GraphicsEngine graphicsEngine, CollisionGrid<Agent> collisionGrid) {
+    public void reset(GraphicsEngine graphicsEngine, ICollisionCollection<Agent> collisionCollection) {
         for (Agent agent : agents) {
-            agent.dispose(graphicsEngine, collisionGrid);
+            agent.dispose(graphicsEngine, collisionCollection);
         }
 
         agents = new ArrayList<>();
@@ -39,7 +40,7 @@ public class AgentManager {
         toRemove.add(agent);
     }
 
-    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, NavigationGrid navigationGrid, float dt) {
+    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
         int steps = 1;
 
         if (dt < 0.1f)
@@ -48,7 +49,7 @@ public class AgentManager {
 
         for (int i=0; i<steps; i++) {
             for (Agent agent : toRemove) {
-                agent.dispose(graphicsEngine, collisionGrid);
+                agent.dispose(graphicsEngine, collisionCollection);
             }
 
             agents.removeAll(toRemove);
@@ -57,7 +58,7 @@ public class AgentManager {
             toAdd.clear();
 
             for (Agent agent : agents) {
-                agent.update(this, graphicsEngine, groundGrid, collisionGrid, navigationGrid, sdt);
+                agent.update(this, graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid, sdt);
 
                 //if (Math.random() < 0.01)
                 //    remove(agent);

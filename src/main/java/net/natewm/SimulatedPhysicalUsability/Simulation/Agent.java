@@ -1,6 +1,8 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
+import javafx.util.Pair;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
@@ -10,6 +12,8 @@ import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -38,7 +42,7 @@ public class Agent {
     float vy = 0f;
 
     float speedVariation = (float)(1.0 + Math.random()*0.2);
-    //Rect rect = new Rect(0,0, RADIUS*2, RADIUS*2);
+    Rect rect = new Rect(0,0, RADIUS*2, RADIUS*2);
 
     public Agent(NavigationGrid navigationGrid, MeshRenderNodeHandle renderNodeHandle, Transform transform) {
         this.renderNodeHandle = renderNodeHandle;
@@ -53,20 +57,25 @@ public class Agent {
         navGridID = (int)(Math.random() * navigationGrid.getLocationCount());
     }
 
-    public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, NavigationGrid navigationGrid, float dt) {
+    public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
         // TODO: Seriously clean this up!!!
 
         int wallsHit;
         float ox = x;
         float oy = y;
 
-        collisionGrid.remove(x, y, this);
+        collisionCollection.remove(rect);
 
         float px = 0f;
         float py = 0f;
         float distance;
-        List<Agent> agents = collisionGrid.getSurroundingList(x, y);
-        for (Agent agent : agents) {
+        //List<Agent> agents = collisionGrid.getSurroundingList(x, y);
+        List<Pair<Rect, Agent>> collisions = new LinkedList<>();
+        collisionCollection.findOverlapping(rect, collisions);
+
+        Agent agent;
+        for (Pair<Rect, Agent> collision : collisions) {
+            agent = collision.getValue();
             distance = (float) Math.hypot(x - agent.x, y - agent.y);
             //if (rect.isOverlapping(agent.rect)) {
             if (distance <= RADIUS*2) {
@@ -143,12 +152,13 @@ public class Agent {
         //transform.rotation.setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f);
         transform.rotation.nlerp(new Quaternionf().setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f), 5.0f*dt);
 
-        //rect.x = x - RADIUS;
-        //rect.y = y - RADIUS;
+        rect.x = x - RADIUS;
+        rect.y = y - RADIUS;
 
         groundGrid.add(transform.position, dt);
 
-        collisionGrid.put(x, y, this);
+        //collisionGrid.put(x, y, this);
+        collisionCollection.insert(rect, this);
 
         // TODO: Use real exit locations
         Vector2f loc = navigationGrid.getLocation(navGridID);
@@ -165,9 +175,10 @@ public class Agent {
         graphicsEngine.setRenderNodeTransform(renderNodeHandle, transform);
     }
 
-    public void dispose(GraphicsEngine graphicsEngine, CollisionGrid<Agent> collisionGrid) {
+    public void dispose(GraphicsEngine graphicsEngine, ICollisionCollection<Agent> collisionCollection) {
         //renderer.remove(renderNodeHandle);
         graphicsEngine.removeNodeFromRenderer(renderNodeHandle);
-        collisionGrid.remove(x, y, this);
+        //collisionGrid.remove(x, y, this);
+        collisionCollection.remove(rect);
     }
 }

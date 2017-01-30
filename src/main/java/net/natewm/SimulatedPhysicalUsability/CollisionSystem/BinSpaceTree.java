@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Nathan on 1/29/2017.
  */
-public class BinSpaceTree<T> {
+public class BinSpaceTree<T> implements ICollisionCollection<T>{
     private class Node {
         public Rect rect;                                       // Bounding rectangle
         public Node parent;
