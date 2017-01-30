@@ -3,7 +3,9 @@ package net.natewm.SimulatedPhysicalUsability;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.Environment.MazeGenerator;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
@@ -77,6 +79,7 @@ public class Main {
 
 
                 CollisionGrid<Agent> collisionGrid = new CollisionGrid<>(walls);
+                ICollisionCollection<Agent> collisionCollection = new BinSpaceTree<>(-512, 512, 1024, 1024, 10);
 
 
                 NavigationGrid navigationGrid = new NavigationGrid(collisionGrid);
@@ -87,7 +90,7 @@ public class Main {
                 navigationGrid.addLocation(25f, 25f);
 
 
-                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid, navigationGrid);
+                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid);
                 graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
 
 

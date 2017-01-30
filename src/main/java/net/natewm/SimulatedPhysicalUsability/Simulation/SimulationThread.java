@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
@@ -15,6 +16,7 @@ import static java.lang.Thread.sleep;
  */
 public class SimulationThread {
     private class SimulationRunnable implements Runnable, IFrameEndReceiver {
+        private final ICollisionCollection<Agent> collisionCollection;
         NavigationGrid navigationGrid;
         GraphicsEngine graphicsEngine;
         AgentManager agentManager = new AgentManager();
@@ -27,10 +29,11 @@ public class SimulationThread {
         boolean doStop = false;
         boolean doInit = false;
 
-        public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, NavigationGrid navigationGrid) {
+        public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
             this.graphicsEngine = graphicsEngine;
             this.groundGrid = groundGrid;
             this.collisionGrid = collisionGrid;
+            this.collisionCollection = collisionCollection;
             this.navigationGrid = navigationGrid;
         }
 
@@ -57,7 +60,7 @@ public class SimulationThread {
 
                 if (doStop) {
                     doStop = false;
-                    agentManager.reset(graphicsEngine, collisionGrid);
+                    agentManager.reset(graphicsEngine, collisionCollection);
                 }
 
                 if (doInit) {
@@ -67,7 +70,7 @@ public class SimulationThread {
 
                 if (!paused) {
                     for (int i=0; i<speed; i++) {
-                        agentManager.update(graphicsEngine, groundGrid, collisionGrid, navigationGrid, dt);
+                        agentManager.update(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid, dt);
                     }
 
                     groundGrid.update();
@@ -159,8 +162,8 @@ public class SimulationThread {
     SimulationRunnable runnable;
 
 
-    public SimulationThread(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, NavigationGrid navigationGrid) {
-        runnable = new SimulationRunnable(graphicsEngine, groundGrid, collisionGrid, navigationGrid);
+    public SimulationThread(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
+        runnable = new SimulationRunnable(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid);
         thread = new Thread(runnable);
     }
 
