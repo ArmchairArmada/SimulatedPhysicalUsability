@@ -42,6 +42,10 @@ public class Rect {
         return true;
     }
 
+    public boolean contains(Rect rect) {
+        return x <= rect.x && y <= rect.y && x+width > rect.x+rect.width && y+height > rect.y+rect.height;
+    }
+
     public boolean isInside(float x, float y) {
         return this.x <= x && this.y <= y && (this.x + width) >= x && (this.y + height) >= y;
     }
