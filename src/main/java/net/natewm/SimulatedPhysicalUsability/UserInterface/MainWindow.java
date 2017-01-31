@@ -105,8 +105,28 @@ public class MainWindow extends JFrame {
 
         tabbedPane.addTab("Simulation", simulationTabPanel);
 
+
+        JPanel editorTabPanel = new JPanel();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.weightx = 1;
+        editorTabPanel.setLayout(layout);
+
+        EditorControlPanel editorControlPanel = new EditorControlPanel();
+        editorControlPanel.setMinimumSize(new Dimension(250, 0));
+        editorControlPanel.setMaximumSize(new Dimension(250, 1000000));
+        editorControlPanel.setPreferredSize(new Dimension(250, 600));
+
+        editorTabPanel.add(editorControlPanel, gridBagConstraints);
+
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.weightx = 1000000;
+
+        editorTabPanel.add(new EditorPanel(), gridBagConstraints);
+
+        tabbedPane.addTab("Environment", editorTabPanel);
+
+
         // TODO: Make real tabs -- remember to suspend limit rendering to 60 FPS
-        tabbedPane.addTab("Environment", new JPanel());
         tabbedPane.addTab("Behaviors", new JPanel());
         tabbedPane.addTab("Statistics", new JPanel());
 
