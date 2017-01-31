@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Walls {
     private static final float WALL_THICKNESS = 0.1f;
-    private static final float WALL_HEIGHT = 0.2f;
+    private static final float WALL_HEIGHT = 0.25f;
 
     public static class Wall {
         public float startX;
@@ -33,7 +33,7 @@ public class Walls {
     private float minX = Float.MAX_VALUE;
     private float minY = Float.MAX_VALUE;
     private float maxX = Float.MIN_VALUE;
-    private float maxY = Float.MIN_VALUE;;
+    private float maxY = Float.MIN_VALUE;
 
 
     public Walls() {
