@@ -72,7 +72,7 @@ public class MouseCamera {
 
                 switch (button) {
                     case 1:
-                        component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        component.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
                         break;
 
                     case 2:
@@ -80,7 +80,7 @@ public class MouseCamera {
                         break;
 
                     case 3:
-                        component.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                        component.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                         break;
 
                     default:
@@ -113,6 +113,21 @@ public class MouseCamera {
                 Quaternionf q = new Quaternionf();
 
                 if (button == 1) {
+                    rotateY -= (e.getX() - previousX) * ROTATE_RATE;
+                    rotateX += (e.getY() - previousY) * ROTATE_RATE;
+                    if (rotateX > MAX_ROTATE)
+                        rotateX = MAX_ROTATE;
+                    if (rotateX < MIN_ROTATE)
+                        rotateX = MIN_ROTATE;
+                    cameraAngle.identity().rotateAxis(rotateY, 0f, 1f, 0f).rotateAxis(rotateX, 1f, 0f, 0f);
+                }
+                if (button == 2) {
+                    distance += (e.getY() - previousY) * distance * ZOOM_RATE;
+
+                    if (distance < MIN_ZOOM)
+                        distance = MIN_ZOOM;
+                }
+                if (button == 3) {
                     q.identity().rotateAxis(rotateY, 0f, 1f, 0f);
 
                     v.set(1f, 0f, 0f);
@@ -124,21 +139,6 @@ public class MouseCamera {
                     v.rotate(q);
                     v.mul((e.getY() - previousY) * TRANSLATE_RATE * distance);
                     cameraCenter.add(v);
-                }
-                if (button == 2) {
-                    distance += (e.getY() - previousY) * distance * ZOOM_RATE;
-
-                    if (distance < MIN_ZOOM)
-                        distance = MIN_ZOOM;
-                }
-                if (button == 3) {
-                    rotateY -= (e.getX() - previousX) * ROTATE_RATE;
-                    rotateX += (e.getY() - previousY) * ROTATE_RATE;
-                    if (rotateX > MAX_ROTATE)
-                        rotateX = MAX_ROTATE;
-                    if (rotateX < MIN_ROTATE)
-                        rotateX = MIN_ROTATE;
-                    cameraAngle.identity().rotateAxis(rotateY, 0f, 1f, 0f).rotateAxis(rotateX, 1f, 0f, 0f);
                 }
 
                 previousX = e.getX();

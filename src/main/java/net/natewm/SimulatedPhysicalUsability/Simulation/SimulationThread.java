@@ -28,6 +28,7 @@ public class SimulationThread {
         int speed = 1;
         boolean doStop = false;
         boolean doInit = false;
+        final Object lock = new Object();
 
         public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
             this.graphicsEngine = graphicsEngine;
@@ -78,11 +79,22 @@ public class SimulationThread {
 
                 graphicsEngine.frameEnd();
 
+                /*
                 while (!frameEnded) {
                     try {
                         sleep(0);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                }
+                */
+                synchronized (lock) {
+                    while (!frameEnded) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -125,7 +137,10 @@ public class SimulationThread {
 
         @Override
         public void graphicsFrameEnded() {
-            frameEnded = true;
+            synchronized (lock) {
+                frameEnded = true;
+                lock.notify();
+            }
         }
 
         public void stop() {
