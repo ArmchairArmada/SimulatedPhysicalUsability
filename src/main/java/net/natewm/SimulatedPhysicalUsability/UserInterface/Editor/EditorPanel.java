@@ -1,10 +1,18 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Editor;
+
+import javafx.util.Pair;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
+import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Created by Nathan on 1/30/2017.
@@ -19,7 +27,17 @@ public class EditorPanel extends JPanel {
     int offsetX = 0;
     int offsetY = 0;
 
+    ICollisionCollection<IEditorDrawable> drawables;
+
     public EditorPanel() {
+        drawables = new BinSpaceTree<>(-512, 512, 1024, 1024, 10);
+        IEditorDrawable test = new TestDrawable(0, 0);
+        drawables.insert(test.getRect(), test);
+
+        test = new TestDrawable(25, 25);
+        drawables.insert(test.getRect(), test);
+
+
         setBackground(Color.white);
 
         addMouseListener(new MouseListener() {
@@ -78,7 +96,7 @@ public class EditorPanel extends JPanel {
 
         g.clearRect(0, 0, getWidth(), getHeight());
 
-        g.setColor(GRID_COLOR   );
+        g.setColor(GRID_COLOR);
 
         for (int y=0; y<getHeight(); y+=GRID_SIZE) {
             g.drawLine(0, y+offYMod, getWidth(), y+offYMod);
@@ -99,7 +117,16 @@ public class EditorPanel extends JPanel {
         g.drawLine(0, centerY-offsetY, getWidth(), centerY-offsetY);
         g.drawLine(centerX-offsetX, 0, centerX-offsetX, getHeight());
 
-        g.setColor(Color.black);
-        g.fillRect(centerX-offsetX-2, centerY-offsetY-2, GRID_SIZE+5, 5);
+
+        ArrayList<Pair<Rect, IEditorDrawable>> toDraw = new ArrayList<>();
+        drawables.findOverlapping(new Rect(offsetX-centerX, offsetY-centerY, getWidth(), getHeight()), toDraw);
+
+        for (Pair<Rect, IEditorDrawable> pair : toDraw) {
+            pair.getValue().draw((Graphics2D)g, centerX-offsetX, centerY-offsetY);
+        }
+
+
+        //g.setColor(Color.black);
+        //g.fillRect(centerX-offsetX-2, centerY-offsetY-2, GRID_SIZE+5, 5);
     }
 }

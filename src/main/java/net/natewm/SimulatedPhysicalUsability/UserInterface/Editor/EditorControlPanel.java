@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Editor;
 
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;

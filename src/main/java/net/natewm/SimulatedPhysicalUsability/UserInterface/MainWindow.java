@@ -1,17 +1,10 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLProfile;
-import net.natewm.SimulatedPhysicalUsability.Environment.MazeGenerator;
-import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MaterialHandle;
-import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshHandle;
-import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
-import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Editor.EditorControlPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Editor.EditorPanel;
 
 import javax.swing.*;
 import java.awt.*;
