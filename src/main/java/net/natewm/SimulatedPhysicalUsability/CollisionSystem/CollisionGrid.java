@@ -212,8 +212,6 @@ public class CollisionGrid {
         float y;
         float ox;
         float oy;
-        float dxf = (endX - startX);
-        float dyf = (endY - startY);
         int dx;
         int dy;
         int wallsHit = 0;
