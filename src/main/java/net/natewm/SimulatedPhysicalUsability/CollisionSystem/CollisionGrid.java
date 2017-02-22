@@ -2,47 +2,64 @@ package net.natewm.SimulatedPhysicalUsability.CollisionSystem;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Grid for checking collisions with walls.
- *
- * @param <T>
  */
-public class CollisionGrid<T> {
-    public static int HORIZONTAL = 1;
-    public static int VERTICAL = 2;
+public class CollisionGrid {
+    public static int HORIZONTAL = 1;   // Horizontal wall
+    public static int VERTICAL = 2;     // Vertical wall
 
+
+    /**
+     * Cell for storing wall information.
+     */
     private class Cell {
-        public boolean topWall = false;
-        public boolean leftWall = false;
-        public List<T> items = new ArrayList<>();
+        boolean topWall = false;
+        boolean leftWall = false;
     }
 
-    private final List<T> EMPTY_LIST = new ArrayList<>();
 
-    int width;
-    int height;
-    float minX;
-    float minY;
-    float maxX;
-    float maxY;
-    Object[] cells;
 
+    private int width;      // Width of grid.
+    private int height;     // Height of grid.
+    private float minX;     // Minimum X value for grid bounds.
+    private float minY;     // Minimum Y value for grid bounds.
+    private float maxX;     // Maximum X value for grid bounds.
+    private float maxY;     // Maximum Y value for grid bounds.
+    private Object[] cells; // Wall cells
+
+
+    /**
+     * Default constructor.
+     */
     public CollisionGrid() {
     }
 
+
+    /**
+     * Constructs collision grid from given wall information.
+     *
+     * @param walls Walls to place into collision grid.
+     */
     public CollisionGrid(Walls walls) {
         reset(walls);
     }
 
+
+    /**
+     * Resets collision grid with given wall information.  This will makde the collision grid now have walls where the
+     * given wall information has them defined.
+     *
+     * @param walls Walls to be placed into collision grid.
+     */
     public void reset(Walls walls) {
+        // Set bounds
         minX = walls.getMinX()-1;
         minY = walls.getMinY()-1;
         maxX = walls.getMaxX()+1;
         maxY = walls.getMaxY()+1;
 
+        // Initialize array of wall objects.
         // TODO: Check if one should be added.
         width = (int)(Math.ceil(maxX) - Math.floor(minX));
         height = (int)(Math.ceil(maxY) - Math.floor(minY));
@@ -51,14 +68,13 @@ public class CollisionGrid<T> {
             cells[i] = new Cell();
         }
 
+        // Add walls to collision grid.
         int x;
         int y;
         boolean horizontal;
         for (Walls.Wall wall : walls.getWalls()) {
             x = (int)(Math.floor(Math.min(wall.startX, wall.endX)-minX));
             y = (int)(Math.floor(Math.min(wall.startY, wall.endY)-minY));
-
-            //System.out.println(x + ", " + y);
 
             horizontal = Math.abs(wall.endX - wall.startX) > Math.abs(wall.endY - wall.startY);
 
@@ -71,219 +87,136 @@ public class CollisionGrid<T> {
         }
     }
 
+
+    /**
+     * Gets width of collision grid.
+     *
+     * @return Width.
+     */
     public int getWidth() {
         return width;
     }
 
+
+    /**
+     * Gets height of collision grid.
+     *
+     * @return Height.
+     */
     public int getHeight() {
         return height;
     }
 
+
+    /**
+     * Gets minimum x bounding value.
+     *
+     * @return Minimum x bounding value.
+     */
     public float getMinX() {
         return minX;
     }
 
+
+    /**
+     * Gets minimum y bounding value.
+     *
+     * @return Minimum y bounding value.
+     */
     public float getMinY() {
         return minY;
     }
 
+
+    /**
+     * Gets Maximum x bouding value.
+     *
+     * @return Maximum x bounding value.
+     */
     public float getMaxX() {
         return maxX;
     }
 
+
+    /**
+     * Gets maximum y bounding value.
+     *
+     * @return Maximum y bounding value.
+     */
     public float getMaxY() {
         return maxY;
     }
 
+
+    /**
+     * Checks if a point is within bounds of the collision grid.
+     *
+     * @param x X coordinate of point.
+     * @param y Y coordinate of point.
+     * @return True if within bounds of grid, else false.
+     */
     public boolean isInBounds(float x, float y) {
         return x >= minX && x < maxX && y >= minY && y < maxY;
     }
 
+
+    /**
+     * Checks if the cell at the given coordinate has a top wall.
+     *
+     * @param x X coordinate of cell.
+     * @param y Y coordinate of cell.
+     * @return True if cell at this position has a top wall.
+     */
     public boolean hasTopWall(int x, int y) {
         return ((Cell)cells[y * width + x]).topWall;
     }
 
+
+    /**
+     * Checks if the cell at the given coordinate has a left wall.
+     *
+     * @param x X coordinate of cell.
+     * @param y Y coordinate of cell.
+     * @return True if cell at this position has a left wall.
+     */
     public boolean hasLeftWall(int x, int y) {
         return ((Cell)cells[y * width + x]).leftWall;
     }
 
+
+    /**
+     * Calculates the index of a grid cell at a given coordinate.
+     *
+     * @param x X coordinate of point.
+     * @param y Y coordinate of point.
+     * @return The index of a cell which this point falls inside.
+     */
     private int calcIndex(float x, float y) {
         return (int)(Math.floor(y-minY) * width + Math.floor(x-minX));
     }
 
-    public void put(float x, float y, T object) {
-        // We are just going to ignore it if it is out of bounds.
-        if (isInBounds(x, y)) {
-            int index = calcIndex(x, y);
-            ((Cell) cells[index]).items.add(object);
-        }
-    }
 
-    public void remove(float x, float y, T object) {
-        if (isInBounds(x, y)) {
-            int index = calcIndex(x, y);
-            Cell cell = (Cell)cells[index];
-            cell.items.remove(object);
-        }
-    }
-
-    public List<T> getList(float x, float y) {
-        // We are just going to ignore it if it is out of bounds.
-        if (isInBounds(x, y)) {
-            int index = calcIndex(x, y);
-            return ((Cell) cells[index]).items;
-        }
-        return EMPTY_LIST;
-    }
-
-    public List<T> getSurroundingList(float x, float y) {
-        List<T> output = new ArrayList<T>();
-        int cx = (int)Math.floor(x - minX);
-        int cy = (int)Math.floor(y - minY);
-        int sx = Math.max(cx-1, 0);
-        int sy = Math.max(cy-1, 0);
-        int ex = Math.min(cx+2, width);
-        int ey = Math.min(cy+2, height);
-
-        for (int j=sy; j<ey; j++) {
-            for (int i=sx; i<ex; i++) {
-                output.addAll(((Cell)cells[j * width + i]).items);
-            }
-        }
-
-        return output;
-    }
-
-    public List<T> getList(Rect rect) {
-        // TODO: Change to using callback function?
-        List<T> output = new ArrayList<T>();
-        int sx = (int)Math.floor(rect.getX() - minX);
-        int sy = (int)Math.floor(rect.getY() - minY);
-        int ex = (int)Math.floor(rect.getX() + rect.getWidth() - minX)+1;
-        int ey = (int)Math.floor(rect.getY() + rect.getHeight() - minY)+1;
-
-        if (sx < 0) sx = 0;
-        if (ex >= width) ex = width;
-        if (sy < 0) sy = 0;
-        if (ey >= height) ey = height;
-
-        for (int j=sy; j<ey; j++) {
-            for (int i=sx; i<ex; i++) {
-                output.addAll(((Cell)cells[j * width + i]).items);
-            }
-        }
-
-        return output;
-    }
-
+    /**
+     * Tests if a line segment from a start point to an end point intersects with a wall.
+     *
+     * @param startX Start X coordinate of line segment.
+     * @param startY Start Y coordinate of line segment.
+     * @param endX   End X coordinate of line segment.
+     * @param endY   End Y coordinate of line segment.
+     * @return True if line segment intersects wall, else false.
+     */
     public int hitWall(float startX, float startY, float endX, float endY) {
-        float x = startX;
-        float y = startY;
+        // TODO: Make more robust (arbitrary length lines).
+
+        float x;
+        float y;
         float ox;
         float oy;
         float dxf = (endX - startX);
         float dyf = (endY - startY);
-        int dx = (int)dxf;
-        int dy = (int)dyf;
-        float stepX;
-        float stepY;
-        int steps;
-        //boolean horizontal;
-        //boolean vertical;
-
+        int dx;
+        int dy;
         int wallsHit = 0;
-
-        /*
-
-        if (dxf == 0f && dyf == 0f) {
-            return false;
-        }
-        else if (Math.abs(dxf) > Math.abs(dyf)) {
-            // Changes more in X direction than in Y
-            stepX = Math.copySign(1f, dxf);
-            stepY = dy / Math.abs(dxf);
-            steps = (int)(dxf / stepX);
-        }
-        else {
-            stepX = dx / Math.abs(dyf);
-            stepY = Math.copySign(1f, dyf);
-            steps = (int)(dyf / stepY);
-        }
-
-        for (int i=0; i<steps; i++) {
-            ox = x;
-            oy = y;
-            x += stepX;
-            y += stepY;
-            dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
-            dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
-
-            horizontal = false;
-            vertical = false;
-
-            //System.out.println(x + ", " + y);
-
-            if (ox > minX && ox < maxX && oy > minY && oy < maxY
-                    && x > minX && x < maxX && y > minY && y < maxY) {
-                if (dx < 0) {
-                    vertical = ((Cell) cells[calcIndex(ox, oy)]).leftWall
-                            | ((Cell) cells[calcIndex(ox, y)]).leftWall;
-                } else if (dx > 0) {
-                    vertical = ((Cell) cells[calcIndex(x, oy)]).leftWall
-                            | ((Cell) cells[calcIndex(x, y)]).leftWall;
-                }
-
-                if (dy < 0) {
-                    horizontal = ((Cell) cells[calcIndex(ox, oy)]).topWall
-                            | ((Cell) cells[calcIndex(x, oy)]).topWall;
-                } else if (dy > 0) {
-                    horizontal = ((Cell) cells[calcIndex(ox, y)]).topWall
-                            | ((Cell) cells[calcIndex(x, y)]).topWall;
-                }
-
-                if (horizontal || vertical) {
-                    return true;
-                }
-            }
-        }
-
-        ox = x;
-        oy = y;
-        x = endX;
-        y = endY;
-        dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
-        dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
-
-        horizontal = false;
-        vertical = false;
-
-        //System.out.println(x + ", " + y);
-
-        if (ox > minX && ox < maxX && oy > minY && oy < maxY
-                && x > minX && x < maxX && y > minY && y < maxY) {
-            if (dx < 0) {
-                vertical = ((Cell) cells[calcIndex(ox, oy)]).leftWall
-                        | ((Cell) cells[calcIndex(ox, y)]).leftWall;
-            } else if (dx > 0) {
-                vertical = ((Cell) cells[calcIndex(x, oy)]).leftWall
-                        | ((Cell) cells[calcIndex(x, y)]).leftWall;
-            }
-
-            if (dy < 0) {
-                horizontal = ((Cell) cells[calcIndex(ox, oy)]).topWall
-                        | ((Cell) cells[calcIndex(x, oy)]).topWall;
-            } else if (dy > 0) {
-                horizontal = ((Cell) cells[calcIndex(ox, y)]).topWall
-                        | ((Cell) cells[calcIndex(x, y)]).topWall;
-            }
-
-            if (horizontal || vertical) {
-                return true;
-            }
-        }
-
-        */
-
 
         ox = startX;
         oy = startY;
@@ -291,11 +224,6 @@ public class CollisionGrid<T> {
         y = endY;
         dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
         dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
-
-        //horizontal = false;
-        //vertical = false;
-
-        //System.out.println(x + ", " + y);
 
         if (ox > minX && ox < maxX && oy > minY && oy < maxY
         && x > minX && x < maxX && y > minY && y < maxY) {

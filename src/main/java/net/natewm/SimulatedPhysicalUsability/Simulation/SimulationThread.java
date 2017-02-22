@@ -21,7 +21,7 @@ public class SimulationThread {
         GraphicsEngine graphicsEngine;
         AgentManager agentManager = new AgentManager();
         GroundGrid groundGrid;
-        CollisionGrid<Agent> collisionGrid;
+        CollisionGrid collisionGrid;
         boolean frameEnded = true;
         boolean running = true;
         boolean paused = false;
@@ -30,7 +30,7 @@ public class SimulationThread {
         boolean doInit = false;
         final Object lock = new Object();
 
-        public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
+        public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
             this.graphicsEngine = graphicsEngine;
             this.groundGrid = groundGrid;
             this.collisionGrid = collisionGrid;
@@ -115,13 +115,13 @@ public class SimulationThread {
             MeshRenderNodeHandle node = new MeshRenderNodeHandle();
             Transform transform;
 
-            for (int i=-29; i<30; i++) {
+            for (int i=-14; i<15; i++) {
                 for (int j=-14; j<15; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 
                     transform = new Transform();
-                    transform.position.set(i+0.5f, 0, j*2+0.5f);
+                    transform.position.set(i*2+0.5f, 0, j*2+0.5f);
                     //transform.rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
@@ -177,7 +177,7 @@ public class SimulationThread {
     SimulationRunnable runnable;
 
 
-    public SimulationThread(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
+    public SimulationThread(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
         runnable = new SimulationRunnable(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid);
         thread = new Thread(runnable);
     }

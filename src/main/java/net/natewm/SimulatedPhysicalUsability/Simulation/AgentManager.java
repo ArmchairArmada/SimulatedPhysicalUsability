@@ -40,7 +40,7 @@ public class AgentManager {
         toRemove.add(agent);
     }
 
-    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
+    public void update(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
         int steps = 1;
 
         if (dt < 0.1f)
