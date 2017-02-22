@@ -57,7 +57,7 @@ public class Agent {
         navGridID = (int)(Math.random() * navigationGrid.getLocationCount());
     }
 
-    public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid<Agent> collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
+    public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
         // TODO: Seriously clean this up!!!
 
         int wallsHit;

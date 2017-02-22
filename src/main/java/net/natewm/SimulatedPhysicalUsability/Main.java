@@ -81,7 +81,7 @@ public class Main {
                 graphicsEngine.addNodeToRenderer(wallNode);
 
 
-                CollisionGrid<Agent> collisionGrid = new CollisionGrid<>(walls);
+                CollisionGrid collisionGrid = new CollisionGrid(walls);
                 ICollisionCollection<Agent> collisionCollection = new BinSpaceTree<>(-512, 512, 1024, 1024, 10);
 
 
