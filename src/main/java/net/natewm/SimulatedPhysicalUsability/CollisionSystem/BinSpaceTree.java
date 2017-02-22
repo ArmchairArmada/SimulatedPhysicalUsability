@@ -5,40 +5,77 @@ import javafx.util.Pair;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
- * Created by Nathan on 1/29/2017.
+ * A spacial partitioning system where a rectangular area is recursively subdivided with alternating vertical and
+ * horizontal cuts to form a search tree.  This is useful for performing a spacial query to find everything that
+ * overlaps a test rectangle.
+ *
+ * @param <T> The type of data that will be stored in the the tree.
  */
 public class BinSpaceTree<T> implements ICollisionCollection<T>{
+    /**
+     * A node in the search tree.
+     */
     private class Node {
-        public Rect rect;                                       // Bounding rectangle
-        public Node parent;
-        public Node childA = null;
-        public Node childB = null;
-        public List<Pair<Rect, T>> objects = new LinkedList<>(); // Object stored in this node
+        Rect rect;                                       // Bounding rectangle
+        Node parent;                                     // Node's parent node
+        Node childA = null;                              // Left or top child node
+        Node childB = null;                              // Right or bottom child node
+        List<Pair<Rect, T>> objects = new LinkedList<>();// Object stored in this node
 
-        public Node(Node parent, float x, float y, float width, float height) {
+
+        /**
+         * Node constructor.
+         *
+         * @param parent The Node's parent node.
+         * @param x      The left edge of the node's rectangular area.
+         * @param y      The top edge of the node's rectangular area.
+         * @param width  The width of the node's rectangular area.
+         * @param height The hight of the node's rectangular area.
+         */
+        Node(Node parent, float x, float y, float width, float height) {
             this.parent = parent;
             rect = new Rect(x, y, width, height);
         }
 
-        public void splitVertical() {
-            float half = rect.width / 2.0f;
-            float midX = rect.x + half;
+
+        /**
+         * Splits the node vertically, creating two child nodes side-by-side.
+         */
+        void splitVertical() {
+            float half = rect.width / 2.0f; // Each child is half as wide
+            float midX = rect.x + half;     // The horizontal position of the middle line.
             childA = new Node(this, rect.x, rect.y, half, rect.height);
             childB = new Node(this, midX, rect.y, half, rect.height);
         }
 
-        public void splitHorizontal() {
-            float half = rect.height / 2.0f;
-            float midY = rect.y + half;
+
+        /**
+         * Splits the node horizontally, creating two child nodes with one on top of the other.
+         */
+        void splitHorizontal() {
+            float half = rect.height / 2.0f;// Each child is half as tall.
+            float midY = rect.y + half;     // The vertical position of the middle line.
             childA = new Node(this, rect.x, rect.y, rect.width, half);
             childB = new Node(this, rect.x, midY, rect.width, half);
         }
 
-        public Node findNode(Rect rect, boolean isVertical, int remainingDepth) {
+
+        /**
+         * Recursively finds a node that can fully contain a given test rectangle.
+         *
+         * @param rect           A rectangle to search the tree with.
+         * @param isVertical     Tree nodes alternate split either vertically or horizontally.
+         * @param remainingDepth How much deeper we are allowed to recurse into the tree.
+         * @return The node that fully contains the given rectangle.
+         */
+        Node findNode(Rect rect, boolean isVertical, int remainingDepth) {
+            // Check if maximum recursion depth has been reached.  If it has, simply use this node.
             if (remainingDepth == 0)
                 return this;
 
+            // Check if this node needs to be split to have children.
             if (childA == null) {
                 if (isVertical) {
                     splitVertical();
@@ -48,6 +85,7 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
                 }
             }
 
+            // Check if one of the children can contain this rectangle.
             if (childA.rect.contains(rect)) {
                 return childA.findNode(rect, !isVertical, remainingDepth-1);
             }
@@ -55,10 +93,17 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
                 return childB.findNode(rect, !isVertical, remainingDepth-1);
             }
 
+            // Children could not contain rect (overlaps both) so this node contains rect.
             return this;
         }
 
-        public int count() {
+
+        /**
+         * Recursively counts the number of nodes below this node.
+         *
+         * @return The number of nodes in this subtree.
+         */
+        int count() {
             int c = objects.size();
             if (childA != null) {
                 c += childA.count();
@@ -69,12 +114,29 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
             return c;
         }
 
-        public void insert(Rect rect, T object, int maxDepth) {
+
+        /**
+         * Insert an object into the tree with a rect key.
+         *
+         * @param rect     Rectangle bounding the object to insert.
+         * @param object   Object to insert into tree.
+         * @param maxDepth Maximum depth of the tree.
+         */
+        void insert(Rect rect, T object, int maxDepth) {
             Node node = findNode(rect, true, maxDepth);
-            node.objects.add(new Pair<Rect, T>(rect, object));
+            node.objects.add(new Pair<>(rect, object));
         }
 
-        public T remove(Rect rect, int maxDepth) {
+
+        /**
+         * Removes an object from the tree with the associated rectangle key.
+         *
+         * @param rect     Rectangle of object to find.
+         * @param maxDepth Maximum depth of the tree.
+         * @return Object that has just been removed.
+         */
+        @SuppressWarnings("unchecked")
+        T remove(Rect rect, int maxDepth) {
             Node node = findNode(rect, true, maxDepth);
             Object object;
             for (Pair<Rect, T> pair : node.objects) {
@@ -92,7 +154,11 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
             return null;
         }
 
-        public void merge() {
+
+        /**
+         * If child nodes are empty, they can be merged into parent (to reduce search depth).
+         */
+        void merge() {
             if (childA.count() == 0 && childB.count() == 0) {
                 // Since the children nodes are empty, we don't need them anymore.
                 childA = null;
@@ -103,43 +169,82 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
             }
         }
 
-        public void findOverlapping(Rect rect, List<Pair<Rect, T>> outCollection, boolean isVertical, int remainingDepth) {
-            if (remainingDepth == 0)
-                return;
 
+        /**
+         * Queries the tree for rectangles overlapping a test rectangle.
+         *
+         * @param rect           Query rectangle to use to test overlap.
+         * @param outCollection  Collection to add overlapped rectangles and associated objects to.
+         * @param isVertical     Recursive search alternates vertical and horizontal child nodes.
+         */
+        void findOverlapping(Rect rect, List<Pair<Rect, T>> outCollection, boolean isVertical) {
+            // Check for overlaps with objects in this node and add to collection.
             for (Pair<Rect, T> pair : objects) {
                 if (rect.isOverlapping(pair.getKey())) {
                     outCollection.add(pair);
                 }
             }
 
+            // Recurse into children.
             if (childA != null) {
-                childA.findOverlapping(rect, outCollection, !isVertical, remainingDepth-1);
+                childA.findOverlapping(rect, outCollection, !isVertical);
             }
 
             if (childB != null) {
-                childB.findOverlapping(rect, outCollection, !isVertical, remainingDepth-1);
+                childB.findOverlapping(rect, outCollection, !isVertical);
             }
         }
     }
 
-    private Node root;
-    private int maxDepth;
 
+    private Node root;      // Root node
+    private int maxDepth;   // Maximum search depth for the tree.
+
+
+    /**
+     * Constructor for binary space search tree.
+     *
+     * @param x        The horizontal position of space's bounds.
+     * @param y        The vertical position of space's bounds.
+     * @param width    The width of the space's bounds.
+     * @param height   The height of the space's bounds.
+     * @param maxDepth The maximum depth permitted for search tree.
+     */
     public BinSpaceTree(float x, float y, float width, float height, int maxDepth) {
         this.maxDepth = maxDepth;
         root = new Node(null, x, y, width, height);
     }
 
+
+    /**
+     * Inserts an object with an associated bounding rectangle into the tree.
+     *
+     * @param rect   Bounding rectangle of object to insert.
+     * @param object Object to insert.
+     */
     public void insert(Rect rect, T object) {
         root.insert(rect, object, maxDepth);
     }
 
+
+    /**
+     * Removes an object with an associated bounding rectangle from the tree.
+     *
+     * @param rect Rectangle of object to remove.
+     * @return Objec that has been removed.
+     */
     public T remove(Rect rect) {
         return root.remove(rect, maxDepth);
     }
 
+
+    /**
+     * Finds all objects overlapping a given test rectangle and puts results into a given collection.
+     *
+     * @param rect          Test rectangle to find rectangles that overlap it.
+     * @param outCollection Collection to add search results to.
+     */
     public void findOverlapping(Rect rect, List<Pair<Rect, T>> outCollection) {
-        root.findOverlapping(rect, outCollection, true, maxDepth);
+        root.findOverlapping(rect, outCollection, true);
     }
 }

@@ -115,13 +115,13 @@ public class SimulationThread {
             MeshRenderNodeHandle node = new MeshRenderNodeHandle();
             Transform transform;
 
-            for (int i=-14; i<15; i++) {
+            for (int i=-29; i<30; i++) {
                 for (int j=-14; j<15; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 
                     transform = new Transform();
-                    transform.position.set(i*2+0.5f, 0, j*2+0.5f);
+                    transform.position.set(i+0.5f, 0, j*2+0.5f);
                     //transform.rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
