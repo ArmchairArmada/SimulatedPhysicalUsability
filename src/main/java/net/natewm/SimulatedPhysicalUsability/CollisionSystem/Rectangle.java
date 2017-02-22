@@ -1,5 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.CollisionSystem;
 
+// TODO: See if this is needed -- not currently used?
+
 /**
  * Created by Nathan on 1/21/2017.
  */

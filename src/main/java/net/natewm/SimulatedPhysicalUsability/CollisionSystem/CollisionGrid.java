@@ -1,13 +1,14 @@
 package net.natewm.SimulatedPhysicalUsability.CollisionSystem;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
-import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nathan on 1/22/2017.
+ * Grid for checking collisions with walls.
+ *
+ * @param <T>
  */
 public class CollisionGrid<T> {
     public static int HORIZONTAL = 1;
