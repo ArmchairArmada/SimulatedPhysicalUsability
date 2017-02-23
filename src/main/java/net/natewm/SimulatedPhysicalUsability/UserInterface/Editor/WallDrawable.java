@@ -21,9 +21,9 @@ public class WallDrawable implements IEditorDrawable {
         this.horizontal = horizontal;
 
         if (horizontal)
-            rect = new Rect((float)Math.floor(x+WALL_WIDTH) - 2f*WALL_WIDTH, (float)Math.floor(y+WALL_WIDTH) - 2f*WALL_WIDTH, 1f + 4f*WALL_WIDTH, 4f*WALL_WIDTH);
+            rect = new Rect((float)Math.floor(x+WALL_WIDTH) - WALL_WIDTH, (float)Math.floor(y+WALL_WIDTH) - 2f*WALL_WIDTH, 1f + 2f*WALL_WIDTH, 4f*WALL_WIDTH);
         else
-            rect = new Rect((float)Math.floor(x+WALL_WIDTH) - 2f*WALL_WIDTH, (float)Math.floor(y+WALL_WIDTH) - 2f*WALL_WIDTH, 4f*WALL_WIDTH, 1f + 4f*WALL_WIDTH);
+            rect = new Rect((float)Math.floor(x+WALL_WIDTH) - 2f*WALL_WIDTH, (float)Math.floor(y+WALL_WIDTH) - WALL_WIDTH, 4f*WALL_WIDTH, 1f + 2f*WALL_WIDTH);
     }
 
     @Override
