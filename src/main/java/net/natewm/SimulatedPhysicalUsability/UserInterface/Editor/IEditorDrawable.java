@@ -15,7 +15,7 @@ public interface IEditorDrawable {
      * @param offsetX X offset of view.
      * @param offsetY Y offset of view.
      */
-    void draw(Graphics2D graphics2D, int offsetX, int offsetY);
+    void draw(Graphics2D graphics2D, int offsetX, int offsetY, int scale);
 
 
     /**

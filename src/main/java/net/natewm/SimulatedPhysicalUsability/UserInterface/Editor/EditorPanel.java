@@ -18,32 +18,37 @@ import java.util.LinkedList;
  * Created by Nathan on 1/30/2017.
  */
 public class EditorPanel extends JPanel {
-    private static int GRID_SIZE = 25;
-    private static Color GRID_COLOR = new Color(220,220,220);
+    public enum Tool {
+        ERASER,
+        WALLS,
+        LOCATION
+    }
 
+    private static final int GRID_SIZE = 25;
+    private static final int GRID_WIDTH = 1024;
+    private static final int GRID_HEIGHT = 1024;
+    private static final Color GRID_COLOR = new Color(220,220,220);
+
+    int centerX = 0;
+    int centerY = 0;
     int button = 0;
     int previousX = 0;
     int previousY = 0;
     int offsetX = 0;
     int offsetY = 0;
 
+    Tool tool = Tool.WALLS;
+
     ICollisionCollection<IEditorDrawable> drawables;
 
     public EditorPanel() {
-        drawables = new BinSpaceTree<>(-512, 512, 1024, 1024, 10);
-        IEditorDrawable test = new TestDrawable(0, 0);
-        drawables.insert(test.getRect(), test);
-
-        test = new TestDrawable(25, 25);
-        drawables.insert(test.getRect(), test);
-
+        drawables = new BinSpaceTree<>(-GRID_WIDTH/2, -GRID_HEIGHT/2, GRID_WIDTH, GRID_HEIGHT, 10);
 
         setBackground(Color.white);
 
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
             }
 
             @Override
@@ -51,6 +56,28 @@ public class EditorPanel extends JPanel {
                 button = e.getButton();
                 previousX = e.getX();
                 previousY = e.getY();
+
+                float x = -centerX + offsetX + e.getX();
+                float y = -centerY + offsetY + e.getY();
+
+                if (button == 1) {
+                    switch (tool) {
+                        case ERASER:
+                            erasorTool(x, y);
+                            break;
+
+                        case WALLS:
+                            wallTool(x, y);
+                            break;
+
+                        case LOCATION:
+                            locationTool(x, y);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
             }
 
             @Override
@@ -72,7 +99,28 @@ public class EditorPanel extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (button == 3) {
+                if (button == 1) {
+                    float x = -centerX + offsetX + e.getX();
+                    float y = -centerY + offsetY + e.getY();
+
+                    switch (tool) {
+                        case ERASER:
+                            erasorTool(x, y);
+                            break;
+
+                        case WALLS:
+                            wallTool(x, y);
+                            break;
+
+                        case LOCATION:
+                            locationTool(x, y);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+                else if (button == 3) {
                     offsetX -= e.getX() - previousX;
                     offsetY -= e.getY() - previousY;
                     previousX = e.getX();
@@ -88,9 +136,75 @@ public class EditorPanel extends JPanel {
         });
     }
 
+
+    public void clearAll() {
+        drawables = new BinSpaceTree<>(-GRID_WIDTH/2, -GRID_HEIGHT/2, GRID_WIDTH, GRID_HEIGHT, 10);
+        repaint();
+    }
+
+
+    public void setTool(Tool tool) {
+        this.tool = tool;
+    }
+
+
+    private void erasorTool(float x, float y) {
+        ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
+        drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
+        for (Pair<Rect, IEditorDrawable> pair : picked) {
+            drawables.remove(pair.getKey());
+        }
+        repaint();
+    }
+
+
+    private void wallTool(float x, float y) {
+        float fx = (float)Math.floor((x+8)/GRID_SIZE)*GRID_SIZE;
+        float fy = (float)Math.floor((y+8)/GRID_SIZE)*GRID_SIZE;
+
+        System.out.println(fx + ", " + fy);
+
+        boolean hitWall = false;
+
+        ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
+        drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
+
+        for (Pair<Rect, IEditorDrawable> pair : picked) {
+            if (pair.getValue() instanceof WallDrawable) {
+                hitWall = true;
+                break;
+            }
+        }
+
+        if (!hitWall) {
+            if (new Rect(fx-8, fy+8, 18, 9).isInside(x,y)) {
+                IEditorDrawable test = new WallDrawable(fx / GRID_SIZE, fy / GRID_SIZE, false);
+                drawables.insert(test.getRect(), test);
+                repaint();
+            }
+            else if (new Rect(fx+8, fy-8, 9, 18).isInside(x,y)) {
+                IEditorDrawable test = new WallDrawable(fx / GRID_SIZE, fy / GRID_SIZE, true);
+                drawables.insert(test.getRect(), test);
+                repaint();
+            }
+        }
+    }
+
+    private void locationTool(float x, float y) {
+        ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
+        drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
+        if (picked.isEmpty()) {
+            IEditorDrawable test = new TestDrawable((int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
+            drawables.insert(test.getRect(), test);
+            repaint();
+        }
+    }
+
+
+
     public void paintComponent(Graphics g) {
-        int centerX = getWidth()/2;
-        int centerY = getHeight()/2;
+        centerX = getWidth()/2;
+        centerY = getHeight()/2;
         int offXMod = (centerX-offsetX) % GRID_SIZE;
         int offYMod = (centerY-offsetY) % GRID_SIZE;
 
@@ -119,10 +233,11 @@ public class EditorPanel extends JPanel {
 
 
         ArrayList<Pair<Rect, IEditorDrawable>> toDraw = new ArrayList<>();
-        drawables.findOverlapping(new Rect(offsetX-centerX, offsetY-centerY, getWidth(), getHeight()), toDraw);
+        drawables.findOverlapping(new Rect((offsetX-centerX)/GRID_SIZE, (offsetY-centerY)/GRID_SIZE,
+                ((float)getWidth())/GRID_SIZE, ((float)getHeight())/GRID_SIZE), toDraw);
 
         for (Pair<Rect, IEditorDrawable> pair : toDraw) {
-            pair.getValue().draw((Graphics2D)g, centerX-offsetX, centerY-offsetY);
+            pair.getValue().draw((Graphics2D)g, centerX-offsetX, centerY-offsetY, GRID_SIZE);
         }
 
 

@@ -104,7 +104,8 @@ public class MainWindow extends JFrame {
         gridBagConstraints.weightx = 1;
         editorTabPanel.setLayout(layout);
 
-        EditorControlPanel editorControlPanel = new EditorControlPanel();
+        EditorPanel editorPanel = new EditorPanel();
+        EditorControlPanel editorControlPanel = new EditorControlPanel(editorPanel);
         editorControlPanel.setMinimumSize(new Dimension(250, 0));
         editorControlPanel.setMaximumSize(new Dimension(250, 1000000));
         editorControlPanel.setPreferredSize(new Dimension(250, 600));
@@ -114,7 +115,7 @@ public class MainWindow extends JFrame {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.weightx = 1000000;
 
-        editorTabPanel.add(new EditorPanel(), gridBagConstraints);
+        editorTabPanel.add(editorPanel, gridBagConstraints);
 
         tabbedPane.addTab("Environment", editorTabPanel);
 

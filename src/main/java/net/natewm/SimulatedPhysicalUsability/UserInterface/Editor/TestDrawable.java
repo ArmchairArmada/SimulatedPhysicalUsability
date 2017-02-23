@@ -9,15 +9,17 @@ import java.awt.*;
  */
 public class TestDrawable implements IEditorDrawable {
     Rect rect;
+    Color color;
 
     public TestDrawable(int x, int y) {
-        rect = new Rect(x+1, y+1, 23, 23);
+        color = Color.getHSBColor((float)Math.random(), (float)Math.random(), (float)Math.random());
+        rect = new Rect(x, y, 1, 1);
     }
 
     @Override
-    public void draw(Graphics2D graphics2D, int offsetX, int offsetY) {
-        graphics2D.setColor(Color.blue);
-        graphics2D.fillOval((int)(rect.getX() + offsetX), (int)(rect.getY() + offsetY), 23, 23);
+    public void draw(Graphics2D graphics2D, int offsetX, int offsetY, int scale) {
+        graphics2D.setColor(color);
+        graphics2D.fillOval((int)(rect.getX() * scale + offsetX+2), (int)(rect.getY() * scale + offsetY+2), scale-4, scale-4);
     }
 
     @Override
