@@ -12,16 +12,29 @@ import java.awt.event.ActionListener;
  * Created by Nathan on 1/18/2017.
  */
 public class EditorControlPanel extends JPanel {
-    public EditorControlPanel() {
+    EditorPanel editorPanel;
+
+    public EditorControlPanel(EditorPanel editorPanel) {
         JButton button;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        button = new JButton("Clear All");
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editorPanel.clearAll();
+            }
+        });
+        add(button);
 
         button = new JButton("Eraser");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                editorPanel.setTool(EditorPanel.Tool.ERASER);
             }
         });
         add(button);
@@ -31,6 +44,7 @@ public class EditorControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                editorPanel.setTool(EditorPanel.Tool.WALLS);
             }
         });
         add(button);
@@ -40,6 +54,7 @@ public class EditorControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                editorPanel.setTool(EditorPanel.Tool.LOCATION);
             }
         });
         add(button);
