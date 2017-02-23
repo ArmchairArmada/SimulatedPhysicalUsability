@@ -162,8 +162,6 @@ public class EditorPanel extends JPanel {
         float fx = (float)Math.floor((x+8)/GRID_SIZE)*GRID_SIZE;
         float fy = (float)Math.floor((y+8)/GRID_SIZE)*GRID_SIZE;
 
-        System.out.println(fx + ", " + fy);
-
         boolean hitWall = false;
 
         ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
