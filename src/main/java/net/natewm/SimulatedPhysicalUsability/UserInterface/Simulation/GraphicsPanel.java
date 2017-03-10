@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;

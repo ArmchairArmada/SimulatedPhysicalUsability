@@ -1,7 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine;
 
 /**
- * Created by Nathan on 1/9/2017.
+ * Interface for receiving an end of frame rendering message.
  */
 public interface IFrameEndReceiver {
     public void graphicsFrameEnded();

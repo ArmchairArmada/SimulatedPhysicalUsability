@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;

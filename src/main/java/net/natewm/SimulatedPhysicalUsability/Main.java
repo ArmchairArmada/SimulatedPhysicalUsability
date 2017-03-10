@@ -1,9 +1,5 @@
 package net.natewm.SimulatedPhysicalUsability;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLProfile;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
@@ -16,13 +12,11 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshR
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
-import net.natewm.SimulatedPhysicalUsability.Project.ProjectDescription;
 import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.MainWindow;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.logging.*;
 
 /**
