@@ -1,7 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine;
 
 /**
- * Created by Nathan on 1/9/2017.
+ * Mesh render node handle.
  */
 public class MeshRenderNodeHandle extends RenderNodeHandle {
 }
