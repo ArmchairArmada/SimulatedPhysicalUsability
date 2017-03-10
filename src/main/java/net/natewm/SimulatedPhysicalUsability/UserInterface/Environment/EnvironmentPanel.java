@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface.Editor;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import javafx.util.Pair;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
@@ -11,13 +11,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * Created by Nathan on 1/30/2017.
  */
-public class EditorPanel extends JPanel {
+public class EnvironmentPanel extends JPanel {
     public enum Tool {
         ERASER,
         WALLS,
@@ -41,7 +39,7 @@ public class EditorPanel extends JPanel {
 
     ICollisionCollection<IEditorDrawable> drawables;
 
-    public EditorPanel() {
+    public EnvironmentPanel() {
         drawables = new BinSpaceTree<>(-GRID_WIDTH/2, -GRID_HEIGHT/2, GRID_WIDTH, GRID_HEIGHT, 10);
 
         setBackground(Color.white);

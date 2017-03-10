@@ -1,4 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface.Editor;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 

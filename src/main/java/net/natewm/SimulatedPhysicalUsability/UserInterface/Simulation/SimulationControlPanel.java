@@ -1,9 +1,11 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

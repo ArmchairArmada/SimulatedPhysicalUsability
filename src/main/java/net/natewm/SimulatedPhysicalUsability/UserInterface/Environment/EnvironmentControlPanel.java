@@ -1,7 +1,4 @@
-package net.natewm.SimulatedPhysicalUsability.UserInterface.Editor;
-
-import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
-import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
+package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +8,10 @@ import java.awt.event.ActionListener;
 /**
  * Created by Nathan on 1/18/2017.
  */
-public class EditorControlPanel extends JPanel {
-    EditorPanel editorPanel;
+public class EnvironmentControlPanel extends JPanel {
+    EnvironmentPanel environmentPanel;
 
-    public EditorControlPanel(EditorPanel editorPanel) {
+    public EnvironmentControlPanel(EnvironmentPanel environmentPanel) {
         JButton button;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -24,7 +21,7 @@ public class EditorControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editorPanel.clearAll();
+                environmentPanel.clearAll();
             }
         });
         add(button);
@@ -34,7 +31,7 @@ public class EditorControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editorPanel.setTool(EditorPanel.Tool.ERASER);
+                environmentPanel.setTool(EnvironmentPanel.Tool.ERASER);
             }
         });
         add(button);
@@ -44,7 +41,7 @@ public class EditorControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editorPanel.setTool(EditorPanel.Tool.WALLS);
+                environmentPanel.setTool(EnvironmentPanel.Tool.WALLS);
             }
         });
         add(button);
@@ -54,7 +51,7 @@ public class EditorControlPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editorPanel.setTool(EditorPanel.Tool.LOCATION);
+                environmentPanel.setTool(EnvironmentPanel.Tool.LOCATION);
             }
         });
         add(button);

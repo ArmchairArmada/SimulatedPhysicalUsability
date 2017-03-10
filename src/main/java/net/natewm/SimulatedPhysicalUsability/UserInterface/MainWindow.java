@@ -3,8 +3,12 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
-import net.natewm.SimulatedPhysicalUsability.UserInterface.Editor.EditorControlPanel;
-import net.natewm.SimulatedPhysicalUsability.UserInterface.Editor.EditorPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorControlPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Environment.EnvironmentControlPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Environment.EnvironmentPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation.GraphicsPanel;
+import net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation.SimulationControlPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +24,10 @@ public class MainWindow extends JFrame {
     public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, GroundGrid groundGrid) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            Insets insets = (Insets) UIManager.getDefaults().get("TabbedPane.contentBorderInsets");
+            insets.top = 0;
+            UIManager.getDefaults().put("TabbedPane.contentBorderInsets", insets);
+            //UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -99,29 +107,48 @@ public class MainWindow extends JFrame {
         tabbedPane.addTab("Simulation", simulationTabPanel);
 
 
-        JPanel editorTabPanel = new JPanel();
+        JPanel environmentTabPanel = new JPanel();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.weightx = 1;
-        editorTabPanel.setLayout(layout);
+        environmentTabPanel.setLayout(layout);
 
-        EditorPanel editorPanel = new EditorPanel();
-        EditorControlPanel editorControlPanel = new EditorControlPanel(editorPanel);
-        editorControlPanel.setMinimumSize(new Dimension(250, 0));
-        editorControlPanel.setMaximumSize(new Dimension(250, 1000000));
-        editorControlPanel.setPreferredSize(new Dimension(250, 600));
+        EnvironmentPanel environmentPanel = new EnvironmentPanel();
+        EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(environmentPanel);
+        environmentControlPanel.setMinimumSize(new Dimension(250, 0));
+        environmentControlPanel.setMaximumSize(new Dimension(250, 1000000));
+        environmentControlPanel.setPreferredSize(new Dimension(250, 600));
 
-        editorTabPanel.add(editorControlPanel, gridBagConstraints);
+        environmentTabPanel.add(environmentControlPanel, gridBagConstraints);
 
         gridBagConstraints.gridx = 1;
         gridBagConstraints.weightx = 1000000;
 
-        editorTabPanel.add(editorPanel, gridBagConstraints);
+        environmentTabPanel.add(environmentPanel, gridBagConstraints);
 
-        tabbedPane.addTab("Environment", editorTabPanel);
+        tabbedPane.addTab("Environment", environmentTabPanel);
+
+        JPanel behaviorTabPanel = new JPanel();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.weightx = 1;
+        behaviorTabPanel.setLayout(layout);
+
+        BehaviorPanel behaviorPanel = new BehaviorPanel();
+        BehaviorControlPanel behaviorControlPanel = new BehaviorControlPanel(behaviorPanel);
+        behaviorControlPanel.setMinimumSize(new Dimension(250, 0));
+        behaviorControlPanel.setMaximumSize(new Dimension(250, 1000000));
+        behaviorControlPanel.setPreferredSize(new Dimension(250, 600));
+
+        behaviorTabPanel.add(behaviorControlPanel, gridBagConstraints);
+
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.weightx = 1000000;
+
+        behaviorTabPanel.add(behaviorPanel, gridBagConstraints);
+
+        tabbedPane.addTab("Behaviors", behaviorTabPanel);
 
 
         // TODO: Make real tabs -- remember to suspend limit rendering to 60 FPS
-        tabbedPane.addTab("Behaviors", new JPanel());
         tabbedPane.addTab("Statistics", new JPanel());
 
         add(tabbedPane);
