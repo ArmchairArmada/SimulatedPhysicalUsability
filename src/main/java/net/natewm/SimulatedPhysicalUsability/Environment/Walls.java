@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nathan on 1/18/2017.
+ * Generates the geometry for the walls in the environment.
  */
 public class Walls {
     private static final float WALL_THICKNESS = 0.1f;
     private static final float WALL_HEIGHT = 0.25f;
 
+    /**
+     * Information about the wall's start and end position.
+     */
     public static class Wall {
         public float startX;
         public float startY;
@@ -36,10 +39,18 @@ public class Walls {
     private float maxY = Float.MIN_VALUE;
 
 
+    /**
+     * Default constructor (doesn't need to do anything.)
+     */
     public Walls() {
     }
 
 
+    /**
+     * Adds a wall to the list of walls.
+     *
+     * @param wall
+     */
     public void addWall(Wall wall) {
         walls.add(wall);
 
@@ -56,31 +67,61 @@ public class Walls {
         maxY = Math.max(maxY, wall.endY);
     }
 
+    /**
+     * Gets the list of walls.
+     *
+     * @return List of walls.
+     */
     public List<Wall> getWalls() {
         return walls;
     }
 
 
+    /**
+     * Gets the minimum X value for the bounding rectangle of the environment.
+     *
+     * @return Minimum X value.
+     */
     public float getMinX() {
         return minX;
     }
 
 
+    /**
+     * Gets the minimum Y value for the bounding rectangle of the environment.
+     *
+     * @return Minimum Y value.
+     */
     public float getMinY() {
         return minY;
     }
 
 
+    /**
+     * Gets the maximum X value for the bounding rectangle of the environment.
+     *
+     * @return Maximum X value.
+     */
     public float getMaxX() {
         return maxX;
     }
 
 
+    /**
+     * Gets the maximum Y value for the bounding rectangle of the environment.
+     *
+     * @return Maximum Y value.
+     */
     public float getMaxY() {
         return maxY;
     }
 
 
+    /**
+     * Gererates geometry from the list of walls.
+     *
+     * @return Geometry of the walls.
+     */
     public Geometry generateGeometry() {
         /*
             Notes on wall vertex order:
@@ -106,49 +147,54 @@ public class Walls {
         float perpY;    // Perpendicular in local Y direction
         float thickX;   // Wall thickness in local X direction
         float thickY;   // Wall thickness in local Y direction
-        float startX;
-        float startY;
-        float endX;
-        float endY;
+        float startX;   // Starting X position.
+        float startY;   // Starting Y position.
+        float endX;     // Ending X position.
+        float endY;     // Ending Y position.
         int index;      // Vertex index
-        Vector3f v0, v1, v2, v3, v4, v5, v6, v7;
+        Vector3f v0, v1, v2, v3, v4, v5, v6, v7;    // Vertices
 
-        // TODO: These need to be computed to be parallel and perpendicular to sides of the wall.
-        Vector3f up = new Vector3f(0, 1, 0);
-        Vector3f down = new Vector3f(0, -1, 0);
-        Vector3f left;
-        Vector3f right;
-        Vector3f front;
-        Vector3f back;
+        Vector3f up = new Vector3f(0, 1, 0);    // Vector pointing up from top of wall.
+        Vector3f down = new Vector3f(0, -1, 0); // Vector pointing down from bottom of wall.
+        Vector3f left;  // Vector pointing from the left side of the wall.
+        Vector3f right; // Vector pointing from the right side of the wall.
+        Vector3f front; // Vector pointing from the front of the wall.
+        Vector3f back;  // Vector poitning from the back of the wall.
 
-        Geometry geometry = new Geometry();
-        geometry.startSubGeometry();
+        Geometry geometry = new Geometry(); // Geometry that we will be generating.
+        geometry.startSubGeometry();        // This will only have one sub-geometry.
 
+        // Build out the walls.
         for (Wall wall : walls) {
+            // Get the offsets and distances.
             offX = wall.endX - wall.startX;
             offY = wall.endY - wall.startY;
             distance = (float)Math.sqrt(offX*offX + offY*offY);
 
+            // Get parallel and perpendicular vector components.
             paralX = offX / distance;
             paralY = offY / distance;
             perpX = -offY / distance;
             perpY = offX / distance;
 
+            // Compute the wall thickness for each vector component.
             thickX = perpX * WALL_THICKNESS;
             thickY = perpY * WALL_THICKNESS;
 
+            // Extend the walls a little to include the thickness (corresponding to actual vertex positions).
             startX = wall.startX - paralX * WALL_THICKNESS;
             startY = wall.startY - paralY * WALL_THICKNESS;
             endX = wall.endX + paralX * WALL_THICKNESS;
             endY  = wall.endY + paralY * WALL_THICKNESS;
 
+            // Compute vectors relative to the wall orientation.
             left = new Vector3f(-perpX, 0, -perpY);
             right = new Vector3f(perpX, 0, perpY);
             front = new Vector3f(-paralX, 0, -paralY);
             back = new Vector3f(paralX, 0, paralY);
 
+            // Compute the positions of the corner vertices.
             // To have flat shading, vertices need to be each used by three faces, so it needs duplication.
-
             v0 = new Vector3f(startX + thickX, 0f, startY + thickY);
             v1 = new Vector3f(startX + thickX, WALL_HEIGHT, startY + thickY);
             v2 = new Vector3f(startX - thickX, WALL_HEIGHT, startY - thickY);
@@ -258,6 +304,7 @@ public class Walls {
             geometry.addTriangle(new Triangle(index, index+2, index+3));
         }
 
+        // Finalize the geometry and return.
         geometry.finalizeSubGeometry();
 
         return geometry;
