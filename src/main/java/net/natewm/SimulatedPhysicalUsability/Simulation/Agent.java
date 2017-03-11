@@ -59,6 +59,7 @@ public class Agent {
 
     public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid, float dt) {
         // TODO: Seriously clean this up!!!
+        Vector2f navVec = new Vector2f();
 
         int wallsHit;
         float ox = x;
@@ -112,10 +113,11 @@ public class Agent {
         //angle += turnAmount;
         //transform.rotation.rotateAxis(turnAmount, 0, 1, 0);
 
-        Vector2f navVec = navigationGrid.getVector(navGridID, x, y);
-
-        vx += navVec.x * WALKING_SPEED * speedVariation * dt;
-        vy += navVec.y * WALKING_SPEED * speedVariation * dt;
+        if (navigationGrid.getLocationCount() > 0) {
+            navVec = navigationGrid.getVector(navGridID, x, y);
+            vx += navVec.x * WALKING_SPEED * speedVariation * dt;
+            vy += navVec.y * WALKING_SPEED * speedVariation * dt;
+        }
 
         //angle = (float)Math.atan2(vx, vy);
 
@@ -161,9 +163,11 @@ public class Agent {
         collisionCollection.insert(rect, this);
 
         // TODO: Use real exit locations
-        Vector2f loc = navigationGrid.getLocation(navGridID);
-        if (x > loc.x && x <= loc.x+1 && y > loc.y && y <= loc.y+1) {
-            agentManager.remove(this);
+        if (navigationGrid.getLocationCount() > 0) {
+            Vector2f loc = navigationGrid.getLocation(navGridID);
+            if (x > loc.x && x <= loc.x + 1 && y > loc.y && y <= loc.y + 1) {
+                agentManager.remove(this);
+            }
         }
 
         //transform.updateMatrix();
