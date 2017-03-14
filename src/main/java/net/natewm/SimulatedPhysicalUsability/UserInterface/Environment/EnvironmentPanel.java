@@ -4,6 +4,8 @@ import javafx.util.Pair;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
+import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
+import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,11 +37,14 @@ public class EnvironmentPanel extends JPanel {
     int offsetX = 0;
     int offsetY = 0;
 
+    private final Environment environment;
     Tool tool = Tool.WALLS;
 
     ICollisionCollection<IEditorDrawable> drawables;
 
-    public EnvironmentPanel() {
+    public EnvironmentPanel(Environment environment) {
+        this.environment = environment;
+
         drawables = new BinSpaceTree<>(-GRID_WIDTH/2, -GRID_HEIGHT/2, GRID_WIDTH, GRID_HEIGHT, 10);
 
         setBackground(Color.white);
@@ -132,12 +137,32 @@ public class EnvironmentPanel extends JPanel {
 
             }
         });
+
+        environment.generateRandomEnvironment();
+        updateEnvironment();
     }
 
 
     public void clearAll() {
         drawables = new BinSpaceTree<>(-GRID_WIDTH/2, -GRID_HEIGHT/2, GRID_WIDTH, GRID_HEIGHT, 10);
         repaint();
+    }
+
+    public void updateEnvironment() {
+        IEditorDrawable drawable;
+        float minX;
+        float minY;
+        boolean horizontal;
+
+        clearAll();
+
+        for (Walls.Wall wall : environment.getWalls().getWalls()) {
+            minX = Math.min(wall.startX, wall.endX);
+            minY = Math.min(wall.startY, wall.endY);
+            horizontal = Math.abs(wall.endX-wall.startX) > Math.abs(wall.endY-wall.startY);
+            drawable = new WallDrawable(minX, minY, horizontal);
+            drawables.insert(drawable.getRect(), drawable);
+        }
     }
 
 

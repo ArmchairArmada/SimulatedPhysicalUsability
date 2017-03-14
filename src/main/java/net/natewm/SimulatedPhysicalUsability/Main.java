@@ -7,8 +7,7 @@ import com.jogamp.opengl.GLProfile;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
-import net.natewm.SimulatedPhysicalUsability.Environment.MazeGenerator;
-import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
+import net.natewm.SimulatedPhysicalUsability.Environment.*;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MaterialHandle;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshHandle;
@@ -60,9 +59,13 @@ public class Main {
                 GraphicsEngine graphicsEngine = new GraphicsEngine();
                 graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
 
-                GroundGrid groundGrid = new GroundGrid(graphicsEngine, GROUND_WIDTH, GROUND_HEIGHT,
-                        GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT, GROUND_WIDTH * 2);
+                //GroundGrid groundGrid = new GroundGrid(graphicsEngine, GROUND_WIDTH, GROUND_HEIGHT,
+                //        GROUND_GRID_WIDTH, GROUND_GRID_HEIGHT, GROUND_WIDTH * 2);
 
+                Environment environment = new Environment(graphicsEngine);
+                //environment.generateRandomEnvironment();
+
+                /*
                 //CollisionGrid collisionGrid = new CollisionGrid();
                 ICollisionCollection<Agent> collisionCollection = new BinSpaceTree<Agent>(-512, 512, 1024, 1024, 10);
                 //NavigationGrid navigationGrid = new NavigationGrid(collisionGrid);
@@ -91,17 +94,23 @@ public class Main {
 
 
                 NavigationGrid navigationGrid = new NavigationGrid(collisionGrid);
+                LocationType exit = new LocationType("exit");
                 //navigationGrid.addLocation(0f, 0f);
-                navigationGrid.addLocation(-25f, -25f);
-                navigationGrid.addLocation(-25f, 25f);
-                navigationGrid.addLocation(25f, -25f);
-                navigationGrid.addLocation(25f, 25f);
+                navigationGrid.addLocation(new Location(exit, -25f, -25f));
+                navigationGrid.addLocation(new Location(exit, -25f, 25f));
+                navigationGrid.addLocation(new Location(exit, 25f, -25f));
+                navigationGrid.addLocation(new Location(exit, 25f, 25f));
 
+                navigationGrid.addLocation(new Location(exit, 0f, -25f));
+                navigationGrid.addLocation(new Location(exit, -25f, 0f));
+                navigationGrid.addLocation(new Location(exit, 0f, 25f));
+                navigationGrid.addLocation(new Location(exit, 25f, 0f));
+                */
 
-                SimulationThread simulationThread = new SimulationThread(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid);
+                SimulationThread simulationThread = new SimulationThread(graphicsEngine, environment);
                 graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
 
-                MainWindow mainWindow = new MainWindow(graphicsEngine, simulationThread, groundGrid);
+                MainWindow mainWindow = new MainWindow(graphicsEngine, simulationThread, environment);
             }
         });
     }

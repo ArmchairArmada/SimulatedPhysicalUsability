@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
+import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
@@ -16,12 +17,13 @@ import static java.lang.Thread.sleep;
  */
 public class SimulationThread {
     private class SimulationRunnable implements Runnable, IFrameEndReceiver {
-        private final ICollisionCollection<Agent> collisionCollection;
-        NavigationGrid navigationGrid;
+        private Environment environment;
+        //private final ICollisionCollection<Agent> collisionCollection;
+        //NavigationGrid navigationGrid;
         GraphicsEngine graphicsEngine;
         AgentManager agentManager = new AgentManager();
-        GroundGrid groundGrid;
-        CollisionGrid collisionGrid;
+        //GroundGrid groundGrid;
+        //CollisionGrid collisionGrid;
         boolean frameEnded = true;
         boolean running = true;
         boolean paused = false;
@@ -30,6 +32,12 @@ public class SimulationThread {
         boolean doInit = false;
         final Object lock = new Object();
 
+        public SimulationRunnable(GraphicsEngine graphicsEngine, Environment environment) {
+            this.graphicsEngine = graphicsEngine;
+            this.environment = environment;
+        }
+
+        /*
         public SimulationRunnable(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
             this.graphicsEngine = graphicsEngine;
             this.groundGrid = groundGrid;
@@ -37,6 +45,7 @@ public class SimulationThread {
             this.collisionCollection = collisionCollection;
             this.navigationGrid = navigationGrid;
         }
+        */
 
         @Override
         public void run() {
@@ -61,7 +70,7 @@ public class SimulationThread {
 
                 if (doStop) {
                     doStop = false;
-                    agentManager.reset(graphicsEngine, collisionCollection);
+                    agentManager.reset(graphicsEngine, environment);
                 }
 
                 if (doInit) {
@@ -71,10 +80,11 @@ public class SimulationThread {
 
                 if (!paused) {
                     for (int i=0; i<speed; i++) {
-                        agentManager.update(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid, dt);
+                        agentManager.update(graphicsEngine, environment, dt);
                     }
 
-                    groundGrid.update();
+                    //groundGrid.update();
+                    environment.getGroundGrid().update();
                 }
 
                 graphicsEngine.frameEnd();
@@ -116,17 +126,17 @@ public class SimulationThread {
             Transform transform;
 
             for (int i=-14; i<15; i++) {
-                for (int j=-14; j<15; j++) {
+                for (int j=-29; j<30; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 
                     transform = new Transform();
-                    transform.position.set(i*2+0.5f, 0, j*2+0.5f);
+                    transform.position.set(i*2f+0.5f, 0, j+0.5f);
                     //transform.rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
 
-                    agentManager.add(new Agent(navigationGrid, node, transform));
+                    agentManager.add(new Agent(environment, node, transform));
                 }
             }
         }
@@ -177,8 +187,8 @@ public class SimulationThread {
     SimulationRunnable runnable;
 
 
-    public SimulationThread(GraphicsEngine graphicsEngine, GroundGrid groundGrid, CollisionGrid collisionGrid, ICollisionCollection<Agent> collisionCollection, NavigationGrid navigationGrid) {
-        runnable = new SimulationRunnable(graphicsEngine, groundGrid, collisionGrid, collisionCollection, navigationGrid);
+    public SimulationThread(GraphicsEngine graphicsEngine, Environment environment) {
+        runnable = new SimulationRunnable(graphicsEngine, environment);
         thread = new Thread(runnable);
     }
 

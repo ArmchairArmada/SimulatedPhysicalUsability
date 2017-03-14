@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Navigation;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
+import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.Utils.ArrayUtils;
 import org.joml.Vector2f;
 
@@ -48,10 +49,11 @@ public class NavigationGrid {
     float maxX;
     float maxY;
 
-    public CollisionGrid collisionGrid;
+    private CollisionGrid collisionGrid;
 
-    public List<Vector2f> locations = new ArrayList<>();
-    public List<Vector2f[]> vectorGrids = new ArrayList<>();
+    //private List<Vector2f> locations = new ArrayList<>();
+    private List<Location> locations = new ArrayList<>();
+    private List<Vector2f[]> vectorGrids = new ArrayList<>();
 
     public NavigationGrid(CollisionGrid collisionGrid) {
         // TODO: Also use Locations when they are finally available.
@@ -68,13 +70,33 @@ public class NavigationGrid {
         return vectorGrids.size();
     }
 
+    /*
     public Vector2f getLocation(int locationIndex) {
         return locations.get(locationIndex);
     }
+    */
 
+    public Location getLocation(int locationIndex) {
+        return locations.get(locationIndex);
+    }
+
+    /*
     public void addLocation(float x, float y) {
         locations.add(new Vector2f(x,y));
         generateNavigationGrid(xIndex(x), yIndex(y));
+    }
+    */
+
+    public void addLocation(Location location) {
+        locations.add(location);
+        //generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
+        location.setNavGridId(locations.size()-1);
+    }
+
+    public void generateLocationGrids() {
+        for (Location location : locations) {
+            generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
+        }
     }
 
     private void generateNavigationGrid(int startX, int startY) {
@@ -90,6 +112,9 @@ public class NavigationGrid {
         nodes[startY*width+startX] = node;
         frontier.add(node);
 
+        int dx[] = {0, 0, -1, 1, -1, -1, 1, 1};
+        int dy[] = {-1, 1, 0, 0, -1, 1, -1, 1};
+
         while (!frontier.isEmpty()) {
             //System.out.println(frontier.size());
 
@@ -100,13 +125,29 @@ public class NavigationGrid {
                 //System.out.println(width + ", " + height);
 
                 //grid[node.y*width+node.x] = new Vector2f(node.x-node.fromX, node.y-node.fromY);
-                grid[node.y * width + node.x] = new Vector2f(node.fromX - node.x, node.fromY - node.y);
+                grid[node.y * width + node.x] = new Vector2f(node.fromX - node.x, node.fromY - node.y).normalize();
 
-                Integer[] dirs = {0, 1, 2, 3};
+                Integer[] dirs = {0, 1, 2, 3, 4, 5, 6, 7};
                 ArrayUtils.shuffle(dirs);
 
-
+                int wallsHit;
+                int nx=0, ny=0;
                 for (Integer dir : dirs) {
+                    nx = node.x + dx[dir];
+                    ny = node.y + dy[dir];
+
+                    if (nx >= 0 && nx < width && ny >= 0 && ny < height && grid[ny * width + nx] == null) {
+                        wallsHit = collisionGrid.hitWall(
+                                minX + node.x,
+                                minY + node.y,
+                                minX + nx,
+                                minY + ny);
+                        if (wallsHit == 0) {
+                            frontier.add(new Node(nx, ny, node.x, node.y, node.distance + (float)Math.hypot(nx - node.x, ny - node.y)));
+                        }
+                    }
+
+                    /*
                     if (dir == 0 && node.y > 0 && !collisionGrid.hasTopWall(node.x, node.y)) {
                         if (node.y - 1 >= 0 && grid[(node.y - 1) * width + node.x] == null) {
                             frontier.add(new Node(node.x, node.y - 1, node.x, node.y, node.distance + 1f));
@@ -130,6 +171,7 @@ public class NavigationGrid {
                             frontier.add(new Node(node.x + 1, node.y, node.x, node.y, node.distance + 1f));
                         }
                     }
+                    */
                 }
 
 

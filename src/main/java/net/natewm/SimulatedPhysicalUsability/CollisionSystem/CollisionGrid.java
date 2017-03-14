@@ -223,8 +223,8 @@ public class CollisionGrid {
         dx = (int)(Math.floor(x)) - (int)(Math.floor(ox));
         dy = (int)(Math.floor(y)) - (int)(Math.floor(oy));
 
-        if (ox > minX && ox < maxX && oy > minY && oy < maxY
-        && x > minX && x < maxX && y > minY && y < maxY) {
+        if (ox >= minX && ox < maxX && oy >= minY && oy < maxY
+        && x >= minX && x < maxX && y >= minY && y < maxY) {
             if (dx < 0) {
                 if (((Cell) cells[calcIndex(ox, oy)]).leftWall || ((Cell) cells[calcIndex(ox, y)]).leftWall) {
                     wallsHit |= VERTICAL;

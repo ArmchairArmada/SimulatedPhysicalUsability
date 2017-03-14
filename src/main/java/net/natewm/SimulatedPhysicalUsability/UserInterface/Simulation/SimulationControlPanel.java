@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 
@@ -14,16 +15,16 @@ import java.awt.event.ActionListener;
  */
 public class SimulationControlPanel extends JPanel {
     private SimulationThread simulationThread;
-    private GroundGrid groundGrid;
+    private Environment environment;
 
     private boolean stopped = true;
     private int speed = 1;
 
-    public SimulationControlPanel(SimulationThread simulationThread, GroundGrid groundGrid) {
+    public SimulationControlPanel(SimulationThread simulationThread, Environment environment) {
         JButton button;
 
         this.simulationThread = simulationThread;
-        this.groundGrid = groundGrid;
+        this.environment = environment;
 
         button = new JButton("Stop");
         button.addActionListener(new ActionListener() {
@@ -32,7 +33,7 @@ public class SimulationControlPanel extends JPanel {
                 stopped = true;
                 speed = 1;
                 simulationThread.stopSimulation();
-                groundGrid.reset();
+                environment.getGroundGrid().reset();
             }
         });
         add(button);
@@ -53,7 +54,7 @@ public class SimulationControlPanel extends JPanel {
                 if (stopped) {
                     stopped = false;
                     simulationThread.startSimulation();
-                    groundGrid.reset();
+                    environment.getGroundGrid().reset();
                 }
                 simulationThread.playSimulation(speed);
             }
