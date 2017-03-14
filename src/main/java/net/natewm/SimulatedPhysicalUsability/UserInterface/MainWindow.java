@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
@@ -21,7 +22,7 @@ import java.util.logging.*;
 public class MainWindow extends JFrame {
     private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
 
-    public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, GroundGrid groundGrid) {
+    public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             Insets insets = (Insets) UIManager.getDefaults().get("TabbedPane.contentBorderInsets");
@@ -92,7 +93,7 @@ public class MainWindow extends JFrame {
 
         simulationTabPanel.setLayout(layout);
 
-        SimulationControlPanel simulationControls = new SimulationControlPanel(simulationThread, groundGrid);
+        SimulationControlPanel simulationControls = new SimulationControlPanel(simulationThread, environment);
         simulationControls.setMinimumSize(new Dimension(250, 0));
         simulationControls.setMaximumSize(new Dimension(250, 1000000));
         simulationControls.setPreferredSize(new Dimension(250, 600));
@@ -112,7 +113,7 @@ public class MainWindow extends JFrame {
         gridBagConstraints.weightx = 1;
         environmentTabPanel.setLayout(layout);
 
-        EnvironmentPanel environmentPanel = new EnvironmentPanel();
+        EnvironmentPanel environmentPanel = new EnvironmentPanel(environment);
         EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(environmentPanel);
         environmentControlPanel.setMinimumSize(new Dimension(250, 0));
         environmentControlPanel.setMaximumSize(new Dimension(250, 1000000));
