@@ -41,6 +41,8 @@ public class NavigationGrid {
         }
     }
 
+    static final int dx[] = {0, 0, -1, 1, -1, -1, 1, 1};
+    static final int dy[] = {-1, 1, 0, 0, -1, 1, -1, 1};
 
     int width;
     int height;
@@ -106,14 +108,12 @@ public class NavigationGrid {
         PriorityQueue<Node> frontier = new PriorityQueue<>(100, comparator);
 
         Vector2f[] grid = new Vector2f[width*height];
+        Vector2f vec;
 
         Node[] nodes = new Node[width*height];
         node = new Node(startX, startY, startX, startY, 0f);
         nodes[startY*width+startX] = node;
         frontier.add(node);
-
-        int dx[] = {0, 0, -1, 1, -1, -1, 1, 1};
-        int dy[] = {-1, 1, 0, 0, -1, 1, -1, 1};
 
         while (!frontier.isEmpty()) {
             //System.out.println(frontier.size());
@@ -125,7 +125,11 @@ public class NavigationGrid {
                 //System.out.println(width + ", " + height);
 
                 //grid[node.y*width+node.x] = new Vector2f(node.x-node.fromX, node.y-node.fromY);
-                grid[node.y * width + node.x] = new Vector2f(node.fromX - node.x, node.fromY - node.y).normalize();
+                //grid[node.y * width + node.x] = new Vector2f(node.fromX - node.x, node.fromY - node.y).normalize();
+                vec = new Vector2f(node.fromX - node.x, node.fromY - node.y);
+                if (vec.x != 0 && vec.y != 0)
+                    vec.normalize();
+                grid[node.y * width + node.x] = vec;
 
                 Integer[] dirs = {0, 1, 2, 3, 4, 5, 6, 7};
                 ArrayUtils.shuffle(dirs);

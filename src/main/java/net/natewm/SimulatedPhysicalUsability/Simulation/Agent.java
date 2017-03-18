@@ -27,10 +27,12 @@ public class Agent {
     private static final float WALKING_SPEED = 8.0f;
     private static final float TURN_RATE = 10.0f;
     private static final float RADIUS = 0.25f;
+    //private static final float RADIUS = 0.3f;
     private static final float FRICTION = 3.5f;
     private static final float DRUNKENNESS = 0.5f;
     //private static final float AGENT_FRICTION = 1.0f;
-    private static final float PUSH = 1.5f;
+    //private static final float PUSH = 1.5f;
+    private static final float PUSH = 0.4f;
 
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
@@ -85,7 +87,8 @@ public class Agent {
             distance = (float) Math.hypot(x - agent.x, y - agent.y);
             //if (rect.isOverlapping(agent.rect)) {
             if (distance <= RADIUS*2) {
-                distance = distance * distance * distance * distance;
+                distance = distance * distance * distance;// * distance;
+                distance = distance * distance;
                 px += dt * PUSH * (x - agent.x) / distance;
                 py += dt * PUSH * (y - agent.y) / distance;
 
@@ -170,7 +173,8 @@ public class Agent {
         // TODO: Use real exit locations
         if (location != null) {
             if (x > location.getX() && x <= location.getX() + 1 && y > location.getY() && y <= location.getY() + 1) {
-                agentManager.remove(this);
+                //agentManager.remove(this);
+                location = environment.getNavigationGrid().getLocation((int)(Math.random() * environment.getNavigationGrid().getLocationCount()));
             }
         }
 
