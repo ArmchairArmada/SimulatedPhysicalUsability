@@ -90,6 +90,28 @@ public class Environment {
         generateGraphics();
     }
 
+    public void generateEnvironment() {
+        collisionGrid = new CollisionGrid(walls);
+        navigationGrid = new NavigationGrid(collisionGrid);
+
+        // TODO: Remove this when location editor is ready.
+        LocationType exit = new LocationType("exit");
+
+        navigationGrid.addLocation(new Location(exit, -25f, -25f));
+        navigationGrid.addLocation(new Location(exit, -25f, 25f));
+        navigationGrid.addLocation(new Location(exit, 25f, -25f));
+        navigationGrid.addLocation(new Location(exit, 25f, 25f));
+
+        navigationGrid.addLocation(new Location(exit, 0f, -25f));
+        navigationGrid.addLocation(new Location(exit, -25f, 0f));
+        navigationGrid.addLocation(new Location(exit, 0f, 25f));
+        navigationGrid.addLocation(new Location(exit, 25f, 0f));
+
+        navigationGrid.generateLocationGrids();
+
+        generateGraphics();
+    }
+
     public void generateGraphics() {
         if (wallNode != null)
             graphicsEngine.removeNodeFromRenderer(wallNode);

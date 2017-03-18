@@ -222,7 +222,6 @@ public class EnvironmentPanel extends JPanel {
     }
 
 
-
     public void paintComponent(Graphics g) {
         centerX = getWidth()/2;
         centerY = getHeight()/2;
@@ -264,5 +263,16 @@ public class EnvironmentPanel extends JPanel {
 
         //g.setColor(Color.black);
         //g.fillRect(centerX-offsetX-2, centerY-offsetY-2, GRID_SIZE+5, 5);
+    }
+
+
+    public void applyChanges() {
+        environment.clear();
+        ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
+        drawables.findOverlapping(new Rect(-512, -512, 1024, 1024), picked);
+        for (Pair<Rect, IEditorDrawable> pair : picked) {
+            pair.getValue().applyToEnvironment(environment);
+        }
+        environment.generateEnvironment();
     }
 }

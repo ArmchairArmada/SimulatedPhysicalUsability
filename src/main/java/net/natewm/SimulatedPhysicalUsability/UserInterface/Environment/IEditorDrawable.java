@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
+import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 
 import java.awt.*;
 
@@ -24,4 +25,6 @@ public interface IEditorDrawable {
      * @return Bounding rectangle.
      */
     Rect getRect();
+
+    void applyToEnvironment(Environment environment);
 }

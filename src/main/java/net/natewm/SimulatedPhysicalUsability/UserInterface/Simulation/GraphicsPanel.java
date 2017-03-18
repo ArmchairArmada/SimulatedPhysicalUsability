@@ -22,7 +22,7 @@ public class GraphicsPanel extends GLCanvas {
 
         this.graphicsEngine = graphicsEngine;
 
-        mouseCamera = new MouseCamera(-0.8f, 0f, 20f, this);
+        mouseCamera = new MouseCamera(-0.8f, 3.1415f, 20f, this);
 
         // TODO: Create camera controls
         addMouseListener(mouseCamera.getMouseListener());
