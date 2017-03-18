@@ -56,6 +56,16 @@ public class EnvironmentControlPanel extends JPanel {
         });
         add(button);
 
+        button = new JButton("Apply Changes");
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                environmentPanel.applyChanges();
+            }
+        });
+        add(button);
+
         // TODO: Add list of locations.
     }
 }

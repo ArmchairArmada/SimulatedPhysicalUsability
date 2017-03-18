@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
+import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 
 import java.awt.*;
 
@@ -25,5 +26,10 @@ public class TestDrawable implements IEditorDrawable {
     @Override
     public Rect getRect() {
         return rect;
+    }
+
+    @Override
+    public void applyToEnvironment(Environment environment) {
+
     }
 }
