@@ -8,6 +8,12 @@ public class LocationDescription {
     private float x;
     private float y;
 
+    public LocationDescription(String locationType, float x, float y) {
+        this.locationType = locationType;
+        this.x = x;
+        this.y = y;
+    }
+
     public String getLocationType() {
         return locationType;
     }

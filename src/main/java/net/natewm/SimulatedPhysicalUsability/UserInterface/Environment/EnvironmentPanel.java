@@ -5,6 +5,7 @@ import net.natewm.SimulatedPhysicalUsability.CollisionSystem.BinSpaceTree;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
+import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 
 import javax.swing.*;
@@ -66,7 +67,7 @@ public class EnvironmentPanel extends JPanel {
                 if (button == 1) {
                     switch (tool) {
                         case ERASER:
-                            erasorTool(x, y);
+                            eraserTool(x, y);
                             break;
 
                         case WALLS:
@@ -108,7 +109,7 @@ public class EnvironmentPanel extends JPanel {
 
                     switch (tool) {
                         case ERASER:
-                            erasorTool(x, y);
+                            eraserTool(x, y);
                             break;
 
                         case WALLS:
@@ -163,6 +164,11 @@ public class EnvironmentPanel extends JPanel {
             drawable = new WallDrawable(minX, minY, horizontal);
             drawables.insert(drawable.getRect(), drawable);
         }
+
+        for (Location location: environment.getLocations()) {
+            drawable = new TestDrawable(location);
+            drawables.insert(drawable.getRect(), drawable);
+        }
     }
 
 
@@ -171,7 +177,7 @@ public class EnvironmentPanel extends JPanel {
     }
 
 
-    private void erasorTool(float x, float y) {
+    private void eraserTool(float x, float y) {
         ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
         drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
         for (Pair<Rect, IEditorDrawable> pair : picked) {
@@ -215,7 +221,9 @@ public class EnvironmentPanel extends JPanel {
         ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
         drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
         if (picked.isEmpty()) {
-            IEditorDrawable test = new TestDrawable((int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
+            // TODO: Add location types
+            Location location = new Location(null, (int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
+            IEditorDrawable test = new TestDrawable(location);
             drawables.insert(test.getRect(), test);
             repaint();
         }
