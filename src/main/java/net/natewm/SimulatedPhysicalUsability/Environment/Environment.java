@@ -10,6 +10,9 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshR
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
+import net.natewm.SimulatedPhysicalUsability.Project.EnvironmentDescription;
+import net.natewm.SimulatedPhysicalUsability.Project.LocationDescription;
+import net.natewm.SimulatedPhysicalUsability.Project.WallDescription;
 import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 
 import java.util.ArrayList;
@@ -35,6 +38,33 @@ public class Environment {
         clear();
     }
 
+    public EnvironmentDescription exportEnvironment() {
+        List<WallDescription> wallDescription = walls.exportWalls();
+        List<LocationDescription> locationDescriptions = new ArrayList<>();
+        for (Location location: locations) {
+            locationDescriptions.add(new LocationDescription(location.getLocationType().getName(), location.getX(), location.getY()));
+        }
+
+        EnvironmentDescription environmentDescription = new EnvironmentDescription(wallDescription, locationDescriptions);
+
+        return environmentDescription;
+    }
+
+    public void importEnvironment(EnvironmentDescription environmentDescription) {
+        clear();
+        for (WallDescription wall: environmentDescription.getWalls()) {
+            walls.addWall(new Walls.Wall(wall.getStartX(), wall.getStartY(), wall.getEndX(), wall.getEndY()));
+        }
+
+        // TODO: Real location types
+        LocationType tempType = new LocationType("temp");
+        for (LocationDescription loc: environmentDescription.getLocations()) {
+            locations.add(new Location(tempType, loc.getX(), loc.getY()));
+        }
+
+        generateEnvironment();
+    }
+
     public GroundGrid getGroundGrid() {
         return  groundGrid;
     }
@@ -45,6 +75,10 @@ public class Environment {
 
     public Walls getWalls() {
         return walls;
+    }
+
+    public List<Location> getLocations() {
+        return locations;
     }
 
     public ICollisionCollection<Agent> getAgentCollisionCollection() {
@@ -74,13 +108,24 @@ public class Environment {
 
         // ToDo: randomize this
         LocationType exit = new LocationType("exit");
+        Location location;
 
         for(int i=-25; i<25; i++) {
-            navigationGrid.addLocation(new Location(exit, -25f, i));
-            navigationGrid.addLocation(new Location(exit, 25f, i+1));
+            location = new Location(exit, -25f, i);
+            locations.add(location);
+            navigationGrid.addLocation(location);
 
-            navigationGrid.addLocation(new Location(exit, i, -25f));
-            navigationGrid.addLocation(new Location(exit, i+1, 25f));
+            location = new Location(exit, 25f, i+1);
+            locations.add(location);
+            navigationGrid.addLocation(location);
+
+            location = new Location(exit, i, -25f);
+            locations.add(location);
+            navigationGrid.addLocation(location);
+
+            location = new Location(exit, i+1, 25f);
+            locations.add(location);
+            navigationGrid.addLocation(location);
         }
 
         /*
@@ -105,6 +150,7 @@ public class Environment {
         navigationGrid = new NavigationGrid(collisionGrid);
 
         // TODO: Remove this when location editor is ready.
+        /*
         LocationType exit = new LocationType("exit");
 
         for(int i=-25; i<25; i++) {
@@ -114,6 +160,7 @@ public class Environment {
             navigationGrid.addLocation(new Location(exit, i, -25f));
             navigationGrid.addLocation(new Location(exit, i+1, 25f));
         }
+        */
         /*
         navigationGrid.addLocation(new Location(exit, -25f, -25f));
         navigationGrid.addLocation(new Location(exit, -25f, 25f));
@@ -125,6 +172,10 @@ public class Environment {
         navigationGrid.addLocation(new Location(exit, 0f, 25f));
         navigationGrid.addLocation(new Location(exit, 25f, 0f));
         */
+
+        for (Location location: locations) {
+            navigationGrid.addLocation(location);
+        }
 
         navigationGrid.generateLocationGrids();
 

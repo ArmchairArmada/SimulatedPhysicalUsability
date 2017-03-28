@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Triangle;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
+import net.natewm.SimulatedPhysicalUsability.Project.WallDescription;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -43,6 +44,14 @@ public class Walls {
      * Default constructor (doesn't need to do anything.)
      */
     public Walls() {
+    }
+
+    public List<WallDescription> exportWalls() {
+        ArrayList<WallDescription> wallDescriptions = new ArrayList<>();
+        for (Wall wall: walls) {
+            wallDescriptions.add(new WallDescription(wall.startX, wall.startY, wall.endX, wall.endY));
+        }
+        return wallDescriptions;
     }
 
 

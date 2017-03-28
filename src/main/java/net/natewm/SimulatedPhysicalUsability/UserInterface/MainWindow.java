@@ -64,6 +64,36 @@ public class MainWindow extends JFrame {
         menuItem.getAccessibleContext().setAccessibleDescription("Creates a new blank simulation.");
         menu.add(menuItem);
 
+        menuItem = new JMenuItem("Open", KeyEvent.VK_O);
+        menuItem.getAccessibleContext().setAccessibleDescription("Opens a file.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: File Open
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Save", KeyEvent.VK_S);
+        menuItem.getAccessibleContext().setAccessibleDescription("Saves a file.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: File Save
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Save As", KeyEvent.VK_A);
+        menuItem.getAccessibleContext().setAccessibleDescription("Saves a file as.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: File Save As
+            }
+        });
+        menu.add(menuItem);
+
         menu.addSeparator();
 
         menuItem = new JMenuItem("Exit", KeyEvent.VK_X);

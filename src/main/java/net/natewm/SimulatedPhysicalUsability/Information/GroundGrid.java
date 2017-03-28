@@ -37,7 +37,8 @@ public class GroundGrid {
         }
 
         public void updateTexture(GraphicsEngine graphicsEngine, float min, float max) {
-            graphicsEngine.updateTexture(textureHandle, floatGrid.toByteBuffer(min, max));
+            if (min < max - 1f)
+                graphicsEngine.updateTexture(textureHandle, floatGrid.toByteBuffer(min, max));
         }
 
         public void dispose(GraphicsEngine graphicsEngine) {

@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
+import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 
 import java.awt.*;
 
@@ -11,10 +12,12 @@ import java.awt.*;
 public class TestDrawable implements IEditorDrawable {
     Rect rect;
     Color color;
+    Location location;
 
-    public TestDrawable(int x, int y) {
+    public TestDrawable(Location location) {
+        this.location = location;
         color = Color.getHSBColor((float)Math.random(), (float)Math.random(), (float)Math.random());
-        rect = new Rect(x, y, 1, 1);
+        rect = new Rect(location.getX(), location.getY(), 1, 1);
     }
 
     @Override
@@ -30,6 +33,6 @@ public class TestDrawable implements IEditorDrawable {
 
     @Override
     public void applyToEnvironment(Environment environment) {
-
+        environment.getLocations().add(location);
     }
 }
