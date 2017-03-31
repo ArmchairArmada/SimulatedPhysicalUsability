@@ -1,7 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering;
 
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.sun.prism.impl.BufferUtil;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
@@ -167,7 +166,7 @@ public class Mesh {
         // UV
         if (hasUvs) {
             uvId = vbo.get(nextIndex);
-            nextIndex++;
+            //nextIndex++;
             gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, uvId);
             gl.glBufferData(GL3.GL_ARRAY_BUFFER, uvBuffer.capacity() * Float.BYTES, uvBuffer, GL3.GL_STATIC_DRAW);
         }

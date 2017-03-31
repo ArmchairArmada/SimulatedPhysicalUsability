@@ -5,10 +5,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /**
- * Created by Nathan on 12/29/2016.
- */
-
-/**
  * Encapsulates node transformations.
  */
 public class Transform {

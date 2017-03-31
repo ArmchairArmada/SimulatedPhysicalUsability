@@ -94,7 +94,7 @@ public class Environment {
         walls = new Walls();
         collisionGrid = new CollisionGrid(walls);
         navigationGrid = new NavigationGrid(collisionGrid);
-        agentCollisionCollection = new BinSpaceTree<Agent>(-512, -512, 1024, 1024, 10);
+        agentCollisionCollection = new BinSpaceTree<>(-512, -512, 1024, 1024, 10);
         generateGraphics();
     }
 

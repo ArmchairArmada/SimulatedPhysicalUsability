@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Nathan on 12/29/2016.
- */
-
-/**
  * Renders an OpenGL scene.
  */
 public class Renderer {

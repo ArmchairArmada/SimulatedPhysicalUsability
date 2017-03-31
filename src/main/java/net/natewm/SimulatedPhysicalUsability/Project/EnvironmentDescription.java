@@ -1,11 +1,5 @@
 package net.natewm.SimulatedPhysicalUsability.Project;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

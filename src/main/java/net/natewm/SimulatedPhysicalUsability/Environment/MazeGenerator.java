@@ -64,7 +64,7 @@ public class MazeGenerator {
         }
 
         // Recursively build out maze.
-        recursiveMaze(cells, halfHeight, halfWidth, 0, 0);
+        recursiveMaze(cells, halfWidth, halfHeight, 0, 0);
 
         // Randomly remove walls to connect hallways.
         for (int y = 1; y < height; y++) {

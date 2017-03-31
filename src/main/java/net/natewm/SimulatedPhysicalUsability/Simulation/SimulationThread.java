@@ -1,16 +1,8 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
-import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
-import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
-import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
-import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
-import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
-import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
-
-import static java.lang.Thread.sleep;
 
 /**
  * Created by Nathan on 1/9/2017.
@@ -122,13 +114,11 @@ public class SimulationThread {
                 e.printStackTrace();
             }
 
-            MeshRenderNodeHandle node = new MeshRenderNodeHandle();
+            MeshRenderNodeHandle node;// = new MeshRenderNodeHandle();
             Transform transform;
 
-            //for (int i=-14; i<15; i++) {
-            //    for (int j=-14; j<15; j++) {
-            for (int i=-20; i<19; i++) {
-                for (int j=-20; j<19; j++) {
+            for (int i=-14; i<15; i++) {
+                for (int j=-14; j<15; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 

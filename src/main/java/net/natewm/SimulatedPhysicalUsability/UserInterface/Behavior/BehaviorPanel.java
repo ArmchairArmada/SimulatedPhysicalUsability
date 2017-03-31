@@ -1,7 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 
 /**
