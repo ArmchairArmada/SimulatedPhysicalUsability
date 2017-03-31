@@ -95,7 +95,13 @@ public class NavigationGrid {
         location.setNavGridId(locations.size()-1);
     }
 
-    public void generateLocationGrids() {
+    public synchronized void generateLocationGrids() {
+        /*
+        locations.parallelStream().forEach((Location location) -> {
+            generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
+        });
+        */
+
         for (Location location : locations) {
             generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
         }
@@ -214,6 +220,11 @@ public class NavigationGrid {
         }
 
         vectorGrids.add(grid);
+        //addGrid(grid);
+    }
+
+    private synchronized void addGrid(Vector2f[] grid) {
+        vectorGrids.add(grid);
     }
 
     public Vector2f getVector(int locationIndex, float x, float y) {
@@ -221,8 +232,7 @@ public class NavigationGrid {
             return vectorGrids.get(locationIndex)[calcIndex(x, y)];
         }
         else {
-            Vector2f vector2f = new Vector2f(-x, -y).normalize();
-            return vector2f;
+            return new Vector2f(-x, -y).normalize();
         }
     }
 

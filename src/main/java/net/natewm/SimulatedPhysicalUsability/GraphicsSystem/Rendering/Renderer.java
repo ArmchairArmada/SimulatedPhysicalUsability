@@ -36,8 +36,8 @@ public class Renderer {
     }
 
     public void init(GL3 gl) {
-        gl.glEnable(gl.GL_DEPTH_TEST);
-        gl.glEnable(gl.GL_CULL_FACE);
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        gl.glEnable(GL.GL_CULL_FACE);
         setClearColor(gl, clearColor);
     }
 

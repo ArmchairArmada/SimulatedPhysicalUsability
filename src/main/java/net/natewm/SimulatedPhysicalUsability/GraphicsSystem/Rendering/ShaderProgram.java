@@ -1,5 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.glsl.ShaderUtil;
 
@@ -22,15 +24,15 @@ public class ShaderProgram {
         gl.glAttachShader(programID, fragmentShader.getShaderID());
         gl.glLinkProgram(programID);
 
-        gl.glGetProgramiv(programID, gl.GL_LINK_STATUS, status, 0);
-        if (status[0] == gl.GL_FALSE) {
+        gl.glGetProgramiv(programID, GL2ES2.GL_LINK_STATUS, status, 0);
+        if (status[0] == GL.GL_FALSE) {
             throw new Exception(ShaderUtil.getProgramInfoLog(gl, programID));
         }
 
         gl.glValidateProgram(programID);
 
-        gl.glGetProgramiv(programID, gl.GL_VALIDATE_STATUS, status, 0);
-        if (status[0] == gl.GL_FALSE) {
+        gl.glGetProgramiv(programID, GL2ES2.GL_VALIDATE_STATUS, status, 0);
+        if (status[0] == GL.GL_FALSE) {
             throw new Exception(ShaderUtil.getProgramInfoLog(gl, programID));
         }
     }

@@ -45,9 +45,7 @@ public class Environment {
             locationDescriptions.add(new LocationDescription(location.getLocationType().getName(), location.getX(), location.getY()));
         }
 
-        EnvironmentDescription environmentDescription = new EnvironmentDescription(wallDescription, locationDescriptions);
-
-        return environmentDescription;
+        return new EnvironmentDescription(wallDescription, locationDescriptions);
     }
 
     public void importEnvironment(EnvironmentDescription environmentDescription) {

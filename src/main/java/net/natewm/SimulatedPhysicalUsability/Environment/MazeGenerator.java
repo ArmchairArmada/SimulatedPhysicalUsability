@@ -70,10 +70,10 @@ public class MazeGenerator {
         for (int y = 1; y < height; y++) {
             for (int x = 1; x < width; x++) {
                 if (Math.random() < removeWallProbability)
-                    ((Cell) cells[y * width + x]).topWall = false;
+                    cells[y * width + x].topWall = false;
 
                 if (Math.random() < removeWallProbability)
-                    ((Cell) cells[y * width + x]).leftWall = false;
+                    cells[y * width + x].leftWall = false;
             }
         }
 

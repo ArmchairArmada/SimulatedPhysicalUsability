@@ -172,6 +172,7 @@ public class Agent {
 
         // TODO: Use real exit locations
         if (location != null) {
+            //System.out.println(location.getX() + ", " + location.getY() + ", " + x + ", " + y);
             if (x > location.getX() && x <= location.getX() + 1 && y > location.getY() && y <= location.getY() + 1) {
                 //agentManager.remove(this);
                 location = environment.getNavigationGrid().getLocation((int)(Math.random() * environment.getNavigationGrid().getLocationCount()));
