@@ -14,6 +14,8 @@ import net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation.Simulation
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.logging.*;
 
 /**
@@ -21,6 +23,9 @@ import java.util.logging.*;
  */
 public class MainWindow extends JFrame {
     private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
+
+    final JFileChooser fileChooser;
+    final JFrame window = this;
 
     public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment) {
         try {
@@ -32,6 +37,8 @@ public class MainWindow extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        fileChooser = new JFileChooser();
 
         setTitle("Simulated Physical Usability");
 
@@ -50,65 +57,6 @@ public class MainWindow extends JFrame {
 
         // MOCK USER INTERFACE LAYOUT
         // TODO: Split UI components into separate classes
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu menu;
-        JMenuItem menuItem;
-
-        menu = new JMenu("File");
-        menu.setMnemonic(KeyEvent.VK_F);
-        menu.getAccessibleContext().setAccessibleDescription("Menu for manipulating and managing files.");
-        menuBar.add(menu);
-
-        menuItem = new JMenuItem("New", KeyEvent.VK_N);
-        menuItem.getAccessibleContext().setAccessibleDescription("Creates a new blank simulation.");
-        menu.add(menuItem);
-
-        menuItem = new JMenuItem("Open", KeyEvent.VK_O);
-        menuItem.getAccessibleContext().setAccessibleDescription("Opens a file.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: File Open
-            }
-        });
-        menu.add(menuItem);
-
-        menuItem = new JMenuItem("Save", KeyEvent.VK_S);
-        menuItem.getAccessibleContext().setAccessibleDescription("Saves a file.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: File Save
-            }
-        });
-        menu.add(menuItem);
-
-        menuItem = new JMenuItem("Save As", KeyEvent.VK_A);
-        menuItem.getAccessibleContext().setAccessibleDescription("Saves a file as.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: File Save As
-            }
-        });
-        menu.add(menuItem);
-
-        menu.addSeparator();
-
-        menuItem = new JMenuItem("Exit", KeyEvent.VK_X);
-        menuItem.getAccessibleContext().setAccessibleDescription("Exists the application.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: Ask if sure (or ask to save, if not saved)
-                System.exit(NORMAL);
-            }
-        });
-        menu.add(menuItem);
-
-        setJMenuBar(menuBar);
-
         JTabbedPane tabbedPane = new JTabbedPane();
 
         JPanel simulationTabPanel = new JPanel();
@@ -183,6 +131,91 @@ public class MainWindow extends JFrame {
         tabbedPane.addTab("Statistics", new JPanel());
 
         add(tabbedPane);
+
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu menu;
+        JMenuItem menuItem;
+
+        menu = new JMenu("File");
+        menu.setMnemonic(KeyEvent.VK_F);
+        menu.getAccessibleContext().setAccessibleDescription("Menu for manipulating and managing files.");
+        menuBar.add(menu);
+
+        menuItem = new JMenuItem("New", KeyEvent.VK_N);
+        menuItem.getAccessibleContext().setAccessibleDescription("Creates a new blank simulation.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int dialogResult = JOptionPane.showConfirmDialog (null,
+                        "New project? (Unsaved data will be lost)","Warning", JOptionPane.YES_NO_OPTION);
+                if(dialogResult == JOptionPane.YES_OPTION) {
+                    simulationControls.reset();
+                    simulationThread.stopSimulation();
+                    environment.clear();
+                    environmentPanel.clearAll();
+                }
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Open", KeyEvent.VK_O);
+        menuItem.getAccessibleContext().setAccessibleDescription("Opens a file.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: File Open
+                int returnValue = fileChooser.showOpenDialog(window);
+                if (returnValue != JFileChooser.CANCEL_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    LOGGER.fine("Opening file: " + file.getName());
+                }
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Save", KeyEvent.VK_S);
+        menuItem.getAccessibleContext().setAccessibleDescription("Saves a file.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: File Save
+                File file = fileChooser.getSelectedFile();
+                if (file != null)
+                    LOGGER.fine("Saving file: " + file.getName());
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Save As", KeyEvent.VK_A);
+        menuItem.getAccessibleContext().setAccessibleDescription("Saves a file as.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: File Save As
+                int returnValue = fileChooser.showSaveDialog(window);
+                if (returnValue != JFileChooser.CANCEL_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    LOGGER.fine("Saving file as: " + file.getName());
+                }
+            }
+        });
+        menu.add(menuItem);
+
+        menu.addSeparator();
+
+        menuItem = new JMenuItem("Exit", KeyEvent.VK_X);
+        menuItem.getAccessibleContext().setAccessibleDescription("Exists the application.");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: Ask if sure (or ask to save, if not saved)
+                System.exit(NORMAL);
+            }
+        });
+        menu.add(menuItem);
+
+        setJMenuBar(menuBar);
 
         pack();
         setVisible(true);

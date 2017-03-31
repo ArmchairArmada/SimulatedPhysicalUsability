@@ -84,4 +84,9 @@ public class SimulationControlPanel extends JPanel {
         });
         add(button);
     }
+
+    public void reset() {
+        stopped = true;
+        speed = 1;
+    }
 }
