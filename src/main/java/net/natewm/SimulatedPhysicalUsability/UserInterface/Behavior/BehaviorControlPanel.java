@@ -1,12 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior;
 
-import net.natewm.SimulatedPhysicalUsability.UserInterface.Environment.EnvironmentPanel;
-
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by Nathan on 1/18/2017.

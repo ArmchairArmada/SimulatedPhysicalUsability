@@ -2,7 +2,6 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorControlPanel;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorPanel;
@@ -15,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.nio.file.Path;
 import java.util.logging.*;
 
 /**
@@ -28,21 +26,11 @@ public class MainWindow extends JFrame {
     final JFrame window = this;
 
     public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            Insets insets = (Insets) UIManager.getDefaults().get("TabbedPane.contentBorderInsets");
-            insets.top = 0;
-            UIManager.getDefaults().put("TabbedPane.contentBorderInsets", insets);
-            //UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         fileChooser = new JFileChooser();
 
         setTitle("Simulated Physical Usability");
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -144,60 +132,48 @@ public class MainWindow extends JFrame {
 
         menuItem = new JMenuItem("New", KeyEvent.VK_N);
         menuItem.getAccessibleContext().setAccessibleDescription("Creates a new blank simulation.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int dialogResult = JOptionPane.showConfirmDialog (null,
-                        "New project? (Unsaved data will be lost)","Warning", JOptionPane.YES_NO_OPTION);
-                if(dialogResult == JOptionPane.YES_OPTION) {
-                    simulationControls.reset();
-                    simulationThread.stopSimulation();
-                    environment.clear();
-                    environmentPanel.clearAll();
-                }
+        menuItem.addActionListener(e -> {
+            int dialogResult = JOptionPane.showConfirmDialog (null,
+                    "New project? (Unsaved data will be lost)","Warning", JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.YES_OPTION) {
+                simulationControls.reset();
+                simulationThread.stopSimulation();
+                environment.clear();
+                environmentPanel.clearAll();
             }
         });
         menu.add(menuItem);
 
         menuItem = new JMenuItem("Open", KeyEvent.VK_O);
         menuItem.getAccessibleContext().setAccessibleDescription("Opens a file.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: File Open
-                int returnValue = fileChooser.showOpenDialog(window);
-                if (returnValue != JFileChooser.CANCEL_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    LOGGER.fine("Opening file: " + file.getName());
-                }
+        menuItem.addActionListener(e -> {
+            // TODO: File Open
+            int returnValue = fileChooser.showOpenDialog(window);
+            if (returnValue != JFileChooser.CANCEL_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                LOGGER.fine("Opening file: " + file.getName());
             }
         });
         menu.add(menuItem);
 
         menuItem = new JMenuItem("Save", KeyEvent.VK_S);
         menuItem.getAccessibleContext().setAccessibleDescription("Saves a file.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: File Save
-                File file = fileChooser.getSelectedFile();
-                if (file != null)
-                    LOGGER.fine("Saving file: " + file.getName());
-            }
+        menuItem.addActionListener(e -> {
+            // TODO: File Save
+            File file = fileChooser.getSelectedFile();
+            if (file != null)
+                LOGGER.fine("Saving file: " + file.getName());
         });
         menu.add(menuItem);
 
         menuItem = new JMenuItem("Save As", KeyEvent.VK_A);
         menuItem.getAccessibleContext().setAccessibleDescription("Saves a file as.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: File Save As
-                int returnValue = fileChooser.showSaveDialog(window);
-                if (returnValue != JFileChooser.CANCEL_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    LOGGER.fine("Saving file as: " + file.getName());
-                }
+        menuItem.addActionListener(e -> {
+            // TODO: File Save As
+            int returnValue = fileChooser.showSaveDialog(window);
+            if (returnValue != JFileChooser.CANCEL_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                LOGGER.fine("Saving file as: " + file.getName());
             }
         });
         menu.add(menuItem);
@@ -206,12 +182,9 @@ public class MainWindow extends JFrame {
 
         menuItem = new JMenuItem("Exit", KeyEvent.VK_X);
         menuItem.getAccessibleContext().setAccessibleDescription("Exists the application.");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: Ask if sure (or ask to save, if not saved)
-                System.exit(NORMAL);
-            }
+        menuItem.addActionListener(e -> {
+            // TODO: Ask if sure (or ask to save, if not saved)
+            System.exit(NORMAL);
         });
         menu.add(menuItem);
 

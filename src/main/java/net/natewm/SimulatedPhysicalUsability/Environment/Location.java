@@ -1,7 +1,5 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
-import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
-
 /**
  * Created by Nathan on 3/14/2017.
  */

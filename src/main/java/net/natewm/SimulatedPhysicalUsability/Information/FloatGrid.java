@@ -2,11 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Information;
 
 import com.sun.prism.impl.BufferUtil;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by Nathan on 1/10/2017.

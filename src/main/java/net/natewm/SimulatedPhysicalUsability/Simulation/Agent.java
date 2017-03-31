@@ -2,23 +2,17 @@ package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import javafx.util.Pair;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
-import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollection;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
-import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
-import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import static java.lang.Thread.sleep;
 
 /**
  * Created by Nathan on 1/4/2017.

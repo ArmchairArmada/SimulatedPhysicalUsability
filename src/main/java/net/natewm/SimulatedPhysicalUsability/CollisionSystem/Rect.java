@@ -73,10 +73,8 @@ public class Rect {
      * @return True if the two rectangles overlap, else false.
      */
     public boolean isOverlapping(Rect rect) {
-        if ((x + width) < rect.x || x > (rect.x + rect.width))
-            return false;
+        return !((x + width) < rect.x || x > (rect.x + rect.width)) && !((y + height) < rect.y || y > (rect.y + rect.height));
 
-        return !((y + height) < rect.y || y > (rect.y + rect.height));
     }
 
 

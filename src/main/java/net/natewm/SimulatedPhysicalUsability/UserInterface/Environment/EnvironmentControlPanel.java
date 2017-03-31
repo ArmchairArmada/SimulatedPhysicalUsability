@@ -18,52 +18,27 @@ public class EnvironmentControlPanel extends JPanel {
 
         button = new JButton("Clear All");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                environmentPanel.clearAll();
-            }
-        });
+        button.addActionListener(e -> environmentPanel.clearAll());
         add(button);
 
         button = new JButton("Eraser");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                environmentPanel.setTool(EnvironmentPanel.Tool.ERASER);
-            }
-        });
+        button.addActionListener(e -> environmentPanel.setTool(EnvironmentPanel.Tool.ERASER));
         add(button);
 
         button = new JButton("Add Walls");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                environmentPanel.setTool(EnvironmentPanel.Tool.WALLS);
-            }
-        });
+        button.addActionListener(e -> environmentPanel.setTool(EnvironmentPanel.Tool.WALLS));
         add(button);
 
         button = new JButton("Add Locations");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                environmentPanel.setTool(EnvironmentPanel.Tool.LOCATION);
-            }
-        });
+        button.addActionListener(e -> environmentPanel.setTool(EnvironmentPanel.Tool.LOCATION));
         add(button);
 
         button = new JButton("Apply Changes");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                environmentPanel.applyChanges();
-            }
-        });
+        button.addActionListener(e -> environmentPanel.applyChanges());
         add(button);
 
         // TODO: Add list of locations.

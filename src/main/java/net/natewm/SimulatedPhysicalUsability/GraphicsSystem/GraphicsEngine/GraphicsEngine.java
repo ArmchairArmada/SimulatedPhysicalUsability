@@ -122,9 +122,7 @@ public class GraphicsEngine {
      * Action to end the animation frame.
      */
     public void frameEnd() {
-        add((GL3 gl) -> {
-            return true;
-        });
+        add((GL3 gl) -> true);
     }
 
     /**

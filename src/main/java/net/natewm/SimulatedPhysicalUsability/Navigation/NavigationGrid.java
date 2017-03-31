@@ -116,9 +116,7 @@ public class NavigationGrid {
         Vector2f[] grid = new Vector2f[width*height];
         Vector2f vec;
 
-        Node[] nodes = new Node[width*height];
         node = new Node(startX, startY, startX, startY, 0f);
-        nodes[startY*width+startX] = node;
         frontier.add(node);
 
         while (!frontier.isEmpty()) {
@@ -141,7 +139,7 @@ public class NavigationGrid {
                 ArrayUtils.shuffle(dirs);
 
                 int wallsHit;
-                int nx=0, ny=0;
+                int nx, ny;
                 for (Integer dir : dirs) {
                     nx = node.x + dx[dir];
                     ny = node.y + dy[dir];

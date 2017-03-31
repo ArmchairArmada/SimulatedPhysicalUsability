@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nathan on 12/27/2016.
- */
-
-/**
  * Stores information on vertices, normals, colors, uv coordinates and triangles.  From this data, OpenGL compatible
  * buffers can be generated.
  */
@@ -31,11 +27,11 @@ public class Geometry {
         }
     }
 
-    List<Vector3f> vertices = new ArrayList<Vector3f>();
-    List<Vector3f> normals = new ArrayList<Vector3f>();
-    List<Vector3f> colors = new ArrayList<Vector3f>();
-    List<Vector2f> uv = new ArrayList<Vector2f>();
-    List<Triangle> triangles = new ArrayList<Triangle>();
+    List<Vector3f> vertices = new ArrayList<>();
+    List<Vector3f> normals = new ArrayList<>();
+    List<Vector3f> colors = new ArrayList<>();
+    List<Vector2f> uv = new ArrayList<>();
+    List<Triangle> triangles = new ArrayList<>();
     List<SubGeometryInfo> subGeometryInfos = new ArrayList<>();
 
     /**

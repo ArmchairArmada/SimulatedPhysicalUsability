@@ -4,13 +4,8 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
-/**
- * Created by Nathan on 12/31/2016.
- */
 
 /**
  * Camera control system which uses the mouse for translation, rotation, and zoom.
@@ -153,16 +148,13 @@ public class MouseCamera {
             }
         };
 
-        mouseWheelListener = new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                distance += e.getPreciseWheelRotation() * distance * SCROLL_RATE;
+        mouseWheelListener = e -> {
+            distance += e.getPreciseWheelRotation() * distance * SCROLL_RATE;
 
-                if (distance < MIN_ZOOM)
-                    distance = MIN_ZOOM;
+            if (distance < MIN_ZOOM)
+                distance = MIN_ZOOM;
 
-                updateMatrix();
-            }
+            updateMatrix();
         };
     }
 

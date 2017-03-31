@@ -33,7 +33,7 @@ public class Walls {
     }
 
 
-    private List<Wall> walls = new ArrayList<Wall>();
+    private List<Wall> walls = new ArrayList<>();
     private float minX = Float.MAX_VALUE;
     private float minY = Float.MAX_VALUE;
     private float maxX = Float.MIN_VALUE;
@@ -58,7 +58,7 @@ public class Walls {
     /**
      * Adds a wall to the list of walls.
      *
-     * @param wall
+     * @param wall Wall to add
      */
     public void addWall(Wall wall) {
         walls.add(wall);
