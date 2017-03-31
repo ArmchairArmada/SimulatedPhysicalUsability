@@ -125,8 +125,10 @@ public class SimulationThread {
             MeshRenderNodeHandle node = new MeshRenderNodeHandle();
             Transform transform;
 
-            for (int i=-14; i<15; i++) {
-                for (int j=-14; j<15; j++) {
+            //for (int i=-14; i<15; i++) {
+            //    for (int j=-14; j<15; j++) {
+            for (int i=-20; i<19; i++) {
+                for (int j=-20; j<19; j++) {
                     node = new MeshRenderNodeHandle();
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 

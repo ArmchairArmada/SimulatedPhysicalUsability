@@ -144,9 +144,11 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
                     object = pair.getValue();
                     node.objects.remove(pair);
 
+                    /*
                     if (node.objects.isEmpty() && node.parent != null)  {
                         node.parent.merge();
                     }
+                    */
 
                     return (T)object;
                 }

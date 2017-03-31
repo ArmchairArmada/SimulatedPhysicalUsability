@@ -10,5 +10,5 @@ import java.io.IOException;
  * Interface for loading geometry from a file.
  */
 public interface IGeometryLoader {
-    public Geometry load(String filename) throws IOException;
+    Geometry load(String filename) throws IOException;
 }

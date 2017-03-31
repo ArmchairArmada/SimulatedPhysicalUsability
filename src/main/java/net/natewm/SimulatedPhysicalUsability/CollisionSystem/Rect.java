@@ -76,10 +76,7 @@ public class Rect {
         if ((x + width) < rect.x || x > (rect.x + rect.width))
             return false;
 
-        if ((y + height) < rect.y || y > (rect.y + rect.height))
-            return false;
-
-        return true;
+        return !((y + height) < rect.y || y > (rect.y + rect.height));
     }
 
 

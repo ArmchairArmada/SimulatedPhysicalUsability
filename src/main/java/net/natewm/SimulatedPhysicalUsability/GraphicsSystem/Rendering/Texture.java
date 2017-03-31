@@ -40,7 +40,7 @@ public class Texture {
         gl.glGenTextures(1, textureIDArray, 0);
         textureID = textureIDArray[0];
 
-        gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textureID);
     }
 
     public void setTextureOptions(GL3 gl, int wrapS, int wrapT, int minFilter, int magFilter) {
@@ -54,24 +54,24 @@ public class Texture {
 
     private void setFilters(GL3 gl, boolean quality) {
         // TODO: Allow configuring min and mag filters (Maybe in material json files)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
         //gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
         if (quality)
-            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR_MIPMAP_LINEAR);
+            gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
         else
-            gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+            gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
     }
 
     private void setQuality(GL3 gl) {
         if (anisotropy < 0f) {
             float[] fLargest = {-1f};
-            gl.glGetFloatv(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, fLargest, 0);
+            gl.glGetFloatv(GL.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, fLargest, 0);
             anisotropy = fLargest[0];
             LOGGER.log(Level.FINE, "Using ansiotropy level {0}", anisotropy);
         }
 
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
-        gl.glGenerateMipmap(gl.GL_TEXTURE_2D);
+        gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+        gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
     }
 
     private void fromImage(GL3 gl, Image image, boolean quality) {
@@ -81,8 +81,8 @@ public class Texture {
         width = image.getWidth();
         height = image.getHeight();
 
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, image.getPixelFormat(), width, height, 0,
-                image.getPixelFormat(), gl.GL_UNSIGNED_BYTE, image.getByteBuffer());
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, image.getPixelFormat(), width, height, 0,
+                image.getPixelFormat(), GL.GL_UNSIGNED_BYTE, image.getByteBuffer());
 
         setFilters(gl, quality);
 
@@ -116,11 +116,11 @@ public class Texture {
     }
 
     public void bind(GL3 gl) {
-        gl.glBindTexture(gl.GL_TEXTURE_2D, textureID);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textureID);
     }
 
     public void unbind(GL3 gl) {
-        gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
     }
 
     public void dispose(GL3 gl) {

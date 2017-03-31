@@ -32,7 +32,7 @@ public class OBJLoader implements IGeometryLoader {
             String[] strings;
 
             for (int i=0; i<3; i++) {
-                strings = items[i+1].split("\\/");
+                strings = items[i+1].split("/");
 
                 p[i] = Integer.parseInt(strings[0])-1;
 
@@ -49,7 +49,7 @@ public class OBJLoader implements IGeometryLoader {
 
 
     public Geometry load(String filename) throws IOException {
-        HashMap<String, Point> pointMap = new HashMap<>();;
+        HashMap<String, Point> pointMap = new HashMap<>();
         ArrayList<Point> points = new ArrayList<>();
         ArrayList<Vector3f> vertices = new ArrayList<>();
         ArrayList<Vector3f> normals = new ArrayList<>();
