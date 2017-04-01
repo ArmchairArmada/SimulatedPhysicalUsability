@@ -188,11 +188,11 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
             }
 
             // Recurse into children.
-            if (childA != null) {
+            if (childA != null && childA.rect.isOverlapping(rect)) {
                 childA.findOverlapping(rect, outCollection, !isVertical);
             }
 
-            if (childB != null) {
+            if (childB != null && childB.rect.isOverlapping(rect)) {
                 childB.findOverlapping(rect, outCollection, !isVertical);
             }
         }
