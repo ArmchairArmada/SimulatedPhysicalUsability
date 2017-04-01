@@ -123,6 +123,7 @@ public class SimulationThread {
                     graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
 
                     transform = new Transform();
+                    //transform.position.set(i*2f+0.5f, 0, j*2f+0.5f);
                     transform.position.set(i*2f+0.5f, 0, j*2f+0.5f);
                     //transform.rotation.setAngleAxis(Math.random()*Math.PI*2.0, 0, 1, 0);
                     graphicsEngine.setRenderNodeTransform(node, transform);

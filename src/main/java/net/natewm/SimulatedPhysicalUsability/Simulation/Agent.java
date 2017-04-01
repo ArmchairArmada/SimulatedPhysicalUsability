@@ -23,7 +23,7 @@ public class Agent {
     private static final float RADIUS = 0.25f;
     //private static final float RADIUS = 0.3f;
     private static final float FRICTION = 3.5f;
-    private static final float DRUNKENNESS = 0.5f;
+    private static final float DRUNKENNESS = 0.2f;
     //private static final float AGENT_FRICTION = 1.0f;
     //private static final float PUSH = 1.5f;
     private static final float PUSH = 0.4f;
