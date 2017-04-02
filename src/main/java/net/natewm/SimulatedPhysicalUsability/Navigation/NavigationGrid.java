@@ -14,6 +14,18 @@ import java.util.PriorityQueue;
  * Created by Nathan on 1/23/2017.
  */
 public class NavigationGrid {
+    private class Job {
+        int x;
+        int y;
+        Vector2f[] grid;
+
+        Job(int x, int y, Vector2f[] grid) {
+            this.x = x;
+            this.y = y;
+            this.grid = grid;
+        }
+    }
+
     private class Node {
         int x;
         int y;
@@ -96,24 +108,33 @@ public class NavigationGrid {
     }
 
     public synchronized void generateLocationGrids() {
-        /*
-        locations.parallelStream().forEach((Location location) -> {
-            generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
-        });
-        */
+        List<Job> jobs = new ArrayList<>();
+        Location loc;
+        for (Location location: locations) {
+            Vector2f[] grid = new Vector2f[width*height];
+            vectorGrids.add(grid);
+            jobs.add(new Job(xIndex(location.getX()), yIndex(location.getY()), grid));
+        }
 
+        //locations.parallelStream().forEach((Location location) -> {
+        jobs.parallelStream().forEach((Job job) -> {
+            generateNavigationGrid(job.x, job.y, job.grid);
+        });
+
+        /*
         for (Location location : locations) {
             generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
         }
+        */
     }
 
-    private void generateNavigationGrid(int startX, int startY) {
+    private void generateNavigationGrid(int startX, int startY, Vector2f[] grid) {
         Node node;
 
         Comparator<Node> comparator = new NodeComparator();
         PriorityQueue<Node> frontier = new PriorityQueue<>(100, comparator);
 
-        Vector2f[] grid = new Vector2f[width*height];
+        //Vector2f[] grid = new Vector2f[width*height];
         Vector2f vec;
 
         node = new Node(startX, startY, startX, startY, 0f);
@@ -217,7 +238,7 @@ public class NavigationGrid {
             }
         }
 
-        vectorGrids.add(grid);
+        //vectorGrids.add(grid);
         //addGrid(grid);
     }
 
