@@ -140,18 +140,18 @@ public class Renderer {
 
         for (IRenderNode node : dynamicNodes) {
             // Two loops are used, since I could not get locking to work to prevent OpenGL conflicts.
-            center = node.getViewCenter();
+            //center = node.getViewCenter();
             r = node.getViewRadius();
-            if (node.getViewZ()-node.getRadius() < farPlane
+            /*if (node.getViewZ()-node.getRadius() < farPlane
                     && node.getViewZ()+node.getRadius() > 0
                     && center.x+r > -1.0f
                     && center.x-r < 1.0f
                     && center.y+r > -1.0f
-                    && center.y-r < 1.0f) {
+                    && center.y-r < 1.0f) {*/
                 node.bind(gl);
                 node.render(gl, node.getModelView(), projection, (int)(levelOfDetailScale/r/node.getRadius()));
                 node.unbind(gl);
-            }
+            //}
         }
 
         for (ArrayList<IRenderNode> renderGroup : renderGroups) {
@@ -166,16 +166,16 @@ public class Renderer {
 
                 // Two loops are used, since I could not get locking to work to prevent OpenGL conflicts.
                 for (IRenderNode node : renderGroup) {
-                    center = node.getViewCenter();
+                    //center = node.getViewCenter();
                     r = node.getViewRadius();
-                    if (node.getViewZ()-node.getRadius() < farPlane
+                    /*if (node.getViewZ()-node.getRadius() < farPlane
                             && node.getViewZ()+node.getRadius() > 0
                             && center.x+r > -1.0f
                             && center.x-r < 1.0f
                             && center.y+r > -1.0f
-                            && center.y-r < 1.0f) {
+                            && center.y-r < 1.0f) {*/
                         node.render(gl, node.getModelView(), projection, (int)(levelOfDetailScale/r/node.getRadius()));
-                    }
+                    //}
                 }
                 renderGroup.get(0).unbind(gl);
             }

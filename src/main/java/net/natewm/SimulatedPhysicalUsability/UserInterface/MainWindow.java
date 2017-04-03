@@ -1,7 +1,9 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.Project.EnvironmentDescription;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorControlPanel;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorPanel;
@@ -14,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.*;
 
 /**
@@ -27,6 +30,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment) {
         fileChooser = new JFileChooser();
+        ObjectMapper mapper = new ObjectMapper();
 
         setTitle("Simulated Physical Usability");
 
@@ -152,6 +156,15 @@ public class MainWindow extends JFrame {
             if (returnValue != JFileChooser.CANCEL_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 LOGGER.fine("Opening file: " + file.getName());
+                try {
+                    simulationControls.reset();
+                    simulationThread.stopSimulation();
+                    EnvironmentDescription environmentDescription = mapper.readValue(file, EnvironmentDescription.class);
+                    environment.importEnvironment(environmentDescription);
+                    environmentPanel.updateEnvironment();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         menu.add(menuItem);
@@ -161,8 +174,15 @@ public class MainWindow extends JFrame {
         menuItem.addActionListener(e -> {
             // TODO: File Save
             File file = fileChooser.getSelectedFile();
-            if (file != null)
+            if (file != null) {
                 LOGGER.fine("Saving file: " + file.getName());
+                EnvironmentDescription environmentDescription = environment.exportEnvironment();
+                try {
+                    mapper.writeValue(file, environmentDescription);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
         });
         menu.add(menuItem);
 
@@ -174,6 +194,12 @@ public class MainWindow extends JFrame {
             if (returnValue != JFileChooser.CANCEL_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 LOGGER.fine("Saving file as: " + file.getName());
+                EnvironmentDescription environmentDescription = environment.exportEnvironment();
+                try {
+                    mapper.writeValue(file, environmentDescription);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         menu.add(menuItem);

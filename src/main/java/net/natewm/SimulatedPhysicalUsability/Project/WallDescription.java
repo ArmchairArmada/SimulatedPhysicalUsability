@@ -9,6 +9,9 @@ public class WallDescription {
     private float endX;
     private float endY;
 
+    public WallDescription() {
+    }
+
     public WallDescription(float startX, float startY, float endX, float endY) {
         this.startX = startX;
         this.startY = startY;

@@ -6,6 +6,7 @@ import net.natewm.SimulatedPhysicalUsability.CollisionSystem.ICollisionCollectio
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
+import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 
 import javax.swing.*;
@@ -42,6 +43,9 @@ public class EnvironmentPanel extends JPanel {
     Tool tool = Tool.WALLS;
 
     ICollisionCollection<IEditorDrawable> drawables;
+
+    // TODO: Use real location types
+    LocationType tempLocationType = new LocationType("temp");
 
     public EnvironmentPanel(Environment environment) {
         this.environment = environment;
@@ -222,7 +226,7 @@ public class EnvironmentPanel extends JPanel {
         drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
         if (picked.isEmpty()) {
             // TODO: Add location types
-            Location location = new Location(null, (int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
+            Location location = new Location(tempLocationType, (int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
             IEditorDrawable test = new TestDrawable(location);
             drawables.insert(test.getRect(), test);
             repaint();
