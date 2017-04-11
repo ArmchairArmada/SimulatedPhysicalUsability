@@ -1,5 +1,8 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
+import net.natewm.SimulatedPhysicalUsability.Project.LocationDescription;
+import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
+
 /**
  * Created by Nathan on 3/14/2017.
  */
@@ -7,6 +10,7 @@ public class Location {
     private LocationType locationType;
     private float x;
     private float y;
+    private Agent occupiedBy = null;
     private int navGridId;
 
     public Location(LocationType locationType, float x, float y) {
@@ -27,11 +31,32 @@ public class Location {
         return y;
     }
 
+    public void occupy(Agent agent) {
+        occupiedBy = agent;
+    }
+
+    public void leave() {
+        occupiedBy = null;
+    }
+
+    public boolean isAvailable() {
+        return occupiedBy == null;
+    }
+
+    public boolean isInRange(float x, float y) {
+        return x >= this.x && x < this.x + 1.0f && y >= this.y && y <= this.y + 1.0f;
+    }
+
     public void setNavGridId(int navGridId) {
         this.navGridId = navGridId;
     }
 
     public int getNavGridId() {
         return navGridId;
+    }
+
+    public LocationDescription makeDescription() {
+        // TODO: Export more information
+        return new LocationDescription(locationType.getName(), x, y);
     }
 }

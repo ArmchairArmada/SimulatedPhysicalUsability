@@ -16,7 +16,9 @@ import net.natewm.SimulatedPhysicalUsability.Project.WallDescription;
 import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Nathan on 3/14/2017.
@@ -25,7 +27,7 @@ public class Environment {
     private GraphicsEngine graphicsEngine;
     GroundGrid groundGrid;
     private List<LocationType> locationTypeList = new ArrayList<>();
-    private List<Location> locations = new ArrayList<>();
+    private HashMap<String, ArrayList<Location>> locations = new HashMap<>();
     private Walls walls;
     private CollisionGrid collisionGrid;
     private ICollisionCollection<Agent> agentCollisionCollection;
@@ -41,8 +43,11 @@ public class Environment {
     public EnvironmentDescription exportEnvironment() {
         List<WallDescription> wallDescription = walls.exportWalls();
         List<LocationDescription> locationDescriptions = new ArrayList<>();
-        for (Location location: locations) {
-            locationDescriptions.add(new LocationDescription(location.getLocationType().getName(), location.getX(), location.getY()));
+        for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+            for (Location location: entry.getValue()) {
+                //locationDescriptions.add(new LocationDescription(location.getLocationType().getName(), location.getX(), location.getY()));
+                locationDescriptions.add(location.makeDescription());
+            }
         }
 
         return new EnvironmentDescription(wallDescription, locationDescriptions);
@@ -57,10 +62,18 @@ public class Environment {
         // TODO: Real location types
         LocationType tempType = new LocationType("temp");
         for (LocationDescription loc: environmentDescription.getLocations()) {
-            locations.add(new Location(tempType, loc.getX(), loc.getY()));
+            //locations.add(new Location(tempType, loc.getX(), loc.getY()));
+            addLocation(tempType.getName(), new Location(tempType, loc.getX(), loc.getY()));
         }
 
         generateEnvironment();
+    }
+
+    public void addLocation(String name, Location location) {
+        if (!locations.containsKey(name)) {
+            locations.put(name, new ArrayList<>());
+        }
+        locations.get(name).add(location);
     }
 
     public GroundGrid getGroundGrid() {
@@ -76,7 +89,17 @@ public class Environment {
     }
 
     public List<Location> getLocations() {
-        return locations;
+        ArrayList<Location> output = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+            for (Location location: entry.getValue()) {
+                output.add(location);
+            }
+        }
+        return output;
+    }
+
+    public List<Location> getLocations(String name) {
+        return locations.get(name);
     }
 
     public ICollisionCollection<Agent> getAgentCollisionCollection() {
@@ -105,24 +128,24 @@ public class Environment {
         navigationGrid = new NavigationGrid(collisionGrid);
 
         // ToDo: randomize this
-        LocationType exit = new LocationType("exit");
+        LocationType exit = new LocationType("temp");
         Location location;
 
         for(int i=-25; i<25; i++) {
             location = new Location(exit, -25f, i);
-            locations.add(location);
+            addLocation("temp", location);
             navigationGrid.addLocation(location);
 
             location = new Location(exit, 25f, i+1);
-            locations.add(location);
+            addLocation("temp", location);
             navigationGrid.addLocation(location);
 
             location = new Location(exit, i, -25f);
-            locations.add(location);
+            addLocation("temp", location);
             navigationGrid.addLocation(location);
 
             location = new Location(exit, i+1, 25f);
-            locations.add(location);
+            addLocation("temp", location);
             navigationGrid.addLocation(location);
         }
 
@@ -171,8 +194,10 @@ public class Environment {
         navigationGrid.addLocation(new Location(exit, 25f, 0f));
         */
 
-        for (Location location: locations) {
-            navigationGrid.addLocation(location);
+        for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+            for (Location location: entry.getValue()) {
+                navigationGrid.addLocation(location);
+            }
         }
 
         navigationGrid.generateLocationGrids();
