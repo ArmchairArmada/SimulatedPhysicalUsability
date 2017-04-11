@@ -4,6 +4,7 @@ import net.natewm.SimulatedPhysicalUsability.Environment.*;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.MainWindow;
+import net.natewm.SimulatedPhysicalUsability.Utils.ProbabilityChooser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,7 @@ public class Main {
         LOGGER.setLevel(Level.ALL);
 
         LOGGER.log(Level.FINE, "Starting application.");
+
 
         SwingUtilities.invokeLater(() -> {
             try {
