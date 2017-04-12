@@ -20,13 +20,13 @@ public class LocationType {
         QUEUE
     }
 
-    public class Transition {
+    public static class Transition {
         LocationType destination;
         int weight;
         SelectionMethod selectionMethod;
         UnavailableBehavior unavailableBehavior;
 
-        Transition(LocationType destination, int weight,
+        public Transition(LocationType destination, int weight,
                    SelectionMethod selectionMethod, UnavailableBehavior unavailableBehavior) {
             this.destination = destination;
             this.weight = weight;
@@ -36,17 +36,25 @@ public class LocationType {
     }
 
     private String name;
-    private ProbabilityChooser<Transition> transitions;
+    private ProbabilityChooser<Transition> transitions = new ProbabilityChooser<>();
+    private float minWaitTime = 0.0f;
+    private float maxWaitTiem = 1.0f;
+    private boolean exit = false;
 
     public LocationType(String name) {
         this.name = name;
+        exit = name.equals("exit") || name.equals("emergency exit");
     }
 
     public String getName() {
         return name;
     }
 
-    public void AddTransition(Transition transition) {
+    public boolean isExit() {
+        return exit;
+    }
+
+    public void addTransition(Transition transition) {
         transitions.insert(transition, transition.weight);
     }
 

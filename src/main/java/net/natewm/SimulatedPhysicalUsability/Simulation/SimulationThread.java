@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
+import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
 
@@ -14,11 +15,13 @@ public class SimulationThread {
         //NavigationGrid navigationGrid;
         GraphicsEngine graphicsEngine;
         AgentManager agentManager = new AgentManager();
+        MeshHandle agentMesh = null;
+        MaterialHandle agentMaterial = null;
         //GroundGrid groundGrid;
         //CollisionGrid collisionGrid;
         boolean frameEnded = true;
         boolean running = true;
-        boolean paused = false;
+        boolean paused = true;
         int speed = 1;
         boolean doStop = false;
         boolean doInit = false;
@@ -71,7 +74,13 @@ public class SimulationThread {
                 }
 
                 if (!paused) {
+                    // TODO: Allow for adjusting spawn probability
                     for (int i=0; i<speed; i++) {
+                        if (Math.random() < dt) {
+                            Location location = environment.getRandomLocation("entrance");
+                            createAgent(location.getX(), location.getY(), location.getLocationType().randomTransition(environment));
+                        }
+
                         agentManager.update(graphicsEngine, environment, dt);
                     }
 
@@ -105,8 +114,8 @@ public class SimulationThread {
         }
 
         private void init() {
-            MeshHandle agentMesh = new MeshHandle();
-            MaterialHandle agentMaterial = new MaterialHandle();
+            agentMesh = new MeshHandle();
+            agentMaterial = new MaterialHandle();
 
             try {
                 graphicsEngine.loadMesh(agentMesh, agentMaterial, "data/graphics/agent.json");
@@ -129,9 +138,21 @@ public class SimulationThread {
                     graphicsEngine.setRenderNodeTransform(node, transform);
                     graphicsEngine.addNodeToRenderer(node);
 
-                    agentManager.add(new Agent(environment, node, transform));
+                    agentManager.add(new Agent(environment, node, transform, environment.getRandomLocation("exit")));
                 }
             }
+        }
+
+        private void createAgent(float x, float y, Location location) {
+            MeshRenderNodeHandle node = new MeshRenderNodeHandle();
+            graphicsEngine.createMeshRenderNode(node, agentMesh, agentMaterial);
+
+            Transform transform = new Transform();
+            transform.position.set(x+(float)Math.random(), 0, y+(float)Math.random());
+            graphicsEngine.setRenderNodeTransform(node, transform);
+            graphicsEngine.addNodeToRenderer(node);
+
+            agentManager.add(new Agent(environment, node, transform, location));
         }
 
         private void dispose() {

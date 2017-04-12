@@ -34,6 +34,6 @@ public class TestDrawable implements IEditorDrawable {
     @Override
     public void applyToEnvironment(Environment environment) {
         //environment.getLocations().add(location);
-        environment.addLocation(location.getLocationType().getName(), location);
+        environment.addLocation(location);
     }
 }

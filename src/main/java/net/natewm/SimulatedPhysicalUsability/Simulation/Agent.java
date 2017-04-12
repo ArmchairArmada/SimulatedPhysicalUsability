@@ -43,7 +43,7 @@ public class Agent {
     float speedVariation = 1f;//(float)(1.0 + Math.random()*0.2);
     Rect rect = new Rect(0,0, RADIUS*2, RADIUS*2);
 
-    public Agent(Environment environment, MeshRenderNodeHandle renderNodeHandle, Transform transform) {
+    public Agent(Environment environment, MeshRenderNodeHandle renderNodeHandle, Transform transform, Location location) {
         this.renderNodeHandle = renderNodeHandle;
         //transform = renderNodeHandle.getTransform();
         this.transform = transform;
@@ -54,8 +54,11 @@ public class Agent {
         y = transform.position.z;
 
         //navGridID = (int)(Math.random() * navigationGrid.getLocationCount());
-        if (environment.getNavigationGrid().getLocationCount() > 0)
-            location = environment.getNavigationGrid().getLocation((int)(Math.random() * environment.getNavigationGrid().getLocationCount()));
+        //if (environment.getNavigationGrid().getLocationCount() > 0)
+            //location = environment.getNavigationGrid().getLocation((int)(Math.random() * environment.getNavigationGrid().getLocationCount()));
+        //    location = environment.getRandomLocation("temp");
+
+        this.location = location;
     }
 
     public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, Environment environment, float dt) {
@@ -170,7 +173,13 @@ public class Agent {
             //if (x > location.getX() && x <= location.getX() + 1 && y > location.getY() && y <= location.getY() + 1) {
             if (location.isInRange(x, y)) {
                 //agentManager.remove(this);
-                location = environment.getNavigationGrid().getLocation((int)(Math.random() * environment.getNavigationGrid().getLocationCount()));
+                //location = environment.getNavigationGrid().getLocation((int)(Math.random() * environment.getNavigationGrid().getLocationCount()));
+                if (location.isExit()) {
+                    agentManager.remove(this);
+                }
+                else {
+                    location = location.getLocationType().randomTransition(environment);
+                }
             }
         }
 
