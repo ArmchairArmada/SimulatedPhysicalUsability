@@ -41,6 +41,7 @@ public class Environment {
     }
 
     public EnvironmentDescription exportEnvironment() {
+        // TODO: Make sure everything gets exported and imported correctly.
         List<WallDescription> wallDescription = walls.exportWalls();
         List<LocationDescription> locationDescriptions = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
@@ -61,19 +62,21 @@ public class Environment {
 
         // TODO: Real location types
         LocationType tempType = new LocationType("temp");
+        tempType.addTransition(new LocationType.Transition(tempType, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK));
+
         for (LocationDescription loc: environmentDescription.getLocations()) {
             //locations.add(new Location(tempType, loc.getX(), loc.getY()));
-            addLocation(tempType.getName(), new Location(tempType, loc.getX(), loc.getY()));
+            addLocation(new Location(tempType, loc.getX(), loc.getY()));
         }
 
         generateEnvironment();
     }
 
-    public void addLocation(String name, Location location) {
-        if (!locations.containsKey(name)) {
-            locations.put(name, new ArrayList<>());
+    public void addLocation(Location location) {
+        if (!locations.containsKey(location.getLocationType().getName())) {
+            locations.put(location.getLocationType().getName(), new ArrayList<>());
         }
-        locations.get(name).add(location);
+        locations.get(location.getLocationType().getName()).add(location);
     }
 
     public GroundGrid getGroundGrid() {
@@ -102,6 +105,11 @@ public class Environment {
         return locations.get(name);
     }
 
+    public Location getRandomLocation(String name) {
+        List<Location> locationList = locations.get(name);
+        return locationList.get((int)(Math.random()*locationList.size()));
+    }
+
     public ICollisionCollection<Agent> getAgentCollisionCollection() {
         return agentCollisionCollection;
     }
@@ -128,24 +136,32 @@ public class Environment {
         navigationGrid = new NavigationGrid(collisionGrid);
 
         // ToDo: randomize this
-        LocationType exit = new LocationType("temp");
+        LocationType entrance = new LocationType("entrance");
+        LocationType exit = new LocationType("exit");
+
+        entrance.addTransition(new LocationType.Transition(exit, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK));
+        exit.addTransition(new LocationType.Transition(exit, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK));
+
         Location location;
+
+        location = new Location(entrance, 0, 0);
+        addLocation(location);
 
         for(int i=-25; i<25; i++) {
             location = new Location(exit, -25f, i);
-            addLocation("temp", location);
+            addLocation(location);
             navigationGrid.addLocation(location);
 
             location = new Location(exit, 25f, i+1);
-            addLocation("temp", location);
+            addLocation(location);
             navigationGrid.addLocation(location);
 
             location = new Location(exit, i, -25f);
-            addLocation("temp", location);
+            addLocation(location);
             navigationGrid.addLocation(location);
 
             location = new Location(exit, i+1, 25f);
-            addLocation("temp", location);
+            addLocation(location);
             navigationGrid.addLocation(location);
         }
 

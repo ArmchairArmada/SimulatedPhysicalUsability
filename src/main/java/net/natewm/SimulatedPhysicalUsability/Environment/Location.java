@@ -23,6 +23,10 @@ public class Location {
         return locationType;
     }
 
+    public boolean isExit() {
+        return locationType.isExit();
+    }
+
     public float getX() {
         return x;
     }
@@ -44,7 +48,7 @@ public class Location {
     }
 
     public boolean isInRange(float x, float y) {
-        return x >= this.x && x < this.x + 1.0f && y >= this.y && y <= this.y + 1.0f;
+        return x > this.x && x <= this.x + 1.0f && y > this.y && y <= this.y + 1.0f;
     }
 
     public void setNavGridId(int navGridId) {
