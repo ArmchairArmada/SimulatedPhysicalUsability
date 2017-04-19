@@ -20,6 +20,7 @@ public class BehaviorPanel extends JPanel {
         contentPanel.setBackground(Color.WHITE);
         contentPanel.setLayout(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         scrollPane.setPreferredSize(new Dimension(800,600));
         scrollPane.setBorder(null);
 
