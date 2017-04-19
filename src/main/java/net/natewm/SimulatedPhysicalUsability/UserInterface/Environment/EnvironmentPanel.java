@@ -45,7 +45,7 @@ public class EnvironmentPanel extends JPanel {
     ICollisionCollection<IEditorDrawable> drawables;
 
     // TODO: Use real location types
-    LocationType tempLocationType = new LocationType("temp");
+    LocationType tempLocationType = new LocationType("temp", false);
 
     public EnvironmentPanel(Environment environment) {
         this.environment = environment;

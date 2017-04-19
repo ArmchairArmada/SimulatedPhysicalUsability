@@ -8,12 +8,15 @@ import java.util.Queue;
  */
 public class Subscriber {
     Queue<Message> messageQueue = new LinkedList<>();
+    boolean newMessage = false;
 
     public Subscriber() {
     }
 
     public synchronized void receive(Message message) {
         messageQueue.add(message);
+        newMessage = true;
+        notify();
     }
 
     public synchronized boolean isEmpty() {
@@ -21,6 +24,15 @@ public class Subscriber {
     }
 
     public synchronized Message remove() {
+        newMessage = false;
         return messageQueue.remove();
+    }
+
+    public void waitForMessages() throws InterruptedException {
+        synchronized (this) {
+            while (!newMessage) {
+                wait();
+            }
+        }
     }
 }
