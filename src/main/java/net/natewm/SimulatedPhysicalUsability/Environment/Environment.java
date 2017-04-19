@@ -61,7 +61,7 @@ public class Environment {
         }
 
         // TODO: Real location types
-        LocationType tempType = new LocationType("temp");
+        LocationType tempType = new LocationType("temp", false);
         tempType.addTransition(new LocationType.Transition(tempType, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK));
 
         for (LocationDescription loc: environmentDescription.getLocations()) {
@@ -136,8 +136,8 @@ public class Environment {
         navigationGrid = new NavigationGrid(collisionGrid);
 
         // ToDo: randomize this
-        LocationType entrance = new LocationType("entrance");
-        LocationType exit = new LocationType("exit");
+        LocationType entrance = new LocationType("entrance", false);
+        LocationType exit = new LocationType("exit", false);
 
         entrance.addTransition(new LocationType.Transition(exit, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK));
         exit.addTransition(new LocationType.Transition(exit, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK));

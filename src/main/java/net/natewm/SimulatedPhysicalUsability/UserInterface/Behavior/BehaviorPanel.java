@@ -10,7 +10,7 @@ public class BehaviorPanel extends JPanel {
     public BehaviorPanel() {
         JPanel testLocation;
         JTextField testName;
-        JButton colorButton;
+        ColorButton colorButton;
         JSpinner jSpinner;
         JButton closeButton;
 
@@ -32,61 +32,7 @@ public class BehaviorPanel extends JPanel {
         bagConstraints.ipadx = 2;
         bagConstraints.ipady = 2;
         for (int i=0; i<50; i++) {
-            testLocation = new JPanel();
-            testLocation.setLayout(new GridBagLayout());
-            //testLocation.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-
-            testName = new JTextField("Name of the Location");
-
-            bagConstraints.fill = GridBagConstraints.BOTH;
-            bagConstraints.gridx = 0;
-            bagConstraints.weightx = 1;
-
-            testLocation.add(testName, bagConstraints);
-
-            colorButton = new JButton();
-            colorButton.setMargin(new Insets(0, 0, 0, 0));
-            colorButton.setIcon(new Icon() {
-                @Override
-                public void paintIcon(Component c, Graphics g, int x, int y) {
-                    g.setColor(Color.GREEN);
-                    g.fillRect(x, y, 17, 17);
-
-                    //g.setColor(Color.BLACK);
-                    //g.drawRect(x,y,32,24);
-                }
-
-                @Override
-                public int getIconWidth() {
-                    return 16;
-                }
-
-                @Override
-                public int getIconHeight() {
-                    return 16;
-                }
-            });
-
-            bagConstraints.weightx = 0;
-            bagConstraints.fill = GridBagConstraints.VERTICAL;
-            bagConstraints.gridx = 1;
-
-            testLocation.add(colorButton, bagConstraints);
-
-            jSpinner = new JSpinner();
-
-            bagConstraints.gridx = 2;
-
-            testLocation.add(jSpinner, bagConstraints);
-
-            closeButton = new JButton("X");
-            closeButton.setMargin(new Insets(5, 5, 5, 5));
-
-            bagConstraints.gridx = 3;
-
-            testLocation.add(closeButton, bagConstraints);
-
-            tilesPanel.add(testLocation);
+            tilesPanel.add(new LocationTypePanel());
         }
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();

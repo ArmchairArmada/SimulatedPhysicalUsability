@@ -38,11 +38,21 @@ public class LocationType {
     private String name;
     private ProbabilityChooser<Transition> transitions = new ProbabilityChooser<>();
     private float minWaitTime = 0.0f;
-    private float maxWaitTiem = 1.0f;
+    private float maxWaitTime = 1.0f;
     private boolean exit = false;
+    private boolean startOccupied = false;
 
-    public LocationType(String name) {
+    public LocationType(String name, float minWaitTime, float maxWaitTime, boolean startOccupied) {
         this.name = name;
+        this.maxWaitTime = minWaitTime;
+        this.maxWaitTime = maxWaitTime;
+        this.startOccupied = startOccupied;
+        exit = name.equals("exit") || name.equals("emergency exit");
+    }
+
+    public LocationType(String name, boolean startOccupied) {
+        this.name = name;
+        this.startOccupied = startOccupied;
         exit = name.equals("exit") || name.equals("emergency exit");
     }
 
@@ -52,6 +62,10 @@ public class LocationType {
 
     public boolean isExit() {
         return exit;
+    }
+
+    public boolean isStartOccupied() {
+        return startOccupied;
     }
 
     public void addTransition(Transition transition) {
