@@ -103,7 +103,7 @@ public class MainWindow extends JFrame {
         gridBagConstraints.weightx = 1;
         behaviorTabPanel.setLayout(layout);
 
-        BehaviorPanel behaviorPanel = new BehaviorPanel();
+        BehaviorPanel behaviorPanel = new BehaviorPanel(environment, environmentControlPanel);
         BehaviorControlPanel behaviorControlPanel = new BehaviorControlPanel(behaviorPanel);
         behaviorControlPanel.setMinimumSize(new Dimension(250, 0));
         behaviorControlPanel.setMaximumSize(new Dimension(250, 1000000));

@@ -1,7 +1,11 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
+
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
+import java.util.Map;
 
 /**
  * Created by Nathan on 4/18/2017.
@@ -64,5 +68,57 @@ public class TransitionPanel extends JPanel {
         bagConstraints.gridx = 5;
 
         add(closeButton, bagConstraints);
+    }
+
+    public LocationType.Transition getTransition(Map<String, LocationType> locationTypeMap) {
+        LocationType.SelectionMethod selectionMethod =  LocationType.SelectionMethod.RANDOM;
+        LocationType.UnavailableBehavior unavailableBehavior = LocationType.UnavailableBehavior.REPICK;
+
+        switch (getSelection()) {
+            case "Nearest":
+                selectionMethod = LocationType.SelectionMethod.NEAREST;
+                break;
+
+            case "Random":
+                selectionMethod = LocationType.SelectionMethod.RANDOM;
+                break;
+        }
+
+        switch (getUnavailable()) {
+            case "Repick":
+                unavailableBehavior = LocationType.UnavailableBehavior.REPICK;
+                break;
+
+            case "Wait":
+                unavailableBehavior = LocationType.UnavailableBehavior.WAIT;
+                break;
+
+            case "Queue":
+                unavailableBehavior = LocationType.UnavailableBehavior.QUEUE;
+                break;
+        }
+
+        return new LocationType.Transition(locationTypeMap.get(getDestination()), getWeight(), selectionMethod, unavailableBehavior);
+    }
+
+    public String getDestination() {
+        return txtDestination.getText();
+    }
+
+    public int getWeight() {
+        try {
+            spnWeight.commitEdit();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return (int)spnWeight.getValue();
+    }
+
+    public String getSelection() {
+        return (String)cmbSelection.getSelectedItem();
+    }
+
+    public String getUnavailable() {
+        return (String)cmbUnavailable.getSelectedItem();
     }
 }

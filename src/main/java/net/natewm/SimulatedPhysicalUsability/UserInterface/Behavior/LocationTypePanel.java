@@ -1,8 +1,12 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Nathan on 4/18/2017.
@@ -77,5 +81,23 @@ public class LocationTypePanel extends JPanel {
 
         bagConstraints.gridy = 2;
         add(Box.createVerticalStrut(25), bagConstraints);
+    }
+
+    public String getLocationName() {
+        return txtName.getText();
+    }
+
+    public LocationType getLocationType() {
+        //return new LocationType(txtName.getText(), (float)spnMinWait.getValue(), (float)spnMaxWait.getValue(), chkOccupied.isSelected());
+        // TODO: Additional properties
+        return new LocationType(txtName.getText(), 0f, 1f, false);
+    }
+
+    public void addTransitions(Map<String, LocationType> locationTypeMap) {
+        LocationType locationType = locationTypeMap.get(txtName.getText());
+
+        for (TransitionPanel transitionPanel : transitionPanelList) {
+            locationType.addTransition(transitionPanel.getTransition(locationTypeMap));
+        }
     }
 }
