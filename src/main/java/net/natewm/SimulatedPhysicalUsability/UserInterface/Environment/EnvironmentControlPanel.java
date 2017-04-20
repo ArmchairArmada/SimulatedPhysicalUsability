@@ -1,19 +1,27 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Created by Nathan on 1/18/2017.
  */
 public class EnvironmentControlPanel extends JPanel {
     EnvironmentPanel environmentPanel;
+    ArrayList<JButton> locationTypeButtonList = new ArrayList<>();
 
     public EnvironmentControlPanel(EnvironmentPanel environmentPanel) {
-        JButton button;
+        buildUI();
+    }
 
+    private void buildUI() {
+        removeAll();
+
+        JButton button;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         button = new JButton("Clear All");
@@ -42,5 +50,22 @@ public class EnvironmentControlPanel extends JPanel {
         add(button);
 
         // TODO: Add list of locations.
+        for (JButton btn : locationTypeButtonList) {
+            add(btn);
+        }
+    }
+
+    public void addButtons(Collection<LocationType> locationTypeList) {
+        JButton button;
+        locationTypeButtonList.clear();
+
+        for (LocationType locationType : locationTypeList) {
+            button = new JButton(locationType.getName());
+            button.setAlignmentX(CENTER_ALIGNMENT);
+            // Set the location type tool.
+            locationTypeButtonList.add(button);
+        }
+
+        buildUI();
     }
 }
