@@ -41,6 +41,7 @@ public class EnvironmentPanel extends JPanel {
 
     private final Environment environment;
     Tool tool = Tool.WALLS;
+    private LocationType toolLocationType = null;
 
     ICollisionCollection<IEditorDrawable> drawables;
 
@@ -180,6 +181,10 @@ public class EnvironmentPanel extends JPanel {
         this.tool = tool;
     }
 
+    public void setLocationTool(LocationType locationType) {
+        this.tool = Tool.LOCATION;
+        toolLocationType = locationType;
+    }
 
     private void eraserTool(float x, float y) {
         ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();

@@ -1,6 +1,9 @@
 package net.natewm.SimulatedPhysicalUsability.Utils;
 
+import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -22,6 +25,18 @@ public class ProbabilityChooser<T> {
 
     public ProbabilityChooser() {
         items = new ArrayList<>();
+    }
+
+    public Collection<T> getValues() {
+        ArrayList<Object> values = new ArrayList<>();
+        for (Item item : items) {
+            values.add(item.object);
+        }
+        return (Collection<T>)values;
+    }
+
+    public void clear() {
+        items.clear();
     }
 
     public void insert(T object, int weight) {

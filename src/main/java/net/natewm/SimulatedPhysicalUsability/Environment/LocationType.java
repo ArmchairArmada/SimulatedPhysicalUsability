@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.Environment;
 import net.natewm.SimulatedPhysicalUsability.Utils.ProbabilityChooser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,14 +34,33 @@ public class LocationType {
             this.selectionMethod = selectionMethod;
             this.unavailableBehavior = unavailableBehavior;
         }
+
+        public LocationType getDestination() {
+            return destination;
+        }
+
+        public int getWeight() {
+            return weight;
+        }
+
+        public SelectionMethod getSelectionMethod() {
+            return selectionMethod;
+        }
+
+        public UnavailableBehavior getUnavailableBehavior() {
+            return unavailableBehavior;
+        }
     }
 
-    private String name;
+    private String name = "";
     private ProbabilityChooser<Transition> transitions = new ProbabilityChooser<>();
     private float minWaitTime = 0.0f;
     private float maxWaitTime = 1.0f;
     private boolean exit = false;
     private boolean startOccupied = false;
+
+    public LocationType() {
+    }
 
     public LocationType(String name, float minWaitTime, float maxWaitTime, boolean startOccupied) {
         this.name = name;
@@ -60,16 +80,44 @@ public class LocationType {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public boolean isExit() {
         return exit;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
     }
 
     public boolean isStartOccupied() {
         return startOccupied;
     }
 
+    public void setStartOccupied(boolean startOccupied) {
+        this.startOccupied = startOccupied;
+    }
+
     public void addTransition(Transition transition) {
         transitions.insert(transition, transition.weight);
+    }
+
+    public void removeTransition(Transition transition) {
+        transitions.remove(transition);
+    }
+
+    public Collection<Transition> getTransitions() {
+        return transitions.getValues();
+    }
+
+    public void refreshProbabilities() {
+        Collection<Transition> transitionCollection = getTransitions();
+        transitions.clear();
+        for (Transition transition : transitionCollection) {
+            addTransition(transition);
+        }
     }
 
     public Location randomTransition(Environment environment) {

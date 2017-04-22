@@ -26,8 +26,8 @@ import java.util.Map;
 public class Environment {
     private GraphicsEngine graphicsEngine;
     GroundGrid groundGrid;
-    private List<LocationType> locationTypeList = new ArrayList<>();
-    private HashMap<String, ArrayList<Location>> locations = new HashMap<>();
+    //private HashMap<String, ArrayList<Location>> locations = new HashMap<>();
+    private HashMap<LocationType, ArrayList<Location>> locations = new HashMap<>();
     private Walls walls;
     private CollisionGrid collisionGrid;
     private ICollisionCollection<Agent> agentCollisionCollection;
@@ -44,7 +44,8 @@ public class Environment {
         // TODO: Make sure everything gets exported and imported correctly.
         List<WallDescription> wallDescription = walls.exportWalls();
         List<LocationDescription> locationDescriptions = new ArrayList<>();
-        for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+        //for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+        for (Map.Entry<LocationType, ArrayList<Location>> entry: locations.entrySet()) {
             for (Location location: entry.getValue()) {
                 //locationDescriptions.add(new LocationDescription(location.getLocationType().getName(), location.getX(), location.getY()));
                 locationDescriptions.add(location.makeDescription());
@@ -73,10 +74,22 @@ public class Environment {
     }
 
     public void addLocation(Location location) {
+        /*
         if (!locations.containsKey(location.getLocationType().getName())) {
             locations.put(location.getLocationType().getName(), new ArrayList<>());
         }
         locations.get(location.getLocationType().getName()).add(location);
+        */
+        if (!locations.containsKey(location.getLocationType())) {
+            locations.put(location.getLocationType(), new ArrayList<>());
+        }
+        locations.get(location.getLocationType()).add(location);
+    }
+
+    public void removeLocation(Location location) {
+        // TODO: What if the location type get's renamed?
+        //locations.get(location.getLocationType().getName()).remove(location);
+        locations.get(location.getLocationType()).remove(location);
     }
 
     public GroundGrid getGroundGrid() {
@@ -93,7 +106,8 @@ public class Environment {
 
     public List<Location> getLocations() {
         ArrayList<Location> output = new ArrayList<>();
-        for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+        //for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+        for (Map.Entry<LocationType, ArrayList<Location>> entry: locations.entrySet()) {
             for (Location location: entry.getValue()) {
                 output.add(location);
             }
@@ -120,7 +134,7 @@ public class Environment {
 
     public void clear() {
         groundGrid.reset();
-        locationTypeList.clear();
+        //locationTypeList.clear();
         locations.clear();
         walls = new Walls();
         collisionGrid = new CollisionGrid(walls);
@@ -210,7 +224,8 @@ public class Environment {
         navigationGrid.addLocation(new Location(exit, 25f, 0f));
         */
 
-        for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+        //for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
+        for (Map.Entry<LocationType, ArrayList<Location>> entry: locations.entrySet()) {
             for (Location location: entry.getValue()) {
                 navigationGrid.addLocation(location);
             }

@@ -16,6 +16,7 @@ public class BehaviorPanel extends JPanel {
     Environment environment;
     EnvironmentControlPanel environmentControlPanel;
     ArrayList<LocationTypePanel> locationTypePanels = new ArrayList<>();
+    JPanel tilesPanel;
 
     public BehaviorPanel(Environment environment, EnvironmentControlPanel environmentControlPanel) {
         this.environment = environment;
@@ -39,17 +40,20 @@ public class BehaviorPanel extends JPanel {
 
         setBackground(Color.WHITE);
 
-        JPanel tilesPanel = new JPanel();
+        tilesPanel = new JPanel();
         tilesPanel.setLayout(new BoxLayout(tilesPanel, BoxLayout.Y_AXIS));
 
         GridBagConstraints bagConstraints = new GridBagConstraints();
         bagConstraints.ipadx = 2;
         bagConstraints.ipady = 2;
+
+        /*
         for (int i=0; i<50; i++) {
             LocationTypePanel locationTypePanel = new LocationTypePanel();
             locationTypePanels.add(locationTypePanel);
             tilesPanel.add(locationTypePanel);
         }
+        */
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = GridBagConstraints.PAGE_START;
@@ -73,20 +77,30 @@ public class BehaviorPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    public void addLocationType() {
+        LocationType locationType = new LocationType();
+        locationType.setName("Unnamed");
+        // TODO: Add location type to environment (or some list of location types)
+        LocationTypePanel locationTypePanel = new LocationTypePanel(locationType);
+        locationTypePanels.add(locationTypePanel);
+        tilesPanel.add(locationTypePanel);
+        revalidate();
+    }
+
     public void applyChanges() {
         ArrayList<LocationType> locationTypes = new ArrayList<>();
-        HashMap<String, LocationType> locationTypeHashMap = new HashMap<>();
+        //HashMap<String, LocationType> locationTypeHashMap = new HashMap<>();
         LocationType locationType;
 
         for (LocationTypePanel locationTypePanel : locationTypePanels) {
             locationType = locationTypePanel.getLocationType();
             locationTypes.add(locationType);
-            locationTypeHashMap.put(locationTypePanel.getLocationName(), locationType);
+            //locationTypeHashMap.put(locationTypePanel.getLocationName(), locationType);
         }
 
-        for (LocationTypePanel locationTypePanel : locationTypePanels) {
-            locationTypePanel.addTransitions(locationTypeHashMap);
-        }
+        //for (LocationTypePanel locationTypePanel : locationTypePanels) {
+        //    locationTypePanel.addTransitions(locationTypeHashMap);
+        //}
 
         environmentControlPanel.addButtons(locationTypes);
     }

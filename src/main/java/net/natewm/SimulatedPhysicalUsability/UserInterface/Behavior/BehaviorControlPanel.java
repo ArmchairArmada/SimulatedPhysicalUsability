@@ -15,6 +15,9 @@ public class BehaviorControlPanel extends JPanel {
 
         addLocationButton = new JButton("Add Location Type");
         addLocationButton.setAlignmentX(CENTER_ALIGNMENT);
+        addLocationButton.addActionListener(e -> {
+            behaviorPanel.addLocationType();
+        });
         add(addLocationButton);
 
         JButton btnApplyChanges = new JButton("Apply Changes");

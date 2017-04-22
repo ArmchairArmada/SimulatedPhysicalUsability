@@ -50,10 +50,20 @@ public class EnvironmentControlPanel extends JPanel {
         button.addActionListener(e -> environmentPanel.applyChanges());
         add(button);
 
+        add(Box.createVerticalStrut(10));
+
+        JPanel jPanel = new JPanel();
+        jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+        JScrollPane jScrollPane = new JScrollPane(jPanel);
+        jScrollPane.setAlignmentX(CENTER_ALIGNMENT);
+        jScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+
         // TODO: Move locations into scrollpane
         for (JButton btn : locationTypeButtonList) {
-            add(btn);
+            jPanel.add(btn);
         }
+
+        add(jScrollPane);
     }
 
     public void addButtons(Collection<LocationType> locationTypeList) {
