@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.Simulation;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class AgentManager {
         toRemove.add(agent);
     }
 
-    public void update(GraphicsEngine graphicsEngine, Environment environment, float dt) {
+    public void update(GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData, float dt) {
         int steps = 1;
 
         if (dt < 0.1f)
@@ -53,7 +54,7 @@ public class AgentManager {
             toAdd.clear();
 
             for (Agent agent : agents) {
-                agent.update(this, graphicsEngine, environment, sdt);
+                agent.update(this, graphicsEngine, environment, projectData, sdt);
 
                 //if (Math.random() < 0.01)
                 //    remove(agent);

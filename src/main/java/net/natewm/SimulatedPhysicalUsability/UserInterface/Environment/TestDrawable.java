@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import java.awt.*;
 
@@ -32,8 +33,8 @@ public class TestDrawable implements IEditorDrawable {
     }
 
     @Override
-    public void applyToEnvironment(Environment environment) {
+    public void apply(ProjectData projectData) {
         //environment.getLocations().add(location);
-        environment.addLocation(location);
+        projectData.addLocation(location);
     }
 }

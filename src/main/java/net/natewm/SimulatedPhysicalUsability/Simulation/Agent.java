@@ -8,6 +8,7 @@ import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
 import org.joml.Vector2d;
@@ -63,7 +64,7 @@ public class Agent {
         this.location = location;
     }
 
-    public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, Environment environment, float dt) {
+    public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData, float dt) {
         Vector2d force = new Vector2d();
         Vector2d difference = new Vector2d();
         Vector2d oldPosition = new Vector2d(position);
@@ -134,7 +135,7 @@ public class Agent {
                     agentManager.remove(this);
                 }
                 else {
-                    location = location.getLocationType().randomTransition(environment);
+                    location = location.getLocationType().randomTransition(projectData);
                 }
             }
         }

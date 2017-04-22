@@ -4,6 +4,7 @@ import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.*;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 /**
  * Created by Nathan on 1/9/2017.
@@ -11,6 +12,7 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
 public class SimulationThread {
     private class SimulationRunnable implements Runnable, IFrameEndReceiver {
         private Environment environment;
+        private final ProjectData projectData;
         //private final ICollisionCollection<Agent> collisionCollection;
         //NavigationGrid navigationGrid;
         GraphicsEngine graphicsEngine;
@@ -27,9 +29,10 @@ public class SimulationThread {
         boolean doInit = false;
         final Object lock = new Object();
 
-        public SimulationRunnable(GraphicsEngine graphicsEngine, Environment environment) {
+        public SimulationRunnable(GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData) {
             this.graphicsEngine = graphicsEngine;
             this.environment = environment;
+            this.projectData = projectData;
         }
 
         /*
@@ -77,11 +80,12 @@ public class SimulationThread {
                     // TODO: Allow for adjusting spawn probability
                     for (int i=0; i<speed; i++) {
                         if (Math.random() < dt) {
-                            Location location = environment.getRandomLocation("entrance");
-                            createAgent(location.getX(), location.getY(), location.getLocationType().randomTransition(environment));
+                            Location location = environment.getRandomEntrance();
+                            if (location != null)
+                                createAgent(location.getX(), location.getY(), location.getLocationType().randomTransition(projectData));
                         }
 
-                        agentManager.update(graphicsEngine, environment, dt);
+                        agentManager.update(graphicsEngine, environment, projectData, dt);
                     }
 
                     //groundGrid.update();
@@ -123,9 +127,10 @@ public class SimulationThread {
                 e.printStackTrace();
             }
 
-            MeshRenderNodeHandle node;// = new MeshRenderNodeHandle();
-            Transform transform;
+            //MeshRenderNodeHandle node;// = new MeshRenderNodeHandle();
+            //Transform transform;
 
+            /*
             for (int i=-14; i<15; i++) {
                 for (int j=-14; j<15; j++) {
                     node = new MeshRenderNodeHandle();
@@ -141,6 +146,7 @@ public class SimulationThread {
                     agentManager.add(new Agent(environment, node, transform, environment.getRandomLocation("exit")));
                 }
             }
+            */
         }
 
         private void createAgent(float x, float y, Location location) {
@@ -201,8 +207,8 @@ public class SimulationThread {
     SimulationRunnable runnable;
 
 
-    public SimulationThread(GraphicsEngine graphicsEngine, Environment environment) {
-        runnable = new SimulationRunnable(graphicsEngine, environment);
+    public SimulationThread(GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData) {
+        runnable = new SimulationRunnable(graphicsEngine, environment, projectData);
         thread = new Thread(runnable);
     }
 
