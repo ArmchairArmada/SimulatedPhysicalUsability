@@ -14,6 +14,8 @@ import net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation.GraphicsPa
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Simulation.SimulationControlPanel;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -85,7 +87,7 @@ public class MainWindow extends JFrame {
         environmentTabPanel.setLayout(layout);
 
         EnvironmentPanel environmentPanel = new EnvironmentPanel(environment, projectData);
-        EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(environmentPanel);
+        EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(projectData, environmentPanel);
         environmentControlPanel.setMinimumSize(new Dimension(250, 0));
         environmentControlPanel.setMaximumSize(new Dimension(250, 1000000));
         environmentControlPanel.setPreferredSize(new Dimension(250, 600));
@@ -104,7 +106,7 @@ public class MainWindow extends JFrame {
         gridBagConstraints.weightx = 1;
         behaviorTabPanel.setLayout(layout);
 
-        BehaviorPanel behaviorPanel = new BehaviorPanel(environment, environmentControlPanel);
+        BehaviorPanel behaviorPanel = new BehaviorPanel(environment, projectData, environmentControlPanel);
         BehaviorControlPanel behaviorControlPanel = new BehaviorControlPanel(behaviorPanel);
         behaviorControlPanel.setMinimumSize(new Dimension(250, 0));
         behaviorControlPanel.setMaximumSize(new Dimension(250, 1000000));
@@ -119,9 +121,33 @@ public class MainWindow extends JFrame {
 
         tabbedPane.addTab("Behaviors", behaviorTabPanel);
 
-
         // TODO: Make real tabs -- remember to suspend limit rendering to 60 FPS
         tabbedPane.addTab("Statistics", new JPanel());
+
+        tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                //System.out.println("Tab change: " + tabbedPane.getSelectedIndex());
+                switch (tabbedPane.getSelectedIndex()) {
+                    case 0:     // Simulation
+                        break;
+
+                    case 1:     // Environment
+                        environmentControlPanel.addButtons();
+                        break;
+
+                    case 2:     // Behavior
+                        behaviorPanel.populateLocationTypes();
+                        break;
+
+                    case 3:     // Data
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
 
         add(tabbedPane);
 
@@ -160,8 +186,10 @@ public class MainWindow extends JFrame {
                 try {
                     simulationControls.reset();
                     simulationThread.stopSimulation();
+                    environment.clear();
                     projectData.loadProject(file);
                     environmentPanel.updateEnvironment();
+                    environment.generateEnvironment();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

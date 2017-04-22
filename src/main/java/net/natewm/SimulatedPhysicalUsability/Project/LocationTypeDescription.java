@@ -13,18 +13,20 @@ public class LocationTypeDescription {
     private boolean startOccupied;
     private boolean entrance;
     private boolean exit;
+    private float[] color;
     private List<TransitionDescription> transitions;
 
     public LocationTypeDescription() {
     }
 
-    public LocationTypeDescription(String name, float minWait, float maxWait, boolean startOccupied, boolean entrance, boolean exit) {
+    public LocationTypeDescription(String name, float minWait, float maxWait, boolean startOccupied, boolean entrance, boolean exit, float[] color) {
         this.name = name;
         this.minWait = minWait;
         this.maxWait = maxWait;
         this.startOccupied = startOccupied;
         this.entrance = entrance;
         this.exit = exit;
+        this.color = color;
         transitions = new ArrayList();
     }
 
@@ -58,5 +60,9 @@ public class LocationTypeDescription {
 
     public void addTransition(TransitionDescription transitionDescription) {
         transitions.add(transitionDescription);
+    }
+
+    public float[] getColor() {
+        return color;
     }
 }

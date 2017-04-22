@@ -32,7 +32,12 @@ public class ProjectDescription {
         }
 
         for (LocationType locationType : projectData.getLocationTypes()) {
-            locationTypes.add(new LocationTypeDescription(locationType.getName(), locationType.getMinWaitTime(), locationType.getMaxWaitTime(), locationType.isStartOccupied(), locationType.isEntrance(), locationType.isExit()));
+            float[] color = {locationType.getColor().getRed()/255.0f, locationType.getColor().getGreen()/255.0f, locationType.getColor().getBlue()/255.0f};
+            LocationTypeDescription locationTypeDescription = new LocationTypeDescription(locationType.getName(), locationType.getMinWaitTime(), locationType.getMaxWaitTime(), locationType.isStartOccupied(), locationType.isEntrance(), locationType.isExit(), color);
+            for (LocationType.Transition transition : locationType.getTransitions()) {
+                locationTypeDescription.addTransition(new TransitionDescription(transition.getDestination().getName(), transition.getWeight(), LocationType.getSelectionMethodString(transition.getSelectionMethod()), LocationType.getUnavailableBehaviorString(transition.getUnavailableBehavior())));
+            }
+            locationTypes.add(locationTypeDescription);
         }
 
         for (Location location : projectData.getLocations()) {

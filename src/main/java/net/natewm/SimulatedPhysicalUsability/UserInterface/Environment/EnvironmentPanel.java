@@ -48,9 +48,6 @@ public class EnvironmentPanel extends JPanel {
 
     ICollisionCollection<IEditorDrawable> drawables;
 
-    // TODO: Use real location types
-    LocationType tempLocationType = new LocationType("temp", 0, 0, false, false, false);
-
     public EnvironmentPanel(Environment environment, ProjectData projectData) {
         this.environment = environment;
         this.projectData = projectData;
@@ -176,7 +173,7 @@ public class EnvironmentPanel extends JPanel {
 
         for (Location location: projectData.getLocations()) {
             // TODO: use Real location drawables
-            drawable = new TestDrawable(location);
+            drawable = new LocationDrawable(location);
             drawables.insert(drawable.getRect(), drawable);
         }
     }
@@ -236,8 +233,8 @@ public class EnvironmentPanel extends JPanel {
         drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
         if (picked.isEmpty()) {
             // TODO: Add location types
-            Location location = new Location(tempLocationType, (int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
-            IEditorDrawable test = new TestDrawable(location);
+            Location location = new Location(toolLocationType, (int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
+            IEditorDrawable test = new LocationDrawable(location);
             drawables.insert(test.getRect(), test);
             repaint();
         }

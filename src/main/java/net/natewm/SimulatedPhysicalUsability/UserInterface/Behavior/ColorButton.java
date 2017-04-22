@@ -14,8 +14,10 @@ public class ColorButton extends JButton {
     private static final JColorChooser colorChooser = new JColorChooser();
     private Color color = Color.red;
 
-    public ColorButton() {
+    public ColorButton(Color c) {
         super();
+        this.color = c;
+
         setMargin(new Insets(0, 0, 0, 0));
         setIcon(new Icon() {
             @Override

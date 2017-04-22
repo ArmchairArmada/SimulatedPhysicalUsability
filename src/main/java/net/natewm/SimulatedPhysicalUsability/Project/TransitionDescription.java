@@ -12,6 +12,12 @@ public class TransitionDescription {
     public TransitionDescription() {
     }
 
+    public TransitionDescription(String destination, int weight, String selectionMethod, String unavailableBehavior) {
+        this.destination = destination;
+        this.weight = weight;
+        this.selectionMethod = selectionMethod;
+        this.unavailableBehavior = unavailableBehavior;
+    }
 
     public String getDestination() {
         return destination;

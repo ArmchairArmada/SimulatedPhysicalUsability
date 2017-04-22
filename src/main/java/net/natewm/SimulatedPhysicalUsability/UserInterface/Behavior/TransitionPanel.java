@@ -78,29 +78,8 @@ public class TransitionPanel extends JPanel {
         LocationType.SelectionMethod selectionMethod =  LocationType.SelectionMethod.RANDOM;
         LocationType.UnavailableBehavior unavailableBehavior = LocationType.UnavailableBehavior.REPICK;
 
-        switch (getSelection()) {
-            case "Nearest":
-                selectionMethod = LocationType.SelectionMethod.NEAREST;
-                break;
-
-            case "Random":
-                selectionMethod = LocationType.SelectionMethod.RANDOM;
-                break;
-        }
-
-        switch (getUnavailable()) {
-            case "Repick":
-                unavailableBehavior = LocationType.UnavailableBehavior.REPICK;
-                break;
-
-            case "Wait":
-                unavailableBehavior = LocationType.UnavailableBehavior.WAIT;
-                break;
-
-            case "Queue":
-                unavailableBehavior = LocationType.UnavailableBehavior.QUEUE;
-                break;
-        }
+        selectionMethod = LocationType.getSelectionMethodFromString(getSelection());
+        unavailableBehavior = LocationType.getUnavailableBehaviorFromString(getUnavailable());
 
         return new LocationType.Transition(locationTypeMap.get(getDestination()), getWeight(), selectionMethod, unavailableBehavior);
     }

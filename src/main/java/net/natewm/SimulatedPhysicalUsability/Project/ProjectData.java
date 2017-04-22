@@ -6,9 +6,11 @@ import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Nathan on 4/22/2017.
@@ -58,8 +60,22 @@ public class ProjectData {
         LocationType locationType;
         for (LocationTypeDescription locType : projectDescription.getLocationTypes()) {
             locationType = new LocationType(locType.getName(), locType.getMinWait(), locType.getMaxWait(), locType.isStartOccupied(), locType.isEntrance(), locType.isExit());
+            locationType.setColor(new Color(locType.getColor()[0], locType.getColor()[1], locType.getColor()[2]));
             addLocationType(locationType);
             locationTypeMap.put(locationType.getName(), locationType);
+        }
+
+        LocationType.Transition transition;
+        LocationType.SelectionMethod selectionMethod;
+        LocationType.UnavailableBehavior unavailableBehavior;
+        for (LocationTypeDescription locType : projectDescription.getLocationTypes()) {
+            locationType = locationTypeMap.get(locType.getName());
+            for (TransitionDescription transitionDescription : locType.getTransitions()) {
+                selectionMethod = LocationType.getSelectionMethodFromString(transitionDescription.getSelectionMethod());
+                unavailableBehavior = LocationType.getUnavailableBehaviorFromString(transitionDescription.getUnavailableBehavior());
+                transition = new LocationType.Transition(locationTypeMap.get(transitionDescription.getDestination()), transitionDescription.getWeight(), selectionMethod, unavailableBehavior);
+                locationType.addTransition(transition);
+            }
         }
 
         for (LocationDescription loc : projectDescription.getLocations()) {
@@ -101,5 +117,14 @@ public class ProjectData {
 
     public List<Location> getLocationList(LocationType locationType) {
         return locationMap.get(locationType);
+    }
+
+    public void clearEnvironment() {
+        walls = new Walls();
+        locations.clear();
+        locationMap.clear();
+        for (LocationType locationType : locationTypes) {
+            locationMap.put(locationType, new ArrayList<>());
+        }
     }
 }

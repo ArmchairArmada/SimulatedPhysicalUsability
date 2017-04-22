@@ -1,8 +1,10 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
+import com.sun.org.apache.regexp.internal.RE;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Utils.ProbabilityChooser;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,6 +62,7 @@ public class LocationType {
     private boolean entrance = false;
     private boolean exit = false;
     private boolean startOccupied = false;
+    private Color color;
 
     public LocationType() {
     }
@@ -71,6 +74,69 @@ public class LocationType {
         this.startOccupied = startOccupied;
         this.entrance = entrance;
         this.exit = exit;
+        this.color = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
+    }
+
+    public static SelectionMethod getSelectionMethodFromString(String method) {
+        switch (method) {
+            case "Nearest":
+                return SelectionMethod.NEAREST;
+
+            case "Random":
+                return SelectionMethod.RANDOM;
+
+            default:
+                // TODO: Error handling
+                return SelectionMethod.RANDOM;
+        }
+    }
+
+    public static UnavailableBehavior getUnavailableBehaviorFromString(String behavior) {
+        switch (behavior) {
+            case "Repick":
+                return UnavailableBehavior.REPICK;
+
+            case "Wait":
+                return UnavailableBehavior.WAIT;
+
+            case "Queue":
+                return UnavailableBehavior.QUEUE;
+
+            default:
+                // TODO: Error Handling
+                return UnavailableBehavior.REPICK;
+        }
+    }
+
+    public static String getSelectionMethodString(SelectionMethod method) {
+        switch (method) {
+            case NEAREST:
+                return "Nearest";
+
+            case RANDOM:
+                return "Random";
+
+            default:
+                // TODO: Error handling
+                return "ERROR";
+        }
+    }
+
+    public static String getUnavailableBehaviorString(UnavailableBehavior behavior) {
+        switch (behavior) {
+            case REPICK:
+                return "Repick";
+
+            case WAIT:
+                return "Wait";
+
+            case QUEUE:
+                return "Queue";
+
+            default:
+                // TODO: Error Handling
+                return "ERROR";
+        }
     }
 
     public String getName() {
@@ -119,6 +185,14 @@ public class LocationType {
 
     public void setStartOccupied(boolean startOccupied) {
         this.startOccupied = startOccupied;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public void addTransition(Transition transition) {
