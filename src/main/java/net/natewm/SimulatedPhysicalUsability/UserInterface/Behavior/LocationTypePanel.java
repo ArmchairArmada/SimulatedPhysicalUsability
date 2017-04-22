@@ -58,7 +58,7 @@ public class LocationTypePanel extends JPanel {
 
         add(txtName, bagConstraints);
 
-        btnColor = new ColorButton();
+        btnColor = new ColorButton(locationType.getColor());
 
         bagConstraints.weightx = 0;
         bagConstraints.fill = GridBagConstraints.VERTICAL;

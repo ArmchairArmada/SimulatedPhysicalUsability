@@ -60,7 +60,8 @@ public class Environment {
     public void clear() {
         groundGrid.reset();
         //locationTypeList.clear();
-        projectData.clear();
+        entrances.clear();
+        projectData.clearEnvironment();
         collisionGrid = new CollisionGrid(projectData.getWalls());
         navigationGrid = new NavigationGrid(collisionGrid);
         agentCollisionCollection = new BinSpaceTree<>(-512, -512, 1024, 1024, 11);

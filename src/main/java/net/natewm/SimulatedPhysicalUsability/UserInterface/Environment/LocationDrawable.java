@@ -10,20 +10,18 @@ import java.awt.*;
 /**
  * Created by Nathan on 2/21/2017.
  */
-public class TestDrawable implements IEditorDrawable {
+public class LocationDrawable implements IEditorDrawable {
     Rect rect;
-    Color color;
     Location location;
 
-    public TestDrawable(Location location) {
+    public LocationDrawable(Location location) {
         this.location = location;
-        color = Color.getHSBColor((float)Math.random(), (float)Math.random(), (float)Math.random());
         rect = new Rect(location.getX(), location.getY(), 1, 1);
     }
 
     @Override
     public void draw(Graphics2D graphics2D, int offsetX, int offsetY, int scale) {
-        graphics2D.setColor(color);
+        graphics2D.setColor(location.getLocationType().getColor());
         graphics2D.fillOval((int)(rect.getX() * scale + offsetX+2), (int)(rect.getY() * scale + offsetY+2), scale-4, scale-4);
     }
 

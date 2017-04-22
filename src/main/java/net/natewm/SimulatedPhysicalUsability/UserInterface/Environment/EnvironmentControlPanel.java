@@ -1,6 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +13,12 @@ import java.util.Collection;
  */
 public class EnvironmentControlPanel extends JPanel {
     EnvironmentPanel environmentPanel;
+    final ProjectData projectData;
     ArrayList<JButton> locationTypeButtonList = new ArrayList<>();
 
-    public EnvironmentControlPanel(EnvironmentPanel environmentPanel) {
+    public EnvironmentControlPanel(ProjectData projectData, EnvironmentPanel environmentPanel) {
         this.environmentPanel = environmentPanel;
+        this.projectData = projectData;
         buildUI();
     }
 
@@ -66,14 +69,17 @@ public class EnvironmentControlPanel extends JPanel {
         add(jScrollPane);
     }
 
-    public void addButtons(Collection<LocationType> locationTypeList) {
+    public void addButtons() {
         JButton button;
         locationTypeButtonList.clear();
 
-        for (LocationType locationType : locationTypeList) {
+        for (LocationType locationType : projectData.getLocationTypes()) {
             button = new JButton(locationType.getName());
             button.setAlignmentX(CENTER_ALIGNMENT);
             // TODO: Set the location type tool.
+            button.addActionListener(e -> {
+                environmentPanel.setLocationTool(locationType);
+            });
             locationTypeButtonList.add(button);
         }
 
