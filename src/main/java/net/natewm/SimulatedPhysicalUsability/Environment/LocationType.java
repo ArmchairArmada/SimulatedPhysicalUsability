@@ -1,5 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Utils.ProbabilityChooser;
 
 import java.util.ArrayList;
@@ -56,24 +57,20 @@ public class LocationType {
     private ProbabilityChooser<Transition> transitions = new ProbabilityChooser<>();
     private float minWaitTime = 0.0f;
     private float maxWaitTime = 1.0f;
+    private boolean entrance = false;
     private boolean exit = false;
     private boolean startOccupied = false;
 
     public LocationType() {
     }
 
-    public LocationType(String name, float minWaitTime, float maxWaitTime, boolean startOccupied) {
+    public LocationType(String name, float minWaitTime, float maxWaitTime, boolean startOccupied, boolean entrance, boolean exit) {
         this.name = name;
         this.maxWaitTime = minWaitTime;
         this.maxWaitTime = maxWaitTime;
         this.startOccupied = startOccupied;
-        exit = name.equals("exit") || name.equals("emergency exit");
-    }
-
-    public LocationType(String name, boolean startOccupied) {
-        this.name = name;
-        this.startOccupied = startOccupied;
-        exit = name.equals("exit") || name.equals("emergency exit");
+        this.entrance = entrance;
+        this.exit = exit;
     }
 
     public String getName() {
@@ -82,6 +79,30 @@ public class LocationType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public float getMinWaitTime() {
+        return minWaitTime;
+    }
+
+    public void setMinWaitTime(float minWaitTime) {
+        this.minWaitTime = minWaitTime;
+    }
+
+    public float getMaxWaitTime() {
+        return maxWaitTime;
+    }
+
+    public void setMaxWaitTime(float maxWaitTime) {
+        this.maxWaitTime = maxWaitTime;
+    }
+
+    public boolean isEntrance() {
+        return entrance;
+    }
+
+    public void setEntrance(boolean value) {
+        entrance = value;
     }
 
     public boolean isExit() {
@@ -120,10 +141,10 @@ public class LocationType {
         }
     }
 
-    public Location randomTransition(Environment environment) {
+    public Location randomTransition(ProjectData projectData) {
         Transition transition = transitions.getRandom();
         Location location;
-        List<Location> locationList = environment.getLocations(transition.destination.getName());
+        List<Location> locationList = projectData.getLocationList(transition.destination);
         switch (transition.selectionMethod) {
             case NEAREST:
                 break;

@@ -8,6 +8,7 @@ import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,16 +41,19 @@ public class EnvironmentPanel extends JPanel {
     int offsetY = 0;
 
     private final Environment environment;
+    private final ProjectData projectData;
+
     Tool tool = Tool.WALLS;
     private LocationType toolLocationType = null;
 
     ICollisionCollection<IEditorDrawable> drawables;
 
     // TODO: Use real location types
-    LocationType tempLocationType = new LocationType("temp", false);
+    LocationType tempLocationType = new LocationType("temp", 0, 0, false, false, false);
 
-    public EnvironmentPanel(Environment environment) {
+    public EnvironmentPanel(Environment environment, ProjectData projectData) {
         this.environment = environment;
+        this.projectData = projectData;
 
         drawables = new BinSpaceTree<>(-GRID_WIDTH/2, -GRID_HEIGHT/2, GRID_WIDTH, GRID_HEIGHT, 10);
 
@@ -162,7 +166,7 @@ public class EnvironmentPanel extends JPanel {
 
         clearAll();
 
-        for (Walls.Wall wall : environment.getWalls().getWalls()) {
+        for (Walls.Wall wall : projectData.getWalls().getWalls()) {
             minX = Math.min(wall.startX, wall.endX);
             minY = Math.min(wall.startY, wall.endY);
             horizontal = Math.abs(wall.endX-wall.startX) > Math.abs(wall.endY-wall.startY);
@@ -170,7 +174,8 @@ public class EnvironmentPanel extends JPanel {
             drawables.insert(drawable.getRect(), drawable);
         }
 
-        for (Location location: environment.getLocations()) {
+        for (Location location: projectData.getLocations()) {
+            // TODO: use Real location drawables
             drawable = new TestDrawable(location);
             drawables.insert(drawable.getRect(), drawable);
         }
@@ -288,7 +293,7 @@ public class EnvironmentPanel extends JPanel {
         ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
         drawables.findOverlapping(new Rect(-512, -512, 1024, 1024), picked);
         for (Pair<Rect, IEditorDrawable> pair : picked) {
-            pair.getValue().applyToEnvironment(environment);
+            pair.getValue().apply(projectData);
         }
         environment.generateEnvironment();
     }

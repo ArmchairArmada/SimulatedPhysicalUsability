@@ -3,6 +3,7 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import java.awt.*;
 
@@ -49,10 +50,10 @@ public class WallDrawable implements IEditorDrawable {
     }
 
     @Override
-    public void applyToEnvironment(Environment environment) {
+    public void apply(ProjectData projectData) {
         if (horizontal)
-            environment.getWalls().addWall(new Walls.Wall(x, y, x + 1, y));
+            projectData.getWalls().addWall(new Walls.Wall(x, y, x + 1, y));
         else
-            environment.getWalls().addWall(new Walls.Wall(x, y, x, y + 1));
+            projectData.getWalls().addWall(new Walls.Wall(x, y, x, y + 1));
     }
 }

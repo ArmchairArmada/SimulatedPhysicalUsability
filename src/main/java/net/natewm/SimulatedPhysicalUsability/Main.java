@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability;
 
 import net.natewm.SimulatedPhysicalUsability.Environment.*;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.MainWindow;
 
@@ -52,12 +53,13 @@ public class Main {
             GraphicsEngine graphicsEngine = new GraphicsEngine();
             graphicsEngine.setRendererClearColor(new float[]{1f,1f,1f,1f});
 
-            Environment environment = new Environment(graphicsEngine);
+            ProjectData projectData = new ProjectData();
+            Environment environment = new Environment(graphicsEngine, projectData);
 
-            SimulationThread simulationThread = new SimulationThread(graphicsEngine, environment);
+            SimulationThread simulationThread = new SimulationThread(graphicsEngine, environment, projectData);
             graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
 
-            MainWindow mainWindow = new MainWindow(graphicsEngine, simulationThread, environment);
+            MainWindow mainWindow = new MainWindow(graphicsEngine, simulationThread, environment, projectData);
         });
     }
 }

@@ -2,6 +2,7 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import java.awt.*;
 
@@ -26,5 +27,5 @@ public interface IEditorDrawable {
      */
     Rect getRect();
 
-    void applyToEnvironment(Environment environment);
+    void apply(ProjectData projectData);
 }

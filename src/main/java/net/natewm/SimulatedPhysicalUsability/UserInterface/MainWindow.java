@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.Project.EnvironmentDescription;
+import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorControlPanel;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorPanel;
@@ -28,7 +29,7 @@ public class MainWindow extends JFrame {
     final JFileChooser fileChooser;
     final JFrame window = this;
 
-    public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment) {
+    public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment, ProjectData projectData) {
         fileChooser = new JFileChooser();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -83,7 +84,7 @@ public class MainWindow extends JFrame {
         gridBagConstraints.weightx = 1;
         environmentTabPanel.setLayout(layout);
 
-        EnvironmentPanel environmentPanel = new EnvironmentPanel(environment);
+        EnvironmentPanel environmentPanel = new EnvironmentPanel(environment, projectData);
         EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(environmentPanel);
         environmentControlPanel.setMinimumSize(new Dimension(250, 0));
         environmentControlPanel.setMaximumSize(new Dimension(250, 1000000));
@@ -159,8 +160,7 @@ public class MainWindow extends JFrame {
                 try {
                     simulationControls.reset();
                     simulationThread.stopSimulation();
-                    EnvironmentDescription environmentDescription = mapper.readValue(file, EnvironmentDescription.class);
-                    environment.importEnvironment(environmentDescription);
+                    projectData.loadProject(file);
                     environmentPanel.updateEnvironment();
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -176,9 +176,8 @@ public class MainWindow extends JFrame {
             File file = fileChooser.getSelectedFile();
             if (file != null) {
                 LOGGER.fine("Saving file: " + file.getName());
-                EnvironmentDescription environmentDescription = environment.exportEnvironment();
                 try {
-                    mapper.writeValue(file, environmentDescription);
+                    projectData.saveProject(file);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -194,9 +193,8 @@ public class MainWindow extends JFrame {
             if (returnValue != JFileChooser.CANCEL_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 LOGGER.fine("Saving file as: " + file.getName());
-                EnvironmentDescription environmentDescription = environment.exportEnvironment();
                 try {
-                    mapper.writeValue(file, environmentDescription);
+                    projectData.saveProject(file);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
