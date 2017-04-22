@@ -3,6 +3,8 @@ package net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior;
 import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +21,12 @@ public class LocationTypePanel extends JPanel {
     private JSpinner spnMaxWait;
     private ColorButton btnColor;
     private ArrayList<TransitionPanel> transitionPanelList = new ArrayList<>();
+    private LocationType locationType;
 
-    public LocationTypePanel() {
+    public LocationTypePanel(LocationType locationType) {
         super();
+
+        this.locationType = locationType;
 
         setLayout(new GridBagLayout());
 
@@ -29,7 +34,23 @@ public class LocationTypePanel extends JPanel {
         bagConstraints.ipadx = 2;
         bagConstraints.ipady = 2;
 
-        txtName = new JTextField("Name of the Location");
+        txtName = new JTextField(locationType.getName());
+        txtName.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                locationType.setName(txtName.getText());
+            }
+        });
 
         bagConstraints.fill = GridBagConstraints.BOTH;
         bagConstraints.gridx = 0;
@@ -52,6 +73,7 @@ public class LocationTypePanel extends JPanel {
         //testLocation.add(jSpinner, bagConstraints);
 
         JButton closeButton = new JButton("X");
+        // TODO: Remove location type when X clicked
         closeButton.setMargin(new Insets(5, 5, 5, 5));
 
         bagConstraints.gridx = 3;
@@ -67,9 +89,14 @@ public class LocationTypePanel extends JPanel {
         JPanel pnlTransitions = new JPanel();
         pnlTransitions.setLayout(new BoxLayout(pnlTransitions, BoxLayout.Y_AXIS));
 
-        transitionPanelList.add(new TransitionPanel());
-        transitionPanelList.add(new TransitionPanel());
-        transitionPanelList.add(new TransitionPanel());
+        // TODO: Transitions
+        //transitionPanelList.add(new TransitionPanel());
+        //transitionPanelList.add(new TransitionPanel());
+        //transitionPanelList.add(new TransitionPanel());
+
+        for (LocationType.Transition transition : locationType.getTransitions()) {
+            transitionPanelList.add(new TransitionPanel(transition));
+        }
 
         for (TransitionPanel panel : transitionPanelList) {
             pnlTransitions.add(panel);
@@ -90,7 +117,8 @@ public class LocationTypePanel extends JPanel {
     public LocationType getLocationType() {
         //return new LocationType(txtName.getText(), (float)spnMinWait.getValue(), (float)spnMaxWait.getValue(), chkOccupied.isSelected());
         // TODO: Additional properties
-        return new LocationType(txtName.getText(), 0f, 1f, false);
+        //return new LocationType(txtName.getText(), 0f, 1f, false);
+        return locationType;
     }
 
     public void addTransitions(Map<String, LocationType> locationTypeMap) {

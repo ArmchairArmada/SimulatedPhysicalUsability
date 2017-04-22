@@ -19,8 +19,12 @@ public class TransitionPanel extends JPanel {
     private JComboBox<String> cmbSelection;
     private JComboBox<String> cmbUnavailable;
 
-    public TransitionPanel() {
+    private LocationType.Transition transition;
+
+    public TransitionPanel(LocationType.Transition transition) {
         super();
+
+        this.transition = transition;
 
         setLayout(new GridBagLayout());
 
@@ -33,7 +37,7 @@ public class TransitionPanel extends JPanel {
         bagConstraints.weightx = 0;
         add(Box.createHorizontalStrut(50));
 
-        txtDestination = new JTextField("Name of the Destination");
+        txtDestination = new JTextField(transition.getDestination().getName());
 
         bagConstraints.fill = GridBagConstraints.BOTH;
         bagConstraints.gridx = 1;
