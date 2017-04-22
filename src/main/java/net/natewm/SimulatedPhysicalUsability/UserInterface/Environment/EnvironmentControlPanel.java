@@ -15,6 +15,7 @@ public class EnvironmentControlPanel extends JPanel {
     ArrayList<JButton> locationTypeButtonList = new ArrayList<>();
 
     public EnvironmentControlPanel(EnvironmentPanel environmentPanel) {
+        this.environmentPanel = environmentPanel;
         buildUI();
     }
 
@@ -49,7 +50,7 @@ public class EnvironmentControlPanel extends JPanel {
         button.addActionListener(e -> environmentPanel.applyChanges());
         add(button);
 
-        // TODO: Add list of locations.
+        // TODO: Move locations into scrollpane
         for (JButton btn : locationTypeButtonList) {
             add(btn);
         }
@@ -62,7 +63,7 @@ public class EnvironmentControlPanel extends JPanel {
         for (LocationType locationType : locationTypeList) {
             button = new JButton(locationType.getName());
             button.setAlignmentX(CENTER_ALIGNMENT);
-            // Set the location type tool.
+            // TODO: Set the location type tool.
             locationTypeButtonList.add(button);
         }
 

@@ -6,11 +6,11 @@ import java.util.Queue;
 /**
  * Created by Nathan on 4/11/2017.
  */
-public class Subscriber {
+public class MessageQueue {
     Queue<Message> messageQueue = new LinkedList<>();
     boolean newMessage = false;
 
-    public Subscriber() {
+    public MessageQueue() {
     }
 
     public synchronized void receive(Message message) {

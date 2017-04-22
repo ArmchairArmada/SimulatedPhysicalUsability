@@ -7,17 +7,17 @@ import java.util.List;
  * Created by Nathan on 4/11/2017.
  */
 public class Publisher {
-    List<Subscriber> subscriberList = new ArrayList<>();
+    List<MessageQueue> subscriberList = new ArrayList<>();
 
     public Publisher() {
     }
 
-    public synchronized void subscribe(Subscriber subscriber) {
+    public synchronized void subscribe(MessageQueue subscriber) {
         subscriberList.add(subscriber);
     }
 
     public synchronized void publish(Message message) {
-        for (Subscriber subscriber: subscriberList) {
+        for (MessageQueue subscriber: subscriberList) {
             subscriber.receive(message);
         }
     }
