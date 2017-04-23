@@ -240,6 +240,12 @@ public class EnvironmentPanel extends JPanel {
 
 
     public void paintComponent(Graphics g) {
+        Graphics2D graphics2D = (Graphics2D) g;
+
+        graphics2D.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_OFF);
+
         centerX = getWidth()/2;
         centerY = getHeight()/2;
         int offXMod = (centerX-offsetX) % GRID_SIZE;
@@ -273,10 +279,13 @@ public class EnvironmentPanel extends JPanel {
         drawables.findOverlapping(new Rect((offsetX-centerX)/GRID_SIZE, (offsetY-centerY)/GRID_SIZE,
                 ((float)getWidth())/GRID_SIZE, ((float)getHeight())/GRID_SIZE), toDraw);
 
-        for (Pair<Rect, IEditorDrawable> pair : toDraw) {
-            pair.getValue().draw((Graphics2D)g, centerX-offsetX, centerY-offsetY, GRID_SIZE);
-        }
+        graphics2D.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
+        for (Pair<Rect, IEditorDrawable> pair : toDraw) {
+            pair.getValue().draw(graphics2D, centerX-offsetX, centerY-offsetY, GRID_SIZE);
+        }
 
         //g.setColor(Color.black);
         //g.fillRect(centerX-offsetX-2, centerY-offsetY-2, GRID_SIZE+5, 5);

@@ -173,5 +173,7 @@ public class LocationTypePanel extends JPanel {
         for (TransitionPanel transitionPanel : transitionPanelList) {
             transitionPanel.applyValues(locationTypeMap);
         }
+
+        locationType.refreshProbabilities();
     }
 }
