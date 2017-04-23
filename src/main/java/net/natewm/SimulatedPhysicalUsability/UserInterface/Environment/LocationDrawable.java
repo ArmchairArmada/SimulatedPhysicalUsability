@@ -22,7 +22,7 @@ public class LocationDrawable implements IEditorDrawable {
     @Override
     public void draw(Graphics2D graphics2D, int offsetX, int offsetY, int scale) {
         graphics2D.setColor(location.getLocationType().getColor());
-        graphics2D.fillOval((int)(rect.getX() * scale + offsetX+2), (int)(rect.getY() * scale + offsetY+2), scale-4, scale-4);
+        graphics2D.fillOval((int)(rect.getX() * scale + offsetX+3), (int)(rect.getY() * scale + offsetY+3), scale-5, scale-5);
     }
 
     @Override

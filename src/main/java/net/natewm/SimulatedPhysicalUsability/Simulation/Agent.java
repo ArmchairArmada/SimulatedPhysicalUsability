@@ -21,15 +21,15 @@ import java.util.List;
  * Created by Nathan on 1/4/2017.
  */
 public class Agent {
-    private static final double WALKING_SPEED = 450.0;
+    private static final double WALKING_SPEED = 400.0;
     private static final double TURN_RATE = 10.0;
     private static final double RADIUS = 0.35; //0.25;
     //private static final double RADIUS = 0.3f;
-    private static final double FRICTION = 250.0;
+    private static final double FRICTION = 450.0;
     private static final double DRUNKENNESS = 700.0;
     //private static final double AGENT_FRICTION = 1.0f;
     //private static final double PUSH = 1.5f;
-    private static final double PUSH = 20.0;
+    private static final double PUSH = 100.0;
 
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
@@ -87,9 +87,10 @@ public class Agent {
 
         if (location != null) {
             Vector2f navVec = environment.getNavigationGrid().getVector(location.getNavGridId(), (float)position.x, (float)position.y);
-            force.add(navVec.x * WALKING_SPEED, navVec.y * WALKING_SPEED);
+            //force.add(navVec.x * WALKING_SPEED, navVec.y * WALKING_SPEED);
             //facing = Math.atan2(navVec.x, navVec.y);
             facing = Math.atan2(navVec.x + velocity.x, navVec.y + velocity.y);
+            force.add(Math.sin(facing) * WALKING_SPEED, Math.cos(facing) * WALKING_SPEED);
             transform.rotation.nlerp(new Quaternionf().setAngleAxis(facing, 0f, 1f, 0f), 5.0f*dt);
         }
 

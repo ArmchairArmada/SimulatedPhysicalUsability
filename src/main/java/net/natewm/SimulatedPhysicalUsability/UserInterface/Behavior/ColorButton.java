@@ -22,9 +22,13 @@ public class ColorButton extends JButton {
         setIcon(new Icon() {
             @Override
             public void paintIcon(Component c, Graphics g, int x, int y) {
+                ((Graphics2D)g).setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
                 g.setColor(color);
                 //g.fillRect(x, y, 17, 17);
-                g.fillOval(x, y,16,16);
+                g.fillOval(x, y,17,17);
 
                 //g.setColor(Color.BLACK);
                 //g.drawRect(x,y,32,24);

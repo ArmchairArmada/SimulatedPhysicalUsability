@@ -37,6 +37,7 @@ public class ProbabilityChooser<T> {
 
     public void clear() {
         items.clear();
+        weight_sum = 0;
     }
 
     public void insert(T object, int weight) {
