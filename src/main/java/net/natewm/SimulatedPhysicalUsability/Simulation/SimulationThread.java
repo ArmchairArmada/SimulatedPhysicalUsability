@@ -127,6 +127,10 @@ public class SimulationThread {
                 e.printStackTrace();
             }
 
+            for (Location location : projectData.getLocations()) {
+                location.leave();
+            }
+
             //MeshRenderNodeHandle node;// = new MeshRenderNodeHandle();
             //Transform transform;
 

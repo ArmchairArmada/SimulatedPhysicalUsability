@@ -5,6 +5,7 @@ import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
+import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshRenderNodeHandle;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Rendering.Transform;
@@ -31,11 +32,15 @@ public class Agent {
     //private static final double PUSH = 1.5f;
     private static final double PUSH = 100.0;
 
+    private boolean arrived = false;
+    private float waitTime = 0f;
+
     MeshRenderNodeHandle renderNodeHandle;
     Transform transform;
 
     //int navGridID;
     Location location = null;
+    Location prevLocation = null;
 
     //float angle = 360f * (float)Math.random();
     double facing = 0.0;
@@ -62,6 +67,7 @@ public class Agent {
         position.y = transform.position.z;
 
         this.location = location;
+        prevLocation = location;
     }
 
     public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData, float dt) {
@@ -70,6 +76,17 @@ public class Agent {
         Vector2d oldPosition = new Vector2d(position);
         Agent agent;
         double distance;
+
+        // TODO: Differrentiate unavailable behavior
+        if (!arrived && !location.isAvailable()) {
+            if (Math.random() < 0.1) {
+                location = prevLocation.getLocationType().randomTransition(projectData);
+            }
+            else {
+                List<Location> locations = projectData.getLocationList(location.getLocationType());
+                location = locations.get((int) (Math.random() * locations.size()));
+            }
+        }
 
         environment.getAgentCollisionCollection().remove(rect);
 
@@ -85,7 +102,7 @@ public class Agent {
             }
         }
 
-        if (location != null) {
+        if (location != null && !location.isInRange((float)position.x, (float)position.y)) {
             Vector2f navVec = environment.getNavigationGrid().getVector(location.getNavGridId(), (float)position.x, (float)position.y);
             //force.add(navVec.x * WALKING_SPEED, navVec.y * WALKING_SPEED);
             //facing = Math.atan2(navVec.x, navVec.y);
@@ -101,9 +118,11 @@ public class Agent {
         }
 
         //force.add((Math.random()-0.5)*DRUNKENNESS, (Math.random()-0.5)*DRUNKENNESS);
-        double angle = Math.random() * Math.PI * 2.0;
-        double mag = Math.random() * DRUNKENNESS;
-        force.add(mag*Math.cos(angle), mag*Math.sin(angle));
+        if (!arrived) {
+            double angle = Math.random() * Math.PI * 2.0;
+            double mag = Math.random() * DRUNKENNESS;
+            force.add(mag * Math.cos(angle), mag * Math.sin(angle));
+        }
 
         acceleration.set(force).mul(dt);
         velocity.add(new Vector2d(acceleration).mul(dt));
@@ -135,7 +154,21 @@ public class Agent {
                     agentManager.remove(this);
                 }
                 else {
-                    location = location.getLocationType().randomTransition(projectData);
+                    if (arrived) {
+                        waitTime -= dt;
+                        if (waitTime <= 0f) {
+                            location.leave();
+                            prevLocation = location;
+                            location = location.getLocationType().randomTransition(projectData);
+                            arrived = false;
+                        }
+                    }
+                    else {
+                        location.occupy(this);
+                        arrived = true;
+                        waitTime = location.getLocationType().getMinWaitTime() + (float)(Math.random() * (location.getLocationType().getMaxWaitTime() - location.getLocationType().getMinWaitTime()));
+                    }
+
                 }
             }
         }

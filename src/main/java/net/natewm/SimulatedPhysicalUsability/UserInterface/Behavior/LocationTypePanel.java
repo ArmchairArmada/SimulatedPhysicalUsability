@@ -163,8 +163,10 @@ public class LocationTypePanel extends JPanel {
 
     public void applyValues(Map<String, LocationType> locationTypeMap) throws Exception {
         locationType.setName(txtName.getText());
-        locationType.setMinWaitTime((float)spnMinWait.getValue());
-        locationType.setMaxWaitTime((float)spnMaxWait.getValue());
+        //locationType.setMinWaitTime((float)spnMinWait.getValue());
+        //locationType.setMaxWaitTime((float)spnMaxWait.getValue());
+        locationType.setMinWaitTime(((Number)spnMinWait.getValue()).floatValue());
+        locationType.setMaxWaitTime(((Number)spnMaxWait.getValue()).floatValue());
         locationType.setEntrance(chkEntrance.isSelected());
         locationType.setExit(chkExit.isSelected());
         locationType.setStartOccupied(chkOccupied.isSelected());
