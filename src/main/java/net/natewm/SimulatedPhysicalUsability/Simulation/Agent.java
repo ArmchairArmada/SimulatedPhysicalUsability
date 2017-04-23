@@ -26,7 +26,7 @@ public class Agent {
     private static final double RADIUS = 0.35; //0.25;
     //private static final double RADIUS = 0.3f;
     private static final double FRICTION = 250.0;
-    private static final double DRUNKENNESS = 300.0;
+    private static final double DRUNKENNESS = 700.0;
     //private static final double AGENT_FRICTION = 1.0f;
     //private static final double PUSH = 1.5f;
     private static final double PUSH = 20.0;
@@ -93,7 +93,7 @@ public class Agent {
             transform.rotation.nlerp(new Quaternionf().setAngleAxis(facing, 0f, 1f, 0f), 5.0f*dt);
         }
 
-        force.sub(new Vector2d(velocity).mul(FRICTION));
+        force.sub(new Vector2d(velocity).mul(velocity.length()*FRICTION));
 
         if (force.length() > 5000.0) {
             force.normalize().mul(5000.0);

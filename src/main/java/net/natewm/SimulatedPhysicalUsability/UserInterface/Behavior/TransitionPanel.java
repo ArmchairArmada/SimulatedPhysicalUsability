@@ -35,7 +35,7 @@ public class TransitionPanel extends JPanel {
         bagConstraints.fill = GridBagConstraints.VERTICAL;
         bagConstraints.gridx = 0;
         bagConstraints.weightx = 0;
-        add(Box.createHorizontalStrut(50));
+        add(Box.createHorizontalStrut(20));
 
         txtDestination = new JTextField(transition.getDestination().getName());
 
@@ -45,31 +45,36 @@ public class TransitionPanel extends JPanel {
 
         add(txtDestination, bagConstraints);
 
-        spnWeight = new JSpinner();
-
         bagConstraints.weightx = 0;
         bagConstraints.fill = GridBagConstraints.VERTICAL;
         bagConstraints.gridx = 2;
 
+        add(new JLabel("Weight"), bagConstraints);
+
+        bagConstraints.gridx = 3;
+        spnWeight = new JSpinner();
+        spnWeight.setValue(transition.getWeight());
         add(spnWeight, bagConstraints);
 
         //jSpinner = new JSpinner();
         cmbSelection = new JComboBox<String>(selectionStrings);
+        cmbSelection.setSelectedItem(LocationType.getSelectionMethodString(transition.getSelectionMethod()));
 
-        bagConstraints.gridx = 3;
+        bagConstraints.gridx = 4;
 
         add(cmbSelection, bagConstraints);
 
         cmbUnavailable = new JComboBox<String>(unavailableStrings);
+        cmbUnavailable.setSelectedItem(LocationType.getUnavailableBehaviorString(transition.getUnavailableBehavior()));
 
-        bagConstraints.gridx = 4;
+        bagConstraints.gridx = 5;
 
         add(cmbUnavailable, bagConstraints);
 
         JButton closeButton = new JButton("X");
         closeButton.setMargin(new Insets(5, 5, 5, 5));
 
-        bagConstraints.gridx = 5;
+        bagConstraints.gridx = 6;
 
         add(closeButton, bagConstraints);
     }

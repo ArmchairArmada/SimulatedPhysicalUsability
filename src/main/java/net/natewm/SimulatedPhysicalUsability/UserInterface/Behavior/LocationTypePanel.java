@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class LocationTypePanel extends JPanel {
     private JTextField txtName;
+    private JCheckBox chkEntrance;
     private JCheckBox chkExit;
     private JCheckBox chkOccupied;
     private JSpinner spnMinWait;
@@ -58,17 +59,47 @@ public class LocationTypePanel extends JPanel {
 
         add(txtName, bagConstraints);
 
-        btnColor = new ColorButton(locationType.getColor());
-
         bagConstraints.weightx = 0;
         bagConstraints.fill = GridBagConstraints.VERTICAL;
         bagConstraints.gridx = 1;
 
+        add(new JLabel("Min Wait"), bagConstraints);
+
+        bagConstraints.gridx = 2;
+        spnMinWait = new JSpinner();
+        spnMinWait.setValue(locationType.getMinWaitTime());
+        add(spnMinWait, bagConstraints);
+
+        bagConstraints.gridx = 3;
+        add(new JLabel("Max Wait"), bagConstraints);
+
+        bagConstraints.gridx = 4;
+        spnMaxWait = new JSpinner();
+        spnMaxWait.setValue(locationType.getMaxWaitTime());
+        add(spnMaxWait, bagConstraints);
+
+        bagConstraints.gridx = 5;
+        chkEntrance = new JCheckBox("Entrance");
+        chkEntrance.setSelected(locationType.isEntrance());
+        add(chkEntrance, bagConstraints);
+
+        bagConstraints.gridx = 6;
+        chkExit = new JCheckBox("Exit");
+        chkExit.setSelected(locationType.isExit());
+        add(chkExit, bagConstraints);
+
+        bagConstraints.gridx = 7;
+        chkOccupied = new JCheckBox("Occupied");
+        chkOccupied.setSelected(locationType.isStartOccupied());
+        add(chkOccupied, bagConstraints);
+
+        bagConstraints.gridx = 8;
+        btnColor = new ColorButton(locationType.getColor());
         add(btnColor, bagConstraints);
 
         //jSpinner = new JSpinner();
 
-        bagConstraints.gridx = 2;
+        bagConstraints.gridx = 9;
 
         //testLocation.add(jSpinner, bagConstraints);
 
@@ -76,13 +107,11 @@ public class LocationTypePanel extends JPanel {
         // TODO: Remove location type when X clicked
         closeButton.setMargin(new Insets(5, 5, 5, 5));
 
-        bagConstraints.gridx = 3;
-
         add(closeButton, bagConstraints);
 
         bagConstraints.gridx = 0;
         bagConstraints.gridy = 1;
-        bagConstraints.gridwidth = 4;
+        bagConstraints.gridwidth = 10;
         bagConstraints.weightx = 1;
         bagConstraints.fill = GridBagConstraints.BOTH;
 
@@ -104,9 +133,14 @@ public class LocationTypePanel extends JPanel {
 
         add(pnlTransitions, bagConstraints);
 
+        bagConstraints.gridy = 2;
+        bagConstraints.fill = GridBagConstraints.NONE;
+        JButton btnAddTransition = new JButton("Add Transition");
+        add(btnAddTransition, bagConstraints);
+
         // TODO: Add Transition Button
 
-        bagConstraints.gridy = 2;
+        bagConstraints.gridy = 3;
         add(Box.createVerticalStrut(25), bagConstraints);
     }
 
