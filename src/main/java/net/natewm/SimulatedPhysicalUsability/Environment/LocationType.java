@@ -86,7 +86,7 @@ public class LocationType {
 
     public LocationType(String name, float minWaitTime, float maxWaitTime, boolean startOccupied, boolean entrance, boolean exit) {
         this.name = name;
-        this.maxWaitTime = minWaitTime;
+        this.minWaitTime = minWaitTime;
         this.maxWaitTime = maxWaitTime;
         this.startOccupied = startOccupied;
         this.entrance = entrance;
@@ -247,7 +247,9 @@ public class LocationType {
                             return null;
 
                         location = locationList.get((int)(Math.random() * locationList.size()));
-                        while (!location.isAvailable()) {
+                        int c = 0;
+                        while (!location.isAvailable() && c < 100) {
+                            c++;
                             // TODO: Give up after failing a certain number of times.
                             location = locationList.get((int)(Math.random() * locationList.size()));
                         }

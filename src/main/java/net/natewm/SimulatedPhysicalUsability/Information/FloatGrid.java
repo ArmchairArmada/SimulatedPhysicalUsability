@@ -81,7 +81,14 @@ public class FloatGrid {
                 v = data[(height - y - 1) * width + x];
                 // Scale to be from 0 to 1
                 //v = Math.min(Math.max((v - minValue) / (maxValue - minValue), 0f), 1f);
-                v = (float) Math.min(Math.max(Math.log(v - minValue) / Math.log(maxValue - minValue), 0.0), 1.0);
+                //v = (float) Math.min(Math.max(Math.log(v - minValue) / Math.log(maxValue - minValue), 0.0f), 1.0f);
+
+                v = (float) Math.min(Math.max(
+                        ((Math.log(v - minValue) / Math.log(maxValue - minValue)) +
+                                ((v - minValue) / (maxValue - minValue)))
+                        / 2.0
+                        , 0.0f), 1.0f);
+
                 // Convert to byte value
                 byteBuffer.put((byte) (255.0f * v));
             }
