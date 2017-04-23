@@ -118,11 +118,6 @@ public class LocationTypePanel extends JPanel {
         JPanel pnlTransitions = new JPanel();
         pnlTransitions.setLayout(new BoxLayout(pnlTransitions, BoxLayout.Y_AXIS));
 
-        // TODO: Transitions
-        //transitionPanelList.add(new TransitionPanel());
-        //transitionPanelList.add(new TransitionPanel());
-        //transitionPanelList.add(new TransitionPanel());
-
         for (LocationType.Transition transition : locationType.getTransitions()) {
             transitionPanelList.add(new TransitionPanel(transition));
         }
@@ -146,8 +141,6 @@ public class LocationTypePanel extends JPanel {
         });
         add(btnAddTransition, bagConstraints);
 
-        // TODO: Add Transition Button
-
         bagConstraints.gridy = 3;
         add(Box.createVerticalStrut(25), bagConstraints);
     }
@@ -157,9 +150,6 @@ public class LocationTypePanel extends JPanel {
     }
 
     public LocationType getLocationType() {
-        //return new LocationType(txtName.getText(), (float)spnMinWait.getValue(), (float)spnMaxWait.getValue(), chkOccupied.isSelected());
-        // TODO: Additional properties
-        //return new LocationType(txtName.getText(), 0f, 1f, false);
         return locationType;
     }
 

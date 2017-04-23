@@ -172,7 +172,6 @@ public class EnvironmentPanel extends JPanel {
         }
 
         for (Location location: projectData.getLocations()) {
-            // TODO: use Real location drawables
             drawable = new LocationDrawable(location);
             drawables.insert(drawable.getRect(), drawable);
         }
@@ -232,7 +231,6 @@ public class EnvironmentPanel extends JPanel {
         ArrayList<Pair<Rect, IEditorDrawable>> picked = new ArrayList<>();
         drawables.findOverlapping(new Rect(x/GRID_SIZE, y/GRID_SIZE, 0, 0), picked);
         if (picked.isEmpty()) {
-            // TODO: Add location types
             Location location = new Location(toolLocationType, (int) Math.floor(x / GRID_SIZE), (int) Math.floor(y / GRID_SIZE));
             IEditorDrawable test = new LocationDrawable(location);
             drawables.insert(test.getRect(), test);

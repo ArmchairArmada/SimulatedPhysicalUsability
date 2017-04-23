@@ -111,7 +111,6 @@ public class TransitionPanel extends JPanel {
     }
 
     public void applyValues(Map<String, LocationType> locationTypeMap) throws Exception {
-        // TODO: Apply changes.
         LocationType destination = locationTypeMap.get(txtDestination.getText());
         if (destination == null) {
             throw new Exception("Invalid destination name.");

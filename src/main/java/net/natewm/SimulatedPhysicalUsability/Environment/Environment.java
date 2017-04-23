@@ -135,38 +135,6 @@ public class Environment {
         collisionGrid = new CollisionGrid(projectData.getWalls());
         navigationGrid = new NavigationGrid(collisionGrid);
 
-        // TODO: Remove this when location editor is ready.
-        /*
-        LocationType exit = new LocationType("exit");
-
-        for(int i=-25; i<25; i++) {
-            navigationGrid.addLocation(new Location(exit, -25f, i));
-            navigationGrid.addLocation(new Location(exit, 25f, i+1));
-
-            navigationGrid.addLocation(new Location(exit, i, -25f));
-            navigationGrid.addLocation(new Location(exit, i+1, 25f));
-        }
-        */
-        /*
-        navigationGrid.addLocation(new Location(exit, -25f, -25f));
-        navigationGrid.addLocation(new Location(exit, -25f, 25f));
-        navigationGrid.addLocation(new Location(exit, 25f, -25f));
-        navigationGrid.addLocation(new Location(exit, 25f, 25f));
-
-        navigationGrid.addLocation(new Location(exit, 0f, -25f));
-        navigationGrid.addLocation(new Location(exit, -25f, 0f));
-        navigationGrid.addLocation(new Location(exit, 0f, 25f));
-        navigationGrid.addLocation(new Location(exit, 25f, 0f));
-        */
-
-        //for (Map.Entry<String, ArrayList<Location>> entry: locations.entrySet()) {
-        /*
-        for (Map.Entry<LocationType, ArrayList<Location>> entry: locations.entrySet()) {
-            for (Location location: entry.getValue()) {
-                navigationGrid.addLocation(location);
-            }
-        }
-        */
         for (Location location : projectData.getLocations()) {
             navigationGrid.addLocation(location);
             if (location.getLocationType().isEntrance()) {

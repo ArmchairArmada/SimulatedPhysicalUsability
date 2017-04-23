@@ -128,7 +128,6 @@ public class Agent {
 
         environment.getAgentCollisionCollection().insert(rect, this);
 
-        // TODO: Use real exit locations
         if (location != null) {
             if (location.isInRange((float)position.x, (float)position.y)) {
                 if (location.isExit()) {
@@ -139,101 +138,6 @@ public class Agent {
                 }
             }
         }
-
-        /*
-        // TODO: Seriously clean this up!!!
-        Vector2f navVec = new Vector2f();
-
-        int wallsHit;
-        double ox = x;
-        double oy = y;
-
-        environment.getAgentCollisionCollection().remove(rect);
-
-        double px = 0f;
-        double py = 0f;
-        double distance;
-
-        List<Pair<Rect, Agent>> collisions = new LinkedList<>();
-        environment.getAgentCollisionCollection().findOverlapping(rect, collisions);
-
-        Agent agent;
-        for (Pair<Rect, Agent> collision : collisions) {
-            agent = collision.getValue();
-            distance = Math.hypot(x - agent.x, y - agent.y);
-
-            if (distance <= RADIUS*2) {
-                distance = distance * distance * distance;// * distance;
-                distance = distance * distance;
-                px += dt * PUSH * (x - agent.x) / distance;
-                py += dt * PUSH * (y - agent.y) / distance;
-            }
-        }
-
-        distance = Math.hypot(px, py);
-        vx -= vx * distance;
-        vy -= vy * distance;
-
-        vx += px;
-        vy += py;
-
-        vx -= vx * FRICTION * dt;
-        vy -= vy * FRICTION * dt;
-
-        distance = (float)Math.hypot(vx, vy);
-        if (distance > 3f) {
-            vx = 3.0 * vx/distance;
-            vy = 3.0 * vy/distance;
-        }
-
-        if (location != null) {
-            navVec = environment.getNavigationGrid().getVector(location.getNavGridId(), (float)x, (float)y);
-            vx += navVec.x * WALKING_SPEED * speedVariation * dt;
-            vy += navVec.y * WALKING_SPEED * speedVariation * dt;
-        }
-
-        float angle = (float) Math.atan2(vx, vy);
-        float magnitude = (float) Math.hypot(vx, vy);
-        angle += (Math.random() - 0.5)*DRUNKENNESS;
-        vx = (float) (magnitude * Math.sin(angle));
-        vy = (float) (magnitude * Math.cos(angle));
-
-        x += vx * dt;
-        y += vy * dt;
-
-        wallsHit = environment.getCollisionGrid().hitWall((float)ox, (float)oy, (float)x, (float)y);
-        if ((wallsHit & CollisionGrid.HORIZONTAL) > 0) {
-            y = oy;
-            vy = -vy;
-        }
-
-        if ((wallsHit & CollisionGrid.VERTICAL) > 0) {
-            x = ox;
-            vx = -vx;
-        }
-
-        transform.position.set((float)x, 0, (float)y);
-        transform.rotation.nlerp(new Quaternionf().setAngleAxis(Math.atan2(navVec.x, navVec.y), 0f, 1f, 0f), 5.0f*dt);
-
-        rect.x = (float)(x - RADIUS);
-        rect.y = (float)(y - RADIUS);
-
-        environment.getGroundGrid().add(transform.position, dt);
-
-        environment.getAgentCollisionCollection().insert(rect, this);
-
-        // TODO: Use real exit locations
-        if (location != null) {
-            if (location.isInRange((float)x, (float)y)) {
-                if (location.isExit()) {
-                    agentManager.remove(this);
-                }
-                else {
-                    location = location.getLocationType().randomTransition(environment);
-                }
-            }
-        }
-        */
     }
 
     public void updateGraphics(GraphicsEngine graphicsEngine) {

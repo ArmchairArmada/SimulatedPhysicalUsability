@@ -9,7 +9,6 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.Graph
  * Created by Nathan on 12/22/2016.
  */
 
-// TODO: Clean up this mess
 public class GraphicsPanel extends GLCanvas {
     private final GraphicsEngine graphicsEngine;
     private GL3 gl;
@@ -24,7 +23,6 @@ public class GraphicsPanel extends GLCanvas {
 
         mouseCamera = new MouseCamera(-0.8f, 3.1415f, 20f, this);
 
-        // TODO: Create camera controls
         addMouseListener(mouseCamera.getMouseListener());
         addMouseMotionListener(mouseCamera.getMouseMotionListener());
         addMouseWheelListener(mouseCamera.getMouseWheelListener());
