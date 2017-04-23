@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Nathan on 3/7/2017.
@@ -99,6 +100,22 @@ public class BehaviorPanel extends JPanel {
         LocationTypePanel locationTypePanel = new LocationTypePanel(locationType);
         locationTypePanels.add(locationTypePanel);
         tilesPanel.add(locationTypePanel);
+        projectData.addLocationType(locationType);
         revalidate();
+    }
+
+    public void applyValues() throws Exception {
+        Map<String, LocationType> locationTypeMap = new HashMap<>();
+
+        for (LocationTypePanel locationTypePanel : locationTypePanels) {
+            if (locationTypeMap.get(locationTypePanel.getLocationName()) == null)
+                locationTypeMap.put(locationTypePanel.getLocationName(), locationTypePanel.getLocationType());
+            else
+                throw new Exception("Duplicate Location Type Names");
+        }
+
+        for (LocationTypePanel locationTypePanel : locationTypePanels) {
+            locationTypePanel.applyValues(locationTypeMap);
+        }
     }
 }

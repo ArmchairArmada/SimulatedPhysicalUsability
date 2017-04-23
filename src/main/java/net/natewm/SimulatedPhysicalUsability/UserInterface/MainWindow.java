@@ -130,7 +130,7 @@ public class MainWindow extends JFrame {
             @Override
             public void stateChanged(ChangeEvent e) {
                 // Leaving this tab
-                switch (tabbedPane.getSelectedIndex()) {
+                switch (prevTab) {
                     case 0:     // Simulation
                         break;
 
@@ -138,6 +138,12 @@ public class MainWindow extends JFrame {
                         break;
 
                     case 2:     // Behavior
+                        try {
+                            behaviorPanel.applyValues();
+                        } catch (Exception e1) {
+                            JOptionPane.showConfirmDialog (null,
+                                    e1.getMessage(),"Error", JOptionPane.DEFAULT_OPTION);
+                        }
                         break;
 
                     case 3:     // Data

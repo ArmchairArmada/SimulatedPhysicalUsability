@@ -109,4 +109,18 @@ public class TransitionPanel extends JPanel {
     public String getUnavailable() {
         return (String)cmbUnavailable.getSelectedItem();
     }
+
+    public void applyValues(Map<String, LocationType> locationTypeMap) throws Exception {
+        // TODO: Apply changes.
+        LocationType destination = locationTypeMap.get(txtDestination.getText());
+        if (destination == null) {
+            throw new Exception("Invalid destination name.");
+        }
+        else {
+            transition.setDestination(destination);
+            transition.setWeight((int)spnWeight.getValue());
+            transition.setSelectionMethod(LocationType.getSelectionMethodFromString((String)cmbSelection.getSelectedItem()));
+            transition.setUnavailableBehavior(LocationType.getUnavailableBehaviorFromString((String)cmbUnavailable.getSelectedItem()));
+        }
+    }
 }

@@ -23,7 +23,8 @@ public class ColorButton extends JButton {
             @Override
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 g.setColor(color);
-                g.fillRect(x, y, 17, 17);
+                //g.fillRect(x, y, 17, 17);
+                g.fillOval(x, y,16,16);
 
                 //g.setColor(Color.BLACK);
                 //g.drawRect(x,y,32,24);

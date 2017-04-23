@@ -42,16 +42,32 @@ public class LocationType {
             return destination;
         }
 
+        public void setDestination(LocationType destination) {
+            this.destination = destination;
+        }
+
         public int getWeight() {
             return weight;
+        }
+
+        public void setWeight(int weight) {
+            this.weight = weight;
         }
 
         public SelectionMethod getSelectionMethod() {
             return selectionMethod;
         }
 
+        public void setSelectionMethod(SelectionMethod selectionMethod) {
+            this.selectionMethod = selectionMethod;
+        }
+
         public UnavailableBehavior getUnavailableBehavior() {
             return unavailableBehavior;
+        }
+
+        public void setUnavailableBehavior(UnavailableBehavior unavailableBehavior) {
+            this.unavailableBehavior = unavailableBehavior;
         }
     }
 
@@ -65,6 +81,7 @@ public class LocationType {
     private Color color;
 
     public LocationType() {
+        this.color = new Color((float)Math.random(), (float)Math.random(), (float)Math.random());
     }
 
     public LocationType(String name, float minWaitTime, float maxWaitTime, boolean startOccupied, boolean entrance, boolean exit) {

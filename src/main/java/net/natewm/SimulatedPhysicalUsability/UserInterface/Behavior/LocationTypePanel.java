@@ -136,6 +136,14 @@ public class LocationTypePanel extends JPanel {
         bagConstraints.gridy = 2;
         bagConstraints.fill = GridBagConstraints.NONE;
         JButton btnAddTransition = new JButton("Add Transition");
+        btnAddTransition.addActionListener(e -> {
+            LocationType.Transition transition = new LocationType.Transition(locationType, 1, LocationType.SelectionMethod.RANDOM, LocationType.UnavailableBehavior.REPICK);
+            locationType.addTransition(transition);
+            TransitionPanel transitionPanel = new TransitionPanel(transition);
+            transitionPanelList.add(transitionPanel);
+            pnlTransitions.add(transitionPanel);
+            revalidate();
+        });
         add(btnAddTransition, bagConstraints);
 
         // TODO: Add Transition Button
@@ -160,6 +168,20 @@ public class LocationTypePanel extends JPanel {
 
         for (TransitionPanel transitionPanel : transitionPanelList) {
             locationType.addTransition(transitionPanel.getTransition(locationTypeMap));
+        }
+    }
+
+    public void applyValues(Map<String, LocationType> locationTypeMap) throws Exception {
+        locationType.setName(txtName.getText());
+        locationType.setMinWaitTime((float)spnMinWait.getValue());
+        locationType.setMaxWaitTime((float)spnMaxWait.getValue());
+        locationType.setEntrance(chkEntrance.isSelected());
+        locationType.setExit(chkExit.isSelected());
+        locationType.setStartOccupied(chkOccupied.isSelected());
+        locationType.setColor(btnColor.getColor());
+
+        for (TransitionPanel transitionPanel : transitionPanelList) {
+            transitionPanel.applyValues(locationTypeMap);
         }
     }
 }

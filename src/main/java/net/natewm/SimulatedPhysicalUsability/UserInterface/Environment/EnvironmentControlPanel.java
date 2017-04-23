@@ -100,6 +100,29 @@ public class EnvironmentControlPanel extends JPanel {
             button.addActionListener(e -> {
                 environmentPanel.setLocationTool(locationType);
             });
+
+            button.setIcon(new Icon() {
+                @Override
+                public void paintIcon(Component c, Graphics g, int x, int y) {
+                    g.setColor(locationType.getColor());
+                    //g.fillRect(x, y, 17, 17);
+                    g.fillOval(x, y,16,16);
+
+                    //g.setColor(Color.BLACK);
+                    //g.drawRect(x,y,32,24);
+                }
+
+                @Override
+                public int getIconWidth() {
+                    return 16;
+                }
+
+                @Override
+                public int getIconHeight() {
+                    return 16;
+                }
+            });
+
             locationTypeButtonList.add(button);
         }
 
