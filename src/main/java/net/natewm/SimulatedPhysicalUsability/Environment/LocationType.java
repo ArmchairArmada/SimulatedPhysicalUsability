@@ -226,6 +226,9 @@ public class LocationType {
             case RANDOM:
                 switch (transition.unavailableBehavior) {
                     case REPICK:
+                        if (locationList.isEmpty())
+                            return null;
+
                         location = locationList.get((int)(Math.random() * locationList.size()));
                         while (!location.isAvailable()) {
                             // TODO: Give up after failing a certain number of times.

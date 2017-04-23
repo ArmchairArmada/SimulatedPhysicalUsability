@@ -79,7 +79,7 @@ public class SimulationThread {
                 if (!paused) {
                     // TODO: Allow for adjusting spawn probability
                     for (int i=0; i<speed; i++) {
-                        if (Math.random() < dt) {
+                        if (Math.random() < dt*4f) {
                             Location location = environment.getRandomEntrance();
                             if (location != null)
                                 createAgent(location.getX(), location.getY(), location.getLocationType().randomTransition(projectData));

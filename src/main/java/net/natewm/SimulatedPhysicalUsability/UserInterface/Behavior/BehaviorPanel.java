@@ -34,14 +34,14 @@ public class BehaviorPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JPanel contentPanel = new JPanel();
-        contentPanel.setBackground(Color.WHITE);
+        //contentPanel.setBackground(Color.WHITE);
         contentPanel.setLayout(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         scrollPane.setPreferredSize(new Dimension(800,600));
         scrollPane.setBorder(null);
 
-        setBackground(Color.WHITE);
+        //setBackground(Color.WHITE);
 
         tilesPanel = new JPanel();
         tilesPanel.setLayout(new BoxLayout(tilesPanel, BoxLayout.Y_AXIS));
@@ -73,7 +73,7 @@ public class BehaviorPanel extends JPanel {
         gridBagConstraints.anchor = GridBagConstraints.PAGE_END;
 
         JPanel spacer = new JPanel();
-        spacer.setBackground(Color.WHITE);
+        //spacer.setBackground(Color.WHITE);
         spacer.setPreferredSize(new Dimension(0,0));
 
         contentPanel.add(spacer, gridBagConstraints);

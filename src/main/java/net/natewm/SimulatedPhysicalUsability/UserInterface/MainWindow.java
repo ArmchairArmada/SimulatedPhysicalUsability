@@ -31,6 +31,8 @@ public class MainWindow extends JFrame {
     final JFileChooser fileChooser;
     final JFrame window = this;
 
+    int prevTab = 0;
+
     public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment, ProjectData projectData) {
         fileChooser = new JFileChooser();
         ObjectMapper mapper = new ObjectMapper();
@@ -87,7 +89,7 @@ public class MainWindow extends JFrame {
         environmentTabPanel.setLayout(layout);
 
         EnvironmentPanel environmentPanel = new EnvironmentPanel(environment, projectData);
-        EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(projectData, environmentPanel);
+        EnvironmentControlPanel environmentControlPanel = new EnvironmentControlPanel(projectData, environmentPanel, simulationThread);
         environmentControlPanel.setMinimumSize(new Dimension(250, 0));
         environmentControlPanel.setMaximumSize(new Dimension(250, 1000000));
         environmentControlPanel.setPreferredSize(new Dimension(250, 600));
@@ -127,7 +129,25 @@ public class MainWindow extends JFrame {
         tabbedPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                //System.out.println("Tab change: " + tabbedPane.getSelectedIndex());
+                // Leaving this tab
+                switch (tabbedPane.getSelectedIndex()) {
+                    case 0:     // Simulation
+                        break;
+
+                    case 1:     // Environment
+                        break;
+
+                    case 2:     // Behavior
+                        break;
+
+                    case 3:     // Data
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // Switching to to this tab
                 switch (tabbedPane.getSelectedIndex()) {
                     case 0:     // Simulation
                         break;
@@ -146,6 +166,8 @@ public class MainWindow extends JFrame {
                     default:
                         break;
                 }
+
+                prevTab = tabbedPane.getSelectedIndex();
             }
         });
 
