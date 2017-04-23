@@ -52,8 +52,6 @@ public class MainWindow extends JFrame {
         GraphicsPanel graphicsPanel = new GraphicsPanel(graphicsEngine);
         graphicsPanel.setPreferredSize(new Dimension(800, 600));
 
-        // MOCK USER INTERFACE LAYOUT
-        // TODO: Split UI components into separate classes
         JTabbedPane tabbedPane = new JTabbedPane();
 
         JPanel simulationTabPanel = new JPanel();
@@ -206,7 +204,6 @@ public class MainWindow extends JFrame {
         menuItem = new JMenuItem("Open", KeyEvent.VK_O);
         menuItem.getAccessibleContext().setAccessibleDescription("Opens a file.");
         menuItem.addActionListener(e -> {
-            // TODO: File Open
             int returnValue = fileChooser.showOpenDialog(window);
             if (returnValue != JFileChooser.CANCEL_OPTION) {
                 File file = fileChooser.getSelectedFile();
@@ -228,7 +225,6 @@ public class MainWindow extends JFrame {
         menuItem = new JMenuItem("Save", KeyEvent.VK_S);
         menuItem.getAccessibleContext().setAccessibleDescription("Saves a file.");
         menuItem.addActionListener(e -> {
-            // TODO: File Save
             File file = fileChooser.getSelectedFile();
             if (file != null) {
                 LOGGER.fine("Saving file: " + file.getName());
@@ -244,7 +240,6 @@ public class MainWindow extends JFrame {
         menuItem = new JMenuItem("Save As", KeyEvent.VK_A);
         menuItem.getAccessibleContext().setAccessibleDescription("Saves a file as.");
         menuItem.addActionListener(e -> {
-            // TODO: File Save As
             int returnValue = fileChooser.showSaveDialog(window);
             if (returnValue != JFileChooser.CANCEL_OPTION) {
                 File file = fileChooser.getSelectedFile();

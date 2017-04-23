@@ -96,7 +96,6 @@ public class BehaviorPanel extends JPanel {
     public void addLocationType() {
         LocationType locationType = new LocationType();
         locationType.setName("Unnamed");
-        // TODO: Add location type to environment (or some list of location types)
         LocationTypePanel locationTypePanel = new LocationTypePanel(locationType);
         locationTypePanels.add(locationTypePanel);
         tilesPanel.add(locationTypePanel);

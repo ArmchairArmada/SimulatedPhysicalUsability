@@ -58,9 +58,4 @@ public class Location {
     public int getNavGridId() {
         return navGridId;
     }
-
-    public LocationDescription makeDescription() {
-        // TODO: Export more information
-        return new LocationDescription(locationType.getName(), x, y);
-    }
 }

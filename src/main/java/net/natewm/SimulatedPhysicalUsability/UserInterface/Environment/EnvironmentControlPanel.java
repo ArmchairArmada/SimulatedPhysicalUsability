@@ -80,7 +80,6 @@ public class EnvironmentControlPanel extends JPanel {
         lblLoc.setAlignmentX(CENTER_ALIGNMENT);
         add(lblLoc);
 
-        // TODO: Move locations into scrollpane
         for (JToggleButton btn : locationTypeButtonList) {
             jPanel.add(btn);
             tglButtons.add(btn);
@@ -96,7 +95,6 @@ public class EnvironmentControlPanel extends JPanel {
         for (LocationType locationType : projectData.getLocationTypes()) {
             button = new JToggleButton(locationType.getName());
             button.setAlignmentX(CENTER_ALIGNMENT);
-            // TODO: Set the location type tool.
             button.addActionListener(e -> {
                 environmentPanel.setLocationTool(locationType);
             });
