@@ -129,6 +129,10 @@ public class SimulationThread {
 
             for (Location location : projectData.getLocations()) {
                 location.leave();
+
+                if (location.getLocationType().isStartOccupied()) {
+                    createAgent(location.getX(), location.getY(), location);
+                }
             }
 
             //MeshRenderNodeHandle node;// = new MeshRenderNodeHandle();
