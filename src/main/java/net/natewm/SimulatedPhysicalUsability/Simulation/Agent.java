@@ -24,7 +24,7 @@ import java.util.List;
 public class Agent {
     private static final double WALKING_SPEED = 400.0;
     private static final double TURN_RATE = 10.0;
-    private static final double RADIUS = 0.35; //0.25;
+    private static final double RADIUS = 0.3; //0.25;
     //private static final double RADIUS = 0.3f;
     private static final double FRICTION = 450.0;
     private static final double DRUNKENNESS = 700.0;
@@ -78,9 +78,12 @@ public class Agent {
         double distance;
 
         // TODO: Differrentiate unavailable behavior
+        // TODO: Need to get Transition object to know selection method and unavailable behavior
         if (!arrived && !location.isAvailable()) {
+            Location tmpLocation = location;
             if (Math.random() < 0.1) {
-                location = prevLocation.getLocationType().randomTransition(projectData);
+                // TODO: Figure out what is causing this bug.
+                //location = prevLocation.getLocationType().randomTransition(projectData);
             }
             else {
                 List<Location> locations = projectData.getLocationList(location.getLocationType());
@@ -99,6 +102,8 @@ public class Agent {
             distance = difference.length();
             if (distance <= RADIUS*2) {
                 force.add(difference.mul(PUSH/Math.pow(distance, 5.0)));
+
+                force.sub(new Vector2d(velocity).mul(0.05));
             }
         }
 

@@ -122,7 +122,7 @@ public class MainWindow extends JFrame {
         tabbedPane.addTab("Behaviors", behaviorTabPanel);
 
         // TODO: Make real tabs -- remember to suspend limit rendering to 60 FPS
-        tabbedPane.addTab("Statistics", new JPanel());
+        //tabbedPane.addTab("Statistics", new JPanel());
 
         tabbedPane.addChangeListener(new ChangeListener() {
             @Override
@@ -195,8 +195,10 @@ public class MainWindow extends JFrame {
             if(dialogResult == JOptionPane.YES_OPTION) {
                 simulationControls.reset();
                 simulationThread.stopSimulation();
+                projectData.clear();
                 environment.clear();
                 environmentPanel.clearAll();
+                environmentControlPanel.addButtons();
             }
         });
         menu.add(menuItem);
