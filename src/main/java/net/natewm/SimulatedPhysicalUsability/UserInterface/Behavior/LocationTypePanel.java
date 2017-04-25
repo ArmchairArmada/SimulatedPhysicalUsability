@@ -63,18 +63,20 @@ public class LocationTypePanel extends JPanel {
         bagConstraints.fill = GridBagConstraints.VERTICAL;
         bagConstraints.gridx = 1;
 
-        add(new JLabel("Min Wait"), bagConstraints);
+        add(new JLabel("  Min Wait"), bagConstraints);
 
         bagConstraints.gridx = 2;
-        spnMinWait = new JSpinner();
+        spnMinWait = new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+        ((JSpinner.DefaultEditor)spnMinWait.getEditor()).getTextField().setColumns(5);
         spnMinWait.setValue(locationType.getMinWaitTime());
         add(spnMinWait, bagConstraints);
 
         bagConstraints.gridx = 3;
-        add(new JLabel("Max Wait"), bagConstraints);
+        add(new JLabel("  Max Wait"), bagConstraints);
 
         bagConstraints.gridx = 4;
-        spnMaxWait = new JSpinner();
+        spnMaxWait = new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+        ((JSpinner.DefaultEditor)spnMaxWait.getEditor()).getTextField().setColumns(5);
         spnMaxWait.setValue(locationType.getMaxWaitTime());
         add(spnMaxWait, bagConstraints);
 
