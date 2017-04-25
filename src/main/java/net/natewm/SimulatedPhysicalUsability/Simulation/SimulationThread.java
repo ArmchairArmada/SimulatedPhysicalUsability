@@ -25,6 +25,7 @@ public class SimulationThread {
         boolean running = true;
         boolean paused = true;
         int speed = 1;
+        float enterRate = 1.0f;
         boolean doStop = false;
         boolean doInit = false;
         final Object lock = new Object();
@@ -79,7 +80,7 @@ public class SimulationThread {
                 if (!paused) {
                     // TODO: Allow for adjusting spawn probability
                     for (int i=0; i<speed; i++) {
-                        if (Math.random() < dt*4f) {
+                        if (Math.random() < dt*enterRate) {
                             Location location = environment.getRandomEntrance();
                             if (location != null)
                                 createAgent(location.getX(), location.getY(), location.getLocationType().randomTransition(projectData));
@@ -208,6 +209,10 @@ public class SimulationThread {
             this.speed = speed;
             paused = false;
         }
+
+        public synchronized void setEnterRate(float rate) {
+            enterRate = rate;
+        }
     }
 
 
@@ -238,6 +243,10 @@ public class SimulationThread {
 
     public void playSimulation(int speed) {
         runnable.playSimulation(speed);
+    }
+
+    public void setEnterRate(float rate) {
+        runnable.setEnterRate(rate);
     }
 
     public void startSimulation() {

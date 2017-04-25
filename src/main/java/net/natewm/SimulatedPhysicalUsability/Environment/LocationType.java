@@ -18,6 +18,7 @@ public class LocationType {
         RANDOM
     }
 
+    // TODO: Add CROWD for going to a location even if it is unavailable
     public enum UnavailableBehavior  {
         REPICK,
         WAIT,
@@ -248,7 +249,7 @@ public class LocationType {
 
                         location = locationList.get((int)(Math.random() * locationList.size()));
                         int c = 0;
-                        while (!location.isAvailable() && c < 100) {
+                        while (!location.isAvailable() && c < 10) {
                             c++;
                             // TODO: Give up after failing a certain number of times.
                             location = locationList.get((int)(Math.random() * locationList.size()));
