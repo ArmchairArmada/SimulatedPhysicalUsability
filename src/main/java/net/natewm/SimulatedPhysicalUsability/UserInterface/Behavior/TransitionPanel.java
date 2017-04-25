@@ -52,10 +52,12 @@ public class TransitionPanel extends JPanel {
         add(new JLabel("Weight"), bagConstraints);
 
         bagConstraints.gridx = 3;
-        spnWeight = new JSpinner();
+        spnWeight = new JSpinner(new SpinnerNumberModel(1, 0, 10000,1));
+        ((JSpinner.DefaultEditor)spnWeight.getEditor()).getTextField().setColumns(5);
         spnWeight.setValue(transition.getWeight());
         add(spnWeight, bagConstraints);
 
+        /*
         //jSpinner = new JSpinner();
         cmbSelection = new JComboBox<String>(selectionStrings);
         cmbSelection.setSelectedItem(LocationType.getSelectionMethodString(transition.getSelectionMethod()));
@@ -70,11 +72,13 @@ public class TransitionPanel extends JPanel {
         bagConstraints.gridx = 5;
 
         add(cmbUnavailable, bagConstraints);
+        */
 
         JButton closeButton = new JButton("X");
         closeButton.setMargin(new Insets(5, 5, 5, 5));
 
-        bagConstraints.gridx = 6;
+        //bagConstraints.gridx = 6;
+        bagConstraints.gridx = 4;
 
         add(closeButton, bagConstraints);
     }
@@ -118,8 +122,8 @@ public class TransitionPanel extends JPanel {
         else {
             transition.setDestination(destination);
             transition.setWeight((int)spnWeight.getValue());
-            transition.setSelectionMethod(LocationType.getSelectionMethodFromString((String)cmbSelection.getSelectedItem()));
-            transition.setUnavailableBehavior(LocationType.getUnavailableBehaviorFromString((String)cmbUnavailable.getSelectedItem()));
+            //transition.setSelectionMethod(LocationType.getSelectionMethodFromString((String)cmbSelection.getSelectedItem()));
+            //transition.setUnavailableBehavior(LocationType.getUnavailableBehaviorFromString((String)cmbUnavailable.getSelectedItem()));
         }
     }
 }

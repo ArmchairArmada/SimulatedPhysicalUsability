@@ -139,6 +139,7 @@ public class MainWindow extends JFrame {
                         try {
                             behaviorPanel.applyValues();
                         } catch (Exception e1) {
+                            //e1.printStackTrace();
                             JOptionPane.showConfirmDialog (null,
                                     e1.getMessage(),"Error", JOptionPane.DEFAULT_OPTION);
                         }

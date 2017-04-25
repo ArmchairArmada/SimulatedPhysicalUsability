@@ -81,11 +81,12 @@ public class Agent {
         // TODO: Need to get Transition object to know selection method and unavailable behavior
         if (!arrived && !location.isAvailable()) {
             Location tmpLocation = location;
-            if (Math.random() < 0.1) {
+            //if (Math.random() < 0.1) {
                 // TODO: Figure out what is causing this bug.
                 //location = prevLocation.getLocationType().randomTransition(projectData);
-            }
-            else {
+            //}
+            //else {
+            if (Math.random() < 0.025) {
                 List<Location> locations = projectData.getLocationList(location.getLocationType());
                 location = locations.get((int) (Math.random() * locations.size()));
             }
@@ -169,9 +170,11 @@ public class Agent {
                         }
                     }
                     else {
-                        location.occupy(this);
-                        arrived = true;
-                        waitTime = location.getLocationType().getMinWaitTime() + (float)(Math.random() * (location.getLocationType().getMaxWaitTime() - location.getLocationType().getMinWaitTime()));
+                        if (location.isAvailable()) {
+                            location.occupy(this);
+                            arrived = true;
+                            waitTime = location.getLocationType().getMinWaitTime() + (float) (Math.random() * (location.getLocationType().getMaxWaitTime() - location.getLocationType().getMinWaitTime()));
+                        }
                     }
 
                 }
