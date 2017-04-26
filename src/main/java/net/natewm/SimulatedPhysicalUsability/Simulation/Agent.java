@@ -67,7 +67,7 @@ public class Agent {
         position.y = transform.position.z;
 
         this.location = location;
-        prevLocation = location;
+        prevLocation = null;
     }
 
     public void update(AgentManager agentManager, GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData, float dt) {
@@ -90,7 +90,7 @@ public class Agent {
                 List<Location> locations = projectData.getLocationList(location.getLocationType());
                 location = locations.get((int) (Math.random() * locations.size()));
             }
-            else if (Math.random() < 0.1) {
+            else if (prevLocation != null && Math.random() < 0.1) {
                 location = prevLocation.getLocationType().randomTransition(projectData);
             }
         }
