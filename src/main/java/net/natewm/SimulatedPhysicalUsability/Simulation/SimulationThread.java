@@ -82,7 +82,7 @@ public class SimulationThread {
                     for (int i=0; i<speed; i++) {
                         if (Math.random() < dt*enterRate) {
                             Location location = environment.getRandomEntrance();
-                            if (location != null)
+                            if (location != null && location.getLocationType() != null)
                                 createAgent(location.getX(), location.getY(), location.getLocationType().randomTransition(projectData));
                         }
 

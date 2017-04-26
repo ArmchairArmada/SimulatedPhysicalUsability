@@ -79,7 +79,7 @@ public class Agent {
 
         // TODO: Differrentiate unavailable behavior
         // TODO: Need to get Transition object to know selection method and unavailable behavior
-        if (!arrived && !location.isAvailable()) {
+        if (!arrived && location != null && !location.isAvailable()) {
             Location tmpLocation = location;
             //if (Math.random() < 0.1) {
                 // TODO: Figure out what is causing this bug.
@@ -89,6 +89,9 @@ public class Agent {
             if (Math.random() < 0.025) {
                 List<Location> locations = projectData.getLocationList(location.getLocationType());
                 location = locations.get((int) (Math.random() * locations.size()));
+            }
+            else if (Math.random() < 0.1) {
+                location = prevLocation.getLocationType().randomTransition(projectData);
             }
         }
 
