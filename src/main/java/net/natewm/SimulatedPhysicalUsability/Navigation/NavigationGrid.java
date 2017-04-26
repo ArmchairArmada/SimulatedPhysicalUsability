@@ -80,9 +80,6 @@ public class NavigationGrid {
         this.maxY = Math.max(collisionGrid.getMaxY(), maxY);
         width = (int)(this.maxX - this.minX);
         height = (int)(this.maxY - this.minY);
-
-        System.out.println(width + ", " + collisionGrid.getWidth());
-        System.out.println(height + ", " + collisionGrid.getHeight());
     }
 
     public int getLocationCount() {
