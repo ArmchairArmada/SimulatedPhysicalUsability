@@ -63,7 +63,7 @@ public class Environment {
         entrances.clear();
         projectData.clearEnvironment();
         collisionGrid = new CollisionGrid(projectData.getWalls());
-        navigationGrid = new NavigationGrid(collisionGrid);
+        navigationGrid = new NavigationGrid(collisionGrid,0, 0, 0, 0);
         agentCollisionCollection = new BinSpaceTree<>(-512, -512, 1024, 1024, 11);
         generateGraphics();
     }
@@ -72,7 +72,7 @@ public class Environment {
         MazeGenerator mazeGenerator = new MazeGenerator(60, 60, 0.15f);
         projectData.setWalls(mazeGenerator.generate());
         collisionGrid = new CollisionGrid(projectData.getWalls());
-        navigationGrid = new NavigationGrid(collisionGrid);
+        navigationGrid = new NavigationGrid(collisionGrid, 0, 0, 0, 0);
 
         // ToDo: randomize this
         LocationType entrance = new LocationType("entrance", 0, 0, false, true, false);
@@ -132,8 +132,20 @@ public class Environment {
     }
 
     public void generateEnvironment() {
+        float minX = 0f;
+        float minY = 0f;
+        float maxX = 0f;
+        float maxY = 0f;
+
+        for (Location location : projectData.getLocations()) {
+            minX = Math.min(minX, location.getX());
+            minY = Math.min(minY, location.getY());
+            maxX = Math.max(maxX, location.getX());
+            maxY = Math.max(maxY, location.getY());
+        }
+
         collisionGrid = new CollisionGrid(projectData.getWalls());
-        navigationGrid = new NavigationGrid(collisionGrid);
+        navigationGrid = new NavigationGrid(collisionGrid, minX-5, minY-5, maxX+5, maxY+5);
 
         for (Location location : projectData.getLocations()) {
             navigationGrid.addLocation(location);

@@ -69,15 +69,20 @@ public class NavigationGrid {
     private List<Location> locations = new ArrayList<>();
     private List<Vector2f[]> vectorGrids = new ArrayList<>();
 
-    public NavigationGrid(CollisionGrid collisionGrid) {
+    public NavigationGrid(CollisionGrid collisionGrid, float minX, float minY, float maxX, float maxY) {
         // TODO: Also use Locations when they are finally available.
         this.collisionGrid = collisionGrid;
-        width = collisionGrid.getWidth();
-        height = collisionGrid.getHeight();
-        minX = collisionGrid.getMinX();
-        minY = collisionGrid.getMinY();
-        maxX = collisionGrid.getMaxX();
-        maxY = collisionGrid.getMaxY();
+        //width = collisionGrid.getWidth();
+        //height = collisionGrid.getHeight();
+        this.minX = Math.min(collisionGrid.getMinX(), minX);
+        this.minY = Math.min(collisionGrid.getMinY(), minY);
+        this.maxX = Math.max(collisionGrid.getMaxX(), maxX);
+        this.maxY = Math.max(collisionGrid.getMaxY(), maxY);
+        width = (int)(this.maxX - this.minX);
+        height = (int)(this.maxY - this.minY);
+
+        System.out.println(width + ", " + collisionGrid.getWidth());
+        System.out.println(height + ", " + collisionGrid.getHeight());
     }
 
     public int getLocationCount() {
