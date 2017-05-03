@@ -79,7 +79,7 @@ public class Agent {
 
         // TODO: Differrentiate unavailable behavior
         // TODO: Need to get Transition object to know selection method and unavailable behavior
-        if (!arrived && location != null && !location.isAvailable()) {
+        if (!arrived && location != null && !location.isAvailable() && !location.isExit()) {
             Location tmpLocation = location;
             //if (Math.random() < 0.1) {
                 // TODO: Figure out what is causing this bug.
@@ -160,27 +160,26 @@ public class Agent {
         if (location != null) {
             if (location.isInRange((float)position.x, (float)position.y)) {
                 if (location.isExit()) {
+                    location.leave();
                     agentManager.remove(this);
                 }
                 else {
-                    if (arrived) {
-                        waitTime -= dt;
-                        if (waitTime <= 0f) {
-                            location.leave();
-                            prevLocation = location;
-                            location = location.getLocationType().randomTransition(projectData);
-                            arrived = false;
-                        }
-                    }
-                    else {
-                        if (location.isAvailable()) {
+                    if (location.isAvailable()) {
+                        if (!location.isExit())
                             location.occupy(this);
-                            arrived = true;
-                            waitTime = location.getLocationType().getMinWaitTime() + (float) (Math.random() * (location.getLocationType().getMaxWaitTime() - location.getLocationType().getMinWaitTime()));
-                        }
+                        arrived = true;
+                        waitTime = location.getLocationType().getMinWaitTime() + (float) (Math.random() * (location.getLocationType().getMaxWaitTime() - location.getLocationType().getMinWaitTime()));
                     }
-
                 }
+            }
+        }
+        if (arrived) {
+            waitTime -= dt;
+            if (waitTime <= 0f) {
+                location.leave();
+                prevLocation = location;
+                location = location.getLocationType().randomTransition(projectData);
+                arrived = false;
             }
         }
     }
