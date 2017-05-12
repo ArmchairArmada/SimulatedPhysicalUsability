@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nathan on 4/11/2017.
+ * Publisher for a publisher/subscriber model (not currently used).
  */
 public class Publisher {
     private final List<MessageQueue> subscriberList = new ArrayList<>();

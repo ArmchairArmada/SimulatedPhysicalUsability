@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Created by Nathan on 4/11/2017.
+ * Queue for storing and retrieving messages (not currently used).
  */
 public class MessageQueue {
     private final Queue<Message> messageQueue = new LinkedList<>();

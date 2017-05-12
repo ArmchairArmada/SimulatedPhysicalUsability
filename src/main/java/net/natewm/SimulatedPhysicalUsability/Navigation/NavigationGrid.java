@@ -11,9 +11,12 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Created by Nathan on 1/23/2017.
+ * Grid of navigation vectors.
  */
 public class NavigationGrid {
+    /**
+     * Job used for concurrently generating grids of navigation data.
+     */
     private class Job {
         final int x;
         final int y;
@@ -26,6 +29,9 @@ public class NavigationGrid {
         }
     }
 
+    /**
+     * Node used for building out navigation information
+     */
     private class Node {
         final int x;
         final int y;
@@ -42,6 +48,9 @@ public class NavigationGrid {
         }
     }
 
+    /**
+     * Compares nodes by their distance to their goal
+     */
     private class NodeComparator implements Comparator<Node> {
         @Override
         public int compare(Node x, Node y) {
@@ -65,15 +74,20 @@ public class NavigationGrid {
 
     private final CollisionGrid collisionGrid;
 
-    //private List<Vector2f> locations = new ArrayList<>();
     private final List<Location> locations = new ArrayList<>();
     private final List<Vector2f[]> vectorGrids = new ArrayList<>();
 
+    /**
+     * Constructor for creating a navigation grid.
+     *
+     * @param collisionGrid Grid of wall collision information
+     * @param minX          Minimum X boundary for navigation grid
+     * @param minY          Minimum Y boundary for navigation grid
+     * @param maxX          Maximum X boundary for navigation grid
+     * @param maxY          Maximum Y boundary for navigation grid
+     */
     public NavigationGrid(CollisionGrid collisionGrid, float minX, float minY, float maxX, float maxY) {
-        // TODO: Also use Locations when they are finally available.
         this.collisionGrid = collisionGrid;
-        //width = collisionGrid.getWidth();
-        //height = collisionGrid.getHeight();
         this.minX = Math.min(collisionGrid.getMinX(), minX);
         this.minY = Math.min(collisionGrid.getMinY(), minY);
         this.maxX = Math.max(collisionGrid.getMaxX(), maxX);
@@ -82,75 +96,71 @@ public class NavigationGrid {
         height = (int)(this.maxY - this.minY);
     }
 
+    /**
+     * Gets the number of locations there are grids for.
+     *
+     * @return Number of navigation grid locations
+     */
     public int getLocationCount() {
         return vectorGrids.size();
     }
 
-    /*
-    public Vector2f getLocation(int locationIndex) {
-        return locations.get(locationIndex);
-    }
-    */
-
+    /**
+     * Gets a location by its index value
+     *
+     * @param locationIndex Location's index value
+     * @return Location at this index
+     */
     public Location getLocation(int locationIndex) {
         return locations.get(locationIndex);
     }
 
-    /*
-    public void addLocation(float x, float y) {
-        locations.add(new Vector2f(x,y));
-        generateNavigationGrid(xIndex(x), yIndex(y));
-    }
-    */
-
+    /**
+     * Adds a location to the navigation grid so navigation data can be generated for it.
+     *
+     * @param location Location to add to the navigation grid and generate data for
+     */
     public void addLocation(Location location) {
         locations.add(location);
-        //generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
         location.setNavGridId(locations.size()-1);
     }
 
+    /**
+     * Generates the navigation data for each location
+     */
     public synchronized void generateLocationGrids() {
         List<Job> jobs = new ArrayList<>();
-        Location loc;
         for (Location location: locations) {
             Vector2f[] grid = new Vector2f[width*height];
             vectorGrids.add(grid);
             jobs.add(new Job(xIndex(location.getX()), yIndex(location.getY()), grid));
         }
 
-        //locations.parallelStream().forEach((Location location) -> {
         jobs.parallelStream().forEach((Job job) -> generateNavigationGrid(job.x, job.y, job.grid));
-
-        /*
-        for (Location location : locations) {
-            generateNavigationGrid(xIndex(location.getX()), yIndex(location.getY()));
-        }
-        */
     }
 
+    /**
+     * Generates navigation grid data for a given location.
+     *
+     * @param startX X position of location
+     * @param startY Y position of location
+     * @param grid   Grid to store path results in
+     */
     private void generateNavigationGrid(int startX, int startY, Vector2f[] grid) {
         Node node;
 
         Comparator<Node> comparator = new NodeComparator();
         PriorityQueue<Node> frontier = new PriorityQueue<>(100, comparator);
 
-        //Vector2f[] grid = new Vector2f[width*height];
         Vector2f vec;
 
         node = new Node(startX, startY, startX, startY, 0f);
         frontier.add(node);
 
         while (!frontier.isEmpty()) {
-            //System.out.println(frontier.size());
-
             node = frontier.remove();
 
             if (grid[node.y*width+node.x] == null) {
-                //System.out.println(node.x + ", " + node.y + ", " + node.fromX + ", " + node.fromY + ", " + node.distance);
-                //System.out.println(width + ", " + height);
-
-                //grid[node.y*width+node.x] = new Vector2f(node.x-node.fromX, node.y-node.fromY);
-                //grid[node.y * width + node.x] = new Vector2f(node.fromX - node.x, node.fromY - node.y).normalize();
                 vec = new Vector2f(node.fromX - node.x, node.fromY - node.y);
                 if (vec.x != 0 && vec.y != 0)
                     vec.normalize();
@@ -175,60 +185,7 @@ public class NavigationGrid {
                             frontier.add(new Node(nx, ny, node.x, node.y, node.distance + (float)Math.hypot(nx - node.x, ny - node.y)));
                         }
                     }
-
-                    /*
-                    if (dir == 0 && node.y > 0 && !collisionGrid.hasTopWall(node.x, node.y)) {
-                        if (node.y - 1 >= 0 && grid[(node.y - 1) * width + node.x] == null) {
-                            frontier.add(new Node(node.x, node.y - 1, node.x, node.y, node.distance + 1f));
-                        }
-                    }
-
-                    if (dir == 1 && node.y < height - 1 && !collisionGrid.hasTopWall(node.x, node.y + 1)) {
-                        if (node.y + 1 >= 0 && grid[(node.y + 1) * width + node.x] == null) {
-                            frontier.add(new Node(node.x, node.y + 1, node.x, node.y, node.distance + 1f));
-                        }
-                    }
-
-                    if (dir == 2 && node.x > 0 && !collisionGrid.hasLeftWall(node.x, node.y)) {
-                        if (node.x - 1 >= 0 && grid[node.y * width + node.x - 1] == null) {
-                            frontier.add(new Node(node.x - 1, node.y, node.x, node.y, node.distance + 1f));
-                        }
-                    }
-
-                    if (dir == 3 && node.x < width - 1 && !collisionGrid.hasLeftWall(node.x + 1, node.y)) {
-                        if (node.x + 1 >= 0 && grid[node.y * width + node.x + 1] == null) {
-                            frontier.add(new Node(node.x + 1, node.y, node.x, node.y, node.distance + 1f));
-                        }
-                    }
-                    */
                 }
-
-
-                /*
-                if (node.y > 0 && !collisionGrid.hasTopWall(node.x, node.y)) {
-                    if (node.y - 1 >= 0 && grid[(node.y - 1) * width + node.x] == null) {
-                        frontier.add(new Node(node.x, node.y - 1, node.x, node.y, node.distance + 1f));
-                    }
-                }
-
-                if (node.y < height - 1 && !collisionGrid.hasTopWall(node.x, node.y + 1)) {
-                    if (node.y + 1 >= 0 && grid[(node.y + 1) * width + node.x] == null) {
-                        frontier.add(new Node(node.x, node.y + 1, node.x, node.y, node.distance + 1f));
-                    }
-                }
-
-                if (node.x > 0 && !collisionGrid.hasLeftWall(node.x, node.y)) {
-                    if (node.x - 1 >= 0 && grid[node.y * width + node.x - 1] == null) {
-                        frontier.add(new Node(node.x - 1, node.y, node.x, node.y, node.distance + 1f));
-                    }
-                }
-
-                if (node.x < width - 1 && !collisionGrid.hasLeftWall(node.x + 1, node.y)) {
-                    if (node.x + 1 >= 0 && grid[node.y * width + node.x + 1] == null) {
-                        frontier.add(new Node(node.x + 1, node.y, node.x, node.y, node.distance + 1f));
-                    }
-                }
-                */
             }
         }
 
@@ -237,15 +194,16 @@ public class NavigationGrid {
                 grid[i] = new Vector2f();
             }
         }
-
-        //vectorGrids.add(grid);
-        //addGrid(grid);
     }
 
-    private synchronized void addGrid(Vector2f[] grid) {
-        vectorGrids.add(grid);
-    }
-
+    /**
+     * Gets a vector for a location's navigation information at a given position.
+     *
+     * @param locationIndex Location's index number
+     * @param x             World X position
+     * @param y             World Y position
+     * @return Vector at a world position for a location
+     */
     public Vector2f getVector(int locationIndex, float x, float y) {
         if (isInBounds(x, y)) {
             return vectorGrids.get(locationIndex)[calcIndex(x, y)];
@@ -255,42 +213,98 @@ public class NavigationGrid {
         }
     }
 
+    /**
+     * Converts a world position into a grid index.
+     *
+     * @param x World X position
+     * @param y World Y position
+     * @return Grid index
+     */
     private int calcIndex(float x, float y) {
         return (int)(Math.floor(y-minY) * width + Math.floor(x-minX));
     }
 
+    /**
+     * Converts a world's X position to an X index into 2D grid.
+     *
+     * @param x World X position
+     * @return X index
+     */
     private int xIndex(float x) {
         return (int)(Math.floor(x-minX));
     }
 
+    /**
+     * Converts a world's Y position to a Y index into 2D grid.
+     *
+     * @param y World Y position
+     * @return Y index
+     */
     private int yIndex(float y) {
         return (int)(Math.floor(y-minY));
     }
 
+    /**
+     * Gets the width of the grid.
+     *
+     * @return Width of the grid
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Gets the height of the grid.
+     *
+     * @return Height of the grid
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Gets the minimum X boundary position.
+     *
+     * @return Minimum X position
+     */
     public float getMinX() {
         return minX;
     }
 
+    /**
+     * Gets the minimum Y boundary position.
+     *
+     * @return Minimum Y position
+     */
     public float getMinY() {
         return minY;
     }
 
+    /**
+     * Gets the maximum X boundary position.
+     *
+     * @return Maximum X position
+     */
     public float getMaxX() {
         return maxX;
     }
 
+    /**
+     * Gets the maximum Y boundary position.
+     *
+     * @return Maximum Y position
+     */
     public float getMaxY() {
         return maxY;
     }
 
+    /**
+     * Checks if a world position is within bounds of the navigation grid.
+     *
+     * @param x World X position
+     * @param y World Y position
+     * @return True if within bounds of the navigation grid
+     */
     private boolean isInBounds(float x, float y) {
         return x >= minX && x < maxX && y >= minY && y < maxY;
     }

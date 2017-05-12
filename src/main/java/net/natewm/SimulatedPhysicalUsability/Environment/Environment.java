@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nathan on 3/14/2017.
+ * Keeps track of the environment the simulation runs in.  This includes the heatmap, collision system, navigation, etc.
  */
 public class Environment {
     private final GraphicsEngine graphicsEngine;
@@ -29,6 +29,12 @@ public class Environment {
     private final ProjectData projectData;
     private final List<Location> entrances = new ArrayList<>();
 
+    /**
+     * Constructs the environment.
+     *
+     * @param graphicsEngine Graphics engine
+     * @param projectData    Project details used for storing walls, locations, etc.
+     */
     public Environment(GraphicsEngine graphicsEngine, ProjectData projectData) {
         this.graphicsEngine = graphicsEngine;
         this.projectData = projectData;
@@ -36,18 +42,38 @@ public class Environment {
         clear();
     }
 
+    /**
+     * Gets the ground grid, which is used for storing the amount of time areas are occupied by agents.
+     *
+     * @return The ground grid
+     */
     public GroundGrid getGroundGrid() {
         return  groundGrid;
     }
 
+    /**
+     * Gets the collision grid, which is used for checking wall collisions.
+     *
+     * @return The collision grid
+     */
     public CollisionGrid getCollisionGrid() {
         return collisionGrid;
     }
 
+    /**
+     * Gets the agent collision detection data structure.
+     *
+     * @return A CollisionCollection for checking agent collisions
+     */
     public ICollisionCollection<Agent> getAgentCollisionCollection() {
         return agentCollisionCollection;
     }
 
+    /**
+     * Gets the navigation grid for paths leading to locations.
+     *
+     * @return NavigationGrid
+     */
     public NavigationGrid getNavigationGrid() {
         return navigationGrid;
     }
@@ -63,6 +89,9 @@ public class Environment {
         generateGraphics();
     }
 
+    /**
+     * Generates a random environment, which consists of a maze and some locations.
+     */
     public void generateRandomEnvironment() {
         MazeGenerator mazeGenerator = new MazeGenerator(60, 60, 0.15f);
         projectData.setWalls(mazeGenerator.generate());
@@ -126,6 +155,9 @@ public class Environment {
         generateGraphics();
     }
 
+    /**
+     * Generates the environment using the information available in the project data.
+     */
     public void generateEnvironment() {
         float minX = 0f;
         float minY = 0f;
@@ -154,6 +186,9 @@ public class Environment {
         generateGraphics();
     }
 
+    /**
+     * Generates the graphics for the environment (walls).
+     */
     private void generateGraphics() {
         if (wallNode != null)
             graphicsEngine.removeNodeFromRenderer(wallNode);
@@ -174,6 +209,11 @@ public class Environment {
         graphicsEngine.addNodeToRenderer(wallNode);
     }
 
+    /**
+     * Gets a random entrance location where agents can enter the environment.
+     *
+     * @return A location that is an entrance
+     */
     public Location getRandomEntrance() {
         if (!entrances.isEmpty())
             return entrances.get((int)(Math.random() * entrances.size()));

@@ -1,7 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.Messaging;
 
 /**
- * Created by Nathan on 4/11/2017.
+ * Message that can be passed between different systems in the application (not currently used)
  */
 public class Message {
     public enum MsgType {
