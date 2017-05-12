@@ -1,7 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.Project;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
@@ -16,12 +15,12 @@ import java.util.List;
  * Created by Nathan on 4/22/2017.
  */
 public class ProjectData {
-    ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private Walls walls = new Walls();
-    private List<Location> locations = new ArrayList<>();
-    private List<LocationType> locationTypes = new ArrayList<>();
-    private Map<LocationType, List<Location>> locationMap = new HashMap<>();
+    private final List<Location> locations = new ArrayList<>();
+    private final List<LocationType> locationTypes = new ArrayList<>();
+    private final Map<LocationType, List<Location>> locationMap = new HashMap<>();
 
     public ProjectData() {
     }

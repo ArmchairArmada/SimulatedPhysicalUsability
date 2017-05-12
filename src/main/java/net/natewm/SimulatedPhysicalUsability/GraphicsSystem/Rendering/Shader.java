@@ -6,12 +6,20 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.glsl.ShaderUtil;
 
 /**
- * Created by Nathan on 1/3/2017.
+ * OpenGL shader resource.
  */
 public class Shader {
-    int shaderID;
-    int shaderType;
+    private int shaderID;   // Shader ID
+    private int shaderType; // Shader type (vertex or fragment)
 
+    /**
+     * Creates a shader.
+     *
+     * @param gl         OpenGL
+     * @param shaderType Shader type (defined by OpenGL constant)
+     * @param sourceCode Shader source code text
+     * @throws Exception If shader cannot compile.
+     */
     public Shader(GL3 gl, int shaderType, String[] sourceCode) throws Exception {
         shaderID = gl.glCreateShader(shaderType);
         shaderType = shaderType;
@@ -32,17 +40,29 @@ public class Shader {
         }
     }
 
-
+    /**
+     * Gets the shader's ID.
+     *
+     * @return Shader ID
+     */
     public int getShaderID() {
         return shaderID;
     }
 
-
+    /**
+     * Gets the shader type.
+     *
+     * @return Shader type (OpenGL constant)
+     */
     public int getShaderType() {
         return shaderType;
     }
 
-
+    /**
+     * Dispose of the shader.
+     *
+     * @param gl OpenGL
+     */
     public void dispose(GL3 gl) {
         gl.glDeleteShader(shaderID);
         shaderID = 0;

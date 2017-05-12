@@ -11,12 +11,12 @@ import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
  */
 public class SimulationThread {
     private class SimulationRunnable implements Runnable, IFrameEndReceiver {
-        private Environment environment;
+        private final Environment environment;
         private final ProjectData projectData;
         //private final ICollisionCollection<Agent> collisionCollection;
         //NavigationGrid navigationGrid;
-        GraphicsEngine graphicsEngine;
-        AgentManager agentManager = new AgentManager();
+        final GraphicsEngine graphicsEngine;
+        final AgentManager agentManager = new AgentManager();
         MeshHandle agentMesh = null;
         MaterialHandle agentMaterial = null;
         //GroundGrid groundGrid;
@@ -167,7 +167,7 @@ public class SimulationThread {
             graphicsEngine.setRenderNodeTransform(node, transform);
             graphicsEngine.addNodeToRenderer(node);
 
-            agentManager.add(new Agent(environment, node, transform, location));
+            agentManager.add(new Agent(node, transform, location));
         }
 
         private void dispose() {
@@ -216,8 +216,8 @@ public class SimulationThread {
     }
 
 
-    Thread thread;
-    SimulationRunnable runnable;
+    private final Thread thread;
+    private final SimulationRunnable runnable;
 
 
     public SimulationThread(GraphicsEngine graphicsEngine, Environment environment, ProjectData projectData) {
@@ -225,7 +225,7 @@ public class SimulationThread {
         thread = new Thread(runnable);
     }
 
-    public IFrameEndReceiver getFrameEndReciever() {
+    public IFrameEndReceiver getFrameEndReceiver() {
         return runnable;
     }
 

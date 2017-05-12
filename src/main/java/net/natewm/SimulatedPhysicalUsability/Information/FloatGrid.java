@@ -5,24 +5,22 @@ import com.sun.prism.impl.BufferUtil;
 import java.nio.ByteBuffer;
 
 /**
- * Created by Nathan on 1/10/2017.
+ * Stores a grid of floating point values.
  */
 public class FloatGrid {
-    float[] data;
-    ByteBuffer byteBuffer = null;
+    private final float[] data;
+    private ByteBuffer byteBuffer = null;
 
-    //FloatBuffer data;
-    int width;
-    int height;
+    private final int width;
+    private final int height;
 
-    float min;
-    float max;
+    private float min;
+    private float max;
 
     public FloatGrid(int width, int height) {
         data =  new float[width*height];
         this.width = width;
         this.height = height;
-        //data = BufferUtil.newFloatBuffer(width*height);
     }
 
     public int getWidth() {
@@ -43,17 +41,14 @@ public class FloatGrid {
 
     public float get(int x, int y) {
         return data[y * width + x];
-        //return data.get(y * width + x);
     }
 
     public void set(int x, int y, float value) {
         data[y * width + x] = value;
-        //data.put(y * width + x, value);
     }
 
     public int size() {
         return data.length;
-        //return data.capacity();
     }
 
     public void updateMinMax() {

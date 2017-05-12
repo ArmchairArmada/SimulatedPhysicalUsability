@@ -1,11 +1,9 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
-import com.sun.org.apache.regexp.internal.RE;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Utils.ProbabilityChooser;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -73,7 +71,7 @@ public class LocationType {
     }
 
     private String name = "";
-    private ProbabilityChooser<Transition> transitions = new ProbabilityChooser<>();
+    private final ProbabilityChooser<Transition> transitions = new ProbabilityChooser<>();
     private float minWaitTime = 0.0f;
     private float maxWaitTime = 1.0f;
     private boolean entrance = false;

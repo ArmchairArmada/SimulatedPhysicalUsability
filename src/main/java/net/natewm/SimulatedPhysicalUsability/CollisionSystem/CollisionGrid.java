@@ -6,20 +6,8 @@ import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
  * Grid for checking collisions with walls.
  */
 public class CollisionGrid {
-    public static int HORIZONTAL = 1;   // Horizontal wall
-    public static int VERTICAL = 2;     // Vertical wall
-
-
-    /**
-     * Cell for storing wall information.
-     */
-    private class Cell {
-        boolean topWall = false;
-        boolean leftWall = false;
-    }
-
-
-
+    public static final int HORIZONTAL = 1;   // Horizontal wall
+    public static final int VERTICAL = 2;     // Vertical wall
     private int width;      // Width of grid.
     private int height;     // Height of grid.
     private float minX;     // Minimum X value for grid bounds.
@@ -27,7 +15,6 @@ public class CollisionGrid {
     private float maxX;     // Maximum X value for grid bounds.
     private float maxY;     // Maximum Y value for grid bounds.
     private Object[] cells; // Wall cells
-
 
     /**
      * Default constructor.
@@ -45,9 +32,8 @@ public class CollisionGrid {
         reset(walls);
     }
 
-
     /**
-     * Resets collision grid with given wall information.  This will makde the collision grid now have walls where the
+     * Resets collision grid with given wall information.  This will make the collision grid now have walls where the
      * given wall information has them defined.
      *
      * @param walls Walls to be placed into collision grid.
@@ -87,7 +73,6 @@ public class CollisionGrid {
         }
     }
 
-
     /**
      * Gets width of collision grid.
      *
@@ -96,7 +81,6 @@ public class CollisionGrid {
     public int getWidth() {
         return width;
     }
-
 
     /**
      * Gets height of collision grid.
@@ -107,7 +91,6 @@ public class CollisionGrid {
         return height;
     }
 
-
     /**
      * Gets minimum x bounding value.
      *
@@ -116,7 +99,6 @@ public class CollisionGrid {
     public float getMinX() {
         return minX;
     }
-
 
     /**
      * Gets minimum y bounding value.
@@ -127,16 +109,14 @@ public class CollisionGrid {
         return minY;
     }
 
-
     /**
-     * Gets Maximum x bouding value.
+     * Gets Maximum x bounding value.
      *
      * @return Maximum x bounding value.
      */
     public float getMaxX() {
         return maxX;
     }
-
 
     /**
      * Gets maximum y bounding value.
@@ -146,7 +126,6 @@ public class CollisionGrid {
     public float getMaxY() {
         return maxY;
     }
-
 
     /**
      * Checks if a point is within bounds of the collision grid.
@@ -159,7 +138,6 @@ public class CollisionGrid {
         return x >= minX && x < maxX && y >= minY && y < maxY;
     }
 
-
     /**
      * Checks if the cell at the given coordinate has a top wall.
      *
@@ -170,7 +148,6 @@ public class CollisionGrid {
     public boolean hasTopWall(int x, int y) {
         return ((Cell)cells[y * width + x]).topWall;
     }
-
 
     /**
      * Checks if the cell at the given coordinate has a left wall.
@@ -183,7 +160,6 @@ public class CollisionGrid {
         return ((Cell)cells[y * width + x]).leftWall;
     }
 
-
     /**
      * Calculates the index of a grid cell at a given coordinate.
      *
@@ -194,7 +170,6 @@ public class CollisionGrid {
     private int calcIndex(float x, float y) {
         return (int)(Math.floor(y-minY) * width + Math.floor(x-minX));
     }
-
 
     /**
      * Tests if a line segment from a start point to an end point intersects with a wall.
@@ -251,5 +226,13 @@ public class CollisionGrid {
         }
 
         return wallsHit;
+    }
+
+    /**
+     * Cell for storing wall information.
+     */
+    private class Cell {
+        boolean topWall = false;
+        boolean leftWall = false;
     }
 }

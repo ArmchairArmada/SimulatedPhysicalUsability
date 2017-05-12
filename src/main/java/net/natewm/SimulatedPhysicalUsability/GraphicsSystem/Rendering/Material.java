@@ -8,12 +8,12 @@ import java.util.ArrayList;
  * A surface material to be used with OpenGL rendering.
  */
 public class Material {
-    private ShaderProgram shaderProgram;
-    private int modelViewLocation;  // Shader's uniform location for modelView matrix
-    private int projectionLocation; // Shader's uniform location for projection matrix
-    ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will bind
-    private ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
-    private ArrayList<MaterialProperty> materialProperties = new ArrayList<>();
+    private final ShaderProgram shaderProgram;
+    private final int modelViewLocation;  // Shader's uniform location for modelView matrix
+    private final int projectionLocation; // Shader's uniform location for projection matrix
+    final ArrayList<Texture> textures = new ArrayList<>();            // List of textures the shader will bind
+    private final ArrayList<Integer> textureLocations = new ArrayList<>();    // List of texture uniform locations
+    private final ArrayList<MaterialProperty> materialProperties = new ArrayList<>();
 
     /**
      * Constructor for creating a material with a given shader program.

@@ -16,7 +16,7 @@ public class GroundGrid {
     private class GroundPanel {
         public FloatGrid floatGrid = null;
         public MeshRenderNodeHandle meshRenderNodeHandle = null;
-        public TextureHandle textureHandle;
+        public final TextureHandle textureHandle;
 
         public GroundPanel(GraphicsEngine graphicsEngine, float x, float y, int width, int height, MeshHandle meshHandle, MaterialHandle materialHandle) {
             floatGrid = new FloatGrid(width, height);
@@ -48,20 +48,20 @@ public class GroundGrid {
     }
 
     //FloatGrid[] floatGrids = null;
-    GraphicsEngine graphicsEngine;
-    MeshHandle meshHandle;
-    MaterialHandle materialHandle;
-    GroundPanel[] groundPanels = null;
-    int width;
-    int height;
-    int gridWidth;
-    int gridHeight;
-    int floorWidth;
-    int floorHeight;
-    float offsetX;
-    float offsetY;
-    int updateCount = 0;
-    int updateSkip;
+    private final GraphicsEngine graphicsEngine;
+    private final MeshHandle meshHandle;
+    private final MaterialHandle materialHandle;
+    private GroundPanel[] groundPanels = null;
+    private final int width;
+    private final int height;
+    private final int gridWidth;
+    private final int gridHeight;
+    private final int floorWidth;
+    private final int floorHeight;
+    private final float offsetX;
+    private final float offsetY;
+    private int updateCount = 0;
+    private final int updateSkip;
 
     public GroundGrid(GraphicsEngine graphicsEngine, int width,
                       int height, int gridWidth, int gridHeight, int updateSkip) {

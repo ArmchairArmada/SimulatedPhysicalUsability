@@ -19,10 +19,10 @@ public class Walls {
      * Information about the wall's start and end position.
      */
     public static class Wall {
-        public float startX;
-        public float startY;
-        public float endX;
-        public float endY;
+        public final float startX;
+        public final float startY;
+        public final float endX;
+        public final float endY;
 
         public Wall(float startX, float startY, float endX, float endY) {
             this.startX = startX;
@@ -33,7 +33,7 @@ public class Walls {
     }
 
 
-    private List<Wall> walls = new ArrayList<>();
+    private final List<Wall> walls = new ArrayList<>();
     private float minX = Float.MAX_VALUE;
     private float minY = Float.MAX_VALUE;
     private float maxX = Float.MIN_VALUE;
@@ -127,7 +127,7 @@ public class Walls {
 
 
     /**
-     * Gererates geometry from the list of walls.
+     * Generates geometry from the list of walls.
      *
      * @return Geometry of the walls.
      */
@@ -168,7 +168,7 @@ public class Walls {
         Vector3f left;  // Vector pointing from the left side of the wall.
         Vector3f right; // Vector pointing from the right side of the wall.
         Vector3f front; // Vector pointing from the front of the wall.
-        Vector3f back;  // Vector poitning from the back of the wall.
+        Vector3f back;  // Vector pointing from the back of the wall.
 
         Geometry geometry = new Geometry(); // Geometry that we will be generating.
         geometry.startSubGeometry();        // This will only have one sub-geometry.

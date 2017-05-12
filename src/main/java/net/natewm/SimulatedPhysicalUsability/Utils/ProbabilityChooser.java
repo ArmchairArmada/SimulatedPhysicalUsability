@@ -1,7 +1,5 @@
 package net.natewm.SimulatedPhysicalUsability.Utils;
 
-import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -10,17 +8,17 @@ import java.util.Iterator;
  * Created by Nathan on 4/10/2017.
  */
 public class ProbabilityChooser<T> {
-    public class Item<T> {
-        T object;
-        int weight;
+    public class Item<T2> {
+        final T2 object;
+        final int weight;
 
-        Item(T object, int weight) {
+        Item(T2 object, int weight) {
             this.object = object;
             this.weight = weight;
         }
     }
 
-    private ArrayList<Item<T>> items;
+    private final ArrayList<Item<T>> items;
     private int weight_sum = 0;
 
     public ProbabilityChooser() {
@@ -32,6 +30,7 @@ public class ProbabilityChooser<T> {
         for (Item item : items) {
             values.add(item.object);
         }
+        //noinspection unchecked
         return (Collection<T>)values;
     }
 
@@ -41,10 +40,9 @@ public class ProbabilityChooser<T> {
     }
 
     public void insert(T object, int weight) {
+        //noinspection unchecked
         items.add(new Item(object, weight));
-        items.sort((x,y) -> {
-            return y.weight - x.weight;
-        });
+        items.sort((x,y) -> y.weight - x.weight);
         weight_sum += weight;
     }
 

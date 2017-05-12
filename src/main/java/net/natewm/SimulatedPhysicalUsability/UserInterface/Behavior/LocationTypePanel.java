@@ -7,22 +7,21 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Nathan on 4/18/2017.
  */
-public class LocationTypePanel extends JPanel {
-    private JTextField txtName;
-    private JCheckBox chkEntrance;
-    private JCheckBox chkExit;
-    private JCheckBox chkOccupied;
-    private JSpinner spnMinWait;
-    private JSpinner spnMaxWait;
-    private ColorButton btnColor;
-    private ArrayList<TransitionPanel> transitionPanelList = new ArrayList<>();
-    private LocationType locationType;
+class LocationTypePanel extends JPanel {
+    private final JTextField txtName;
+    private final JCheckBox chkEntrance;
+    private final JCheckBox chkExit;
+    private final JCheckBox chkOccupied;
+    private final JSpinner spnMinWait;
+    private final JSpinner spnMaxWait;
+    private final ColorButton btnColor;
+    private final ArrayList<TransitionPanel> transitionPanelList = new ArrayList<>();
+    private final LocationType locationType;
 
     public LocationTypePanel(LocationType locationType) {
         super();

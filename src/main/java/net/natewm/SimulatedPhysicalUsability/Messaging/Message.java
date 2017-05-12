@@ -22,8 +22,8 @@ public class Message {
         DATA_GRID_POINT         // TODO: Adds a value to the data grid.
     }
 
-    Object data;
-    MsgType msgType;
+    private final Object data;
+    private final MsgType msgType;
 
     public Message(MsgType msgType, Object data) {
         this.data = data;

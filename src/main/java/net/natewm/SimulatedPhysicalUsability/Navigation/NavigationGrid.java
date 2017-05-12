@@ -15,9 +15,9 @@ import java.util.PriorityQueue;
  */
 public class NavigationGrid {
     private class Job {
-        int x;
-        int y;
-        Vector2f[] grid;
+        final int x;
+        final int y;
+        final Vector2f[] grid;
 
         Job(int x, int y, Vector2f[] grid) {
             this.x = x;
@@ -27,11 +27,11 @@ public class NavigationGrid {
     }
 
     private class Node {
-        int x;
-        int y;
-        int fromX;
-        int fromY;
-        float distance;
+        final int x;
+        final int y;
+        final int fromX;
+        final int fromY;
+        final float distance;
 
         public Node(int x, int y, int fromX, int fromY, float distance) {
             this.x = x;
@@ -53,21 +53,21 @@ public class NavigationGrid {
         }
     }
 
-    static final int dx[] = {0, 0, -1, 1, -1, -1, 1, 1};
-    static final int dy[] = {-1, 1, 0, 0, -1, 1, -1, 1};
+    private static final int[] dx = {0, 0, -1, 1, -1, -1, 1, 1};
+    private static final int[] dy = {-1, 1, 0, 0, -1, 1, -1, 1};
 
-    int width;
-    int height;
-    float minX;
-    float minY;
-    float maxX;
-    float maxY;
+    private final int width;
+    private final int height;
+    private final float minX;
+    private final float minY;
+    private final float maxX;
+    private final float maxY;
 
-    private CollisionGrid collisionGrid;
+    private final CollisionGrid collisionGrid;
 
     //private List<Vector2f> locations = new ArrayList<>();
-    private List<Location> locations = new ArrayList<>();
-    private List<Vector2f[]> vectorGrids = new ArrayList<>();
+    private final List<Location> locations = new ArrayList<>();
+    private final List<Vector2f[]> vectorGrids = new ArrayList<>();
 
     public NavigationGrid(CollisionGrid collisionGrid, float minX, float minY, float maxX, float maxY) {
         // TODO: Also use Locations when they are finally available.
@@ -119,9 +119,7 @@ public class NavigationGrid {
         }
 
         //locations.parallelStream().forEach((Location location) -> {
-        jobs.parallelStream().forEach((Job job) -> {
-            generateNavigationGrid(job.x, job.y, job.grid);
-        });
+        jobs.parallelStream().forEach((Job job) -> generateNavigationGrid(job.x, job.y, job.grid));
 
         /*
         for (Location location : locations) {
@@ -293,7 +291,7 @@ public class NavigationGrid {
         return maxY;
     }
 
-    public boolean isInBounds(float x, float y) {
+    private boolean isInBounds(float x, float y) {
         return x >= minX && x < maxX && y >= minY && y < maxY;
     }
 

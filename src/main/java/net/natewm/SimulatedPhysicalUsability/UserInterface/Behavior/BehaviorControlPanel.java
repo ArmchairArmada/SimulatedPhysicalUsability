@@ -6,7 +6,6 @@ import javax.swing.*;
  * Created by Nathan on 1/18/2017.
  */
 public class BehaviorControlPanel extends JPanel {
-     BehaviorPanel behaviorPanel;
 
     public BehaviorControlPanel(BehaviorPanel behaviorPanel) {
         JButton addLocationButton;
@@ -15,9 +14,7 @@ public class BehaviorControlPanel extends JPanel {
 
         addLocationButton = new JButton("Add Location Type");
         addLocationButton.setAlignmentX(CENTER_ALIGNMENT);
-        addLocationButton.addActionListener(e -> {
-            behaviorPanel.addLocationType();
-        });
+        addLocationButton.addActionListener(e -> behaviorPanel.addLocationType());
         add(addLocationButton);
     }
 }

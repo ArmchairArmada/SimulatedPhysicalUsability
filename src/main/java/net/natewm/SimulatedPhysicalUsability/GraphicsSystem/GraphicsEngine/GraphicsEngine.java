@@ -19,19 +19,19 @@ import java.util.Queue;
  * The graphics engine is designed to run on it own thread, so actions are pushed to it to be performed.
  */
 public class GraphicsEngine {
-    private ResourceManager resourceManager = new ResourceManager();    // Manages resources (images, meshes, etc.)
-    private IFrameEndReceiver frameEndReciever;                         // Notified when the frame rendering is done.
-    private Queue<IGraphicsAction> actions = new LinkedList<>();        // Queue of actions to perform.
-    private Renderer renderer = new Renderer();                         // Renderer for rendering the graphics.
-    private Matrix4f cameraMatrix = new Matrix4f();                     // Matrix for camera's orientation.
-    private GLCapabilities glCapabilities;                              // OpenGL capabilities.
+    private final ResourceManager resourceManager = new ResourceManager();    // Manages resources (images, meshes, etc.)
+    private IFrameEndReceiver frameEndReceiver;                         // Notified when the frame rendering is done.
+    private final Queue<IGraphicsAction> actions = new LinkedList<>();        // Queue of actions to perform.
+    private final Renderer renderer = new Renderer();                         // Renderer for rendering the graphics.
+    private final Matrix4f cameraMatrix = new Matrix4f();                     // Matrix for camera's orientation.
+    private final GLCapabilities glCapabilities;                              // OpenGL capabilities.
 
     /**
      * Construct the graphics engine.
      */
     public GraphicsEngine() {
         GLProfile glProfile = GLProfile.get(GLProfile.GL3); // OpenGL 3 will be used for this project.
-        glCapabilities = new GLCapabilities(glProfile);     // Gets the capablities for this GL profile.
+        glCapabilities = new GLCapabilities(glProfile);     // Gets the capabilities for this GL profile.
     }
 
     /**
@@ -49,7 +49,7 @@ public class GraphicsEngine {
      * @param frameEndReceiver Receives a message when the frame rendering is over.
      */
     public void setFrameReceiver(IFrameEndReceiver frameEndReceiver) {
-        this.frameEndReciever = frameEndReceiver;
+        this.frameEndReceiver = frameEndReceiver;
     }
 
     /**
@@ -114,8 +114,8 @@ public class GraphicsEngine {
             }
         }
 
-        // Frame has ended, so send a message to the frame end reciever.
-        frameEndReciever.graphicsFrameEnded();
+        // Frame has ended, so send a message to the frame end receiver.
+        frameEndReceiver.graphicsFrameEnded();
     }
 
     /**
@@ -384,7 +384,7 @@ public class GraphicsEngine {
     /**
      * Action to create a shader.
      *
-     * @param shaderHandle Handle to store shander in.
+     * @param shaderHandle Handle to store shader in.
      * @param shaderType   Type of shader (OpenGL's vertex or fragment shader).
      * @param sourceCode   GLSL source code for the shader.
      */
@@ -436,7 +436,7 @@ public class GraphicsEngine {
      *
      * @param textureHandle Handle to store texture into.
      * @param image         Image to create texture map from.
-     * @param quality       True uses ansitropic filtering and mipmapping.
+     * @param quality       True uses anisotropic filtering and mipmapping.
      */
     public void createTexture(TextureHandle textureHandle, Image image, boolean quality) {
         add((GL3 gl) -> {
@@ -452,7 +452,7 @@ public class GraphicsEngine {
      * @param byteBuffer    Byte buffer to create texture from.
      * @param width         Width of the texture to create.
      * @param height        Height of the texture to create.
-     * @param quality       True uses ansitropic filtering and mipmapping.
+     * @param quality       True uses anisotropic filtering and mipmapping.
      */
     public void createTexture(TextureHandle textureHandle, ByteBuffer byteBuffer, int width, int height,
                               boolean quality) {
@@ -515,7 +515,7 @@ public class GraphicsEngine {
      * Action Update a texture with a new byte buffer.
      *
      * @param textureHandle Handle for texture to update.
-     * @param byteBuffer    Byte buffer to udpate texture with.
+     * @param byteBuffer    Byte buffer to update texture with.
      */
     public void updateTexture(TextureHandle textureHandle, ByteBuffer byteBuffer) {
         add((GL3 gl) -> {
@@ -622,7 +622,7 @@ public class GraphicsEngine {
     }
 
     /**
-     * Aciton to reshape the viewport.
+     * Action to reshape the viewport.
      *
      * @param x      X position of viewport.
      * @param y      Y position of viewport.

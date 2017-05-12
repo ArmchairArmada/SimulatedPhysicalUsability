@@ -6,7 +6,7 @@ import com.jogamp.opengl.GL3;
  * Single float material property.
  */
 public class MaterialProperty1f extends MaterialProperty {
-    float value;
+    private float value;
 
     /**
      * Construct the single float material property.

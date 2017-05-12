@@ -10,29 +10,24 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.MeshR
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.Resources.Geometry;
 import net.natewm.SimulatedPhysicalUsability.Information.GroundGrid;
 import net.natewm.SimulatedPhysicalUsability.Navigation.NavigationGrid;
-import net.natewm.SimulatedPhysicalUsability.Project.EnvironmentDescription;
-import net.natewm.SimulatedPhysicalUsability.Project.LocationDescription;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
-import net.natewm.SimulatedPhysicalUsability.Project.WallDescription;
 import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Nathan on 3/14/2017.
  */
 public class Environment {
-    private GraphicsEngine graphicsEngine;
-    GroundGrid groundGrid;
+    private final GraphicsEngine graphicsEngine;
+    private final GroundGrid groundGrid;
     private CollisionGrid collisionGrid;
     private ICollisionCollection<Agent> agentCollisionCollection;
     private NavigationGrid navigationGrid;
     private MeshRenderNodeHandle wallNode = null;
-    private ProjectData projectData;
-    private List<Location> entrances = new ArrayList<>();
+    private final ProjectData projectData;
+    private final List<Location> entrances = new ArrayList<>();
 
     public Environment(GraphicsEngine graphicsEngine, ProjectData projectData) {
         this.graphicsEngine = graphicsEngine;
@@ -159,7 +154,7 @@ public class Environment {
         generateGraphics();
     }
 
-    public void generateGraphics() {
+    private void generateGraphics() {
         if (wallNode != null)
             graphicsEngine.removeNodeFromRenderer(wallNode);
 

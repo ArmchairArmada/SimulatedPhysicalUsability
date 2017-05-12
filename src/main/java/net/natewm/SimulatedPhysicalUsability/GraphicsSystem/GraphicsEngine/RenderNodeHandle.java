@@ -9,7 +9,7 @@ public class RenderNodeHandle {
     IRenderNode renderNode = null;
 
     /**
-     * Sets the rendernode in the handle to be the same as that of the given handle.
+     * Sets the render node in the handle to be the same as that of the given handle.
      *
      * @param renderNodeHandle Handle to use for setting the render node.
      */

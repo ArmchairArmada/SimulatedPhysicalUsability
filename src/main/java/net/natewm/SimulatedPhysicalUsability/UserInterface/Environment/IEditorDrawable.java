@@ -1,7 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
-import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
 import java.awt.*;
@@ -9,7 +8,7 @@ import java.awt.*;
 /**
  * Created by Nathan on 2/21/2017.
  */
-public interface IEditorDrawable {
+interface IEditorDrawable {
     /**
      * Draws this component.
      *

@@ -45,7 +45,7 @@ public interface IRenderNode {
     int getGroupID();
 
     /**
-     * Binds this render node (binding mesh, materials, material proeprties, shaders, textures, etc.)
+     * Binds this render node (binding mesh, materials, material properties, shaders, textures, etc.)
      *
      * @param gl OpenGL context.
      */

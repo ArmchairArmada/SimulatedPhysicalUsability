@@ -1,7 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
-import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Walls;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
@@ -13,10 +12,10 @@ import java.awt.*;
 public class WallDrawable implements IEditorDrawable {
     private static final float WALL_WIDTH = 0.2f;
 
-    Rect rect;
-    int x;
-    int y;
-    boolean horizontal;
+    private final Rect rect;
+    private final int x;
+    private final int y;
+    private final boolean horizontal;
 
     public WallDrawable(float x, float y, boolean horizontal) {
         this.x = (int)Math.floor(x);
