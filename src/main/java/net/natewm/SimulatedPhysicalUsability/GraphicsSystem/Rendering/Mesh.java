@@ -13,12 +13,15 @@ import java.nio.IntBuffer;
  * OpenGL mesh
  */
 public class Mesh {
+    /**
+     * Defines a region of mesh data where a submesh exists.
+     */
     public class SubMeshInfo {
-        int vertexStart;
-        int vertexCount;
-        int elementStart;
-        int elementEnd;
-        int elementCount;
+        final int vertexStart;
+        final int vertexCount;
+        final int elementStart;
+        final int elementEnd;
+        final int elementCount;
 
         SubMeshInfo(int vertexStart, int vertexCount, int elementStart, int elementCount) {
             this.vertexStart = vertexStart;
@@ -29,10 +32,8 @@ public class Mesh {
         }
     }
 
-    private int vao;      // Vertex array object id
+    private int vao;            // Vertex array object id
     private IntBuffer vbo;      // Vertex buffer object id
-
-    private int maxElementCount = 0;
 
     private int triangleID = -1; // ID for OpenGL buffer containing triangle vertex indices
     private int vertexId = -1;   // ID for OpenGL buffer containing vertex position values
@@ -41,7 +42,7 @@ public class Mesh {
     private int uvId = -1;       // ID for OpenGL buffer containing texture coordinate values
 
     boolean hasNormals; // If the mesh has vertex normal vectors
-    boolean hasColors;  // If the mesh has vertex color values
+    private boolean hasColors;  // If the mesh has vertex color values
     boolean hasUvs;     // If the mesh has vertex texture coordinates
 
     private SubMeshInfo[] subMeshInfos;
@@ -53,17 +54,15 @@ public class Mesh {
      *
      * @param gl       OpenGL
      * @param geometry Geometry to create mesh from
-     * @throws Exception Thrown if geometry is not consistent (same number of vertice properties as vertices)
+     * @throws Exception Thrown if geometry is not consistent (same number of vertices properties as vertices)
      */
     public Mesh(GL3 gl, Geometry geometry) throws Exception {
-        if (!geometry.checkConsistancy())
+        if (!geometry.checkConsistency())
             throw new Exception("Inconsistent Geometry Buffer");
 
         hasNormals = geometry.normalsCount() > 0;
         hasColors = geometry.colorsCount() > 0;
         hasUvs = geometry.uvCount() > 0;
-
-        maxElementCount = geometry.trianglesCount() * 3;
 
         subMeshInfos = new SubMeshInfo[geometry.getSubGeometryCount()];
         for (int i=0; i<geometry.getSubGeometryCount(); i++) {
@@ -79,22 +78,47 @@ public class Mesh {
         genVAO(gl, geometry);
     }
 
+    /**
+     * Gets the vertex array object ID..
+     *
+     * @return Vertex array object ID.
+     */
     public int getVao() {
         return vao;
     }
 
+    /**
+     * Gets a vertex buffer ID.
+     *
+     * @return Vertex buffer ID.
+     */
     public int getVertexId() {
         return vertexId;
     }
 
+    /**
+     * Gets a normal buffer ID.
+     *
+     * @return Normal buffer ID.
+     */
     public int getNormalId() {
         return normalId;
     }
 
+    /**
+     * Gets a color buffer ID.
+     *
+     * @return Color buffer ID.
+     */
     public int getColorId() {
         return colorId;
     }
 
+    /**
+     * Gets a UV texture coordinate buffer ID.
+     *
+     * @return UV coordinate buffer ID.
+     */
     public int getUvId() {
         return uvId;
     }
@@ -116,7 +140,7 @@ public class Mesh {
      * Creates OpenGL vertex array object.
      *
      * @param gl       OpenGL
-     * @param geometry Gemetry to create vertex array object with
+     * @param geometry Geometry to create vertex array object with
      */
     private void genVAO(GL3 gl, Geometry geometry) {
         FloatBuffer vertexBuffer = geometry.makeVertexBuffer();

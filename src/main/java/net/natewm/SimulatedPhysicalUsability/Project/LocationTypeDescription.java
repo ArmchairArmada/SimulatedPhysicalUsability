@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by Nathan on 4/22/2017.
  */
-public class LocationTypeDescription {
+class LocationTypeDescription {
     private String name;
     private float minWait;
     private float maxWait;
@@ -14,7 +14,7 @@ public class LocationTypeDescription {
     private boolean entrance;
     private boolean exit;
     private float[] color;
-    private List<TransitionDescription> transitions;
+    private ArrayList<TransitionDescription> transitions;
 
     public LocationTypeDescription() {
     }
@@ -27,7 +27,7 @@ public class LocationTypeDescription {
         this.entrance = entrance;
         this.exit = exit;
         this.color = color;
-        transitions = new ArrayList();
+        transitions = new ArrayList<>();
     }
 
     public String getName() {

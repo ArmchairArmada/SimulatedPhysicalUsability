@@ -9,34 +9,64 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Created by Nathan on 1/3/2017.
+ * Internal image class.
  */
 public class Image {
-    ByteBuffer byteBuffer;  // Buffer of bytes storing pixel data
-    int pixelFormat;        // OpenGL pixel format
-    int width;
-    int height;
+    private ByteBuffer byteBuffer;  // Buffer of bytes storing pixel data
+    private int pixelFormat;        // OpenGL pixel format
+    private int width;              // Width of image
+    private int height;             // height of image
 
+    /**
+     * Creates an image from a BufferedImage object.
+     *
+     * @param bufferedImage BufferedImage to create an image from.
+     */
     public Image(BufferedImage bufferedImage) {
         fromBufferedImage(bufferedImage);
     }
 
+    /**
+     * Gets the byte buffer for the image.
+     *
+     * @return Image's byte buffer
+     */
     public ByteBuffer getByteBuffer() {
         return byteBuffer;
     }
 
+    /**
+     * Gets the pixel format of the image (OpenGL constant).
+     *
+     * @return Gets the pixel format of the image
+     */
     public int getPixelFormat() {
         return pixelFormat;
     }
 
+    /**
+     * Gets the width of the image.
+     *
+     * @return Width of the image
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Gets the height of the image.
+     *
+     * @return Height of the image
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Creates the image from a BufferedImage.
+     *
+     * @param bufferedImage BufferedImage to create image from
+     */
     private void fromBufferedImage(BufferedImage bufferedImage) {
         width = bufferedImage.getWidth();
         height = bufferedImage.getHeight();
@@ -49,15 +79,6 @@ public class Image {
             pixelFormat = GL.GL_RGBA;
 
             byteBuffer = BufferUtil.newByteBuffer(dataBuffer.capacity());
-
-            /*
-            for (int i=0; i<dataBuffer.capacity(); i+=4) {
-                byteBuffer.put(dataBuffer.get(i+3));
-                byteBuffer.put(dataBuffer.get(i+2));
-                byteBuffer.put(dataBuffer.get(i+1));
-                byteBuffer.put(dataBuffer.get(i));
-            }
-            */
 
             int width = bufferedImage.getWidth();
             int span = width * 4;
@@ -80,12 +101,6 @@ public class Image {
 
             byteBuffer = BufferUtil.newByteBuffer(dataBuffer.capacity());
 
-            /*for (int i=0; i<dataBuffer.capacity(); i+=3) {
-                byteBuffer.put(dataBuffer.get(i+2));
-                byteBuffer.put(dataBuffer.get(i+1));
-                byteBuffer.put(dataBuffer.get(i));
-            }*/
-
             int width = bufferedImage.getWidth();
             int span = width * 3;
             int height = bufferedImage.getHeight();
@@ -100,8 +115,6 @@ public class Image {
             }
 
             byteBuffer.flip();
-
-            //byteBuffer = dataBuffer;
         }
     }
 }

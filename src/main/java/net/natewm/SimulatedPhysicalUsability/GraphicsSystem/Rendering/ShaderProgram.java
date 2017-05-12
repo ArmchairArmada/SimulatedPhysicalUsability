@@ -9,8 +9,8 @@ import com.jogamp.opengl.util.glsl.ShaderUtil;
  * Created by Nathan on 1/3/2017.
  */
 public class ShaderProgram {
-    private Shader vertexShader;
-    private Shader fragmentShader;
+    private final Shader vertexShader;
+    private final Shader fragmentShader;
     private int programID;
 
     public ShaderProgram(GL3 gl, Shader vertexShader, Shader fragmentShader) throws Exception {

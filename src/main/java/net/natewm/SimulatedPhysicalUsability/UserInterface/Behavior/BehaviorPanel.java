@@ -15,22 +15,12 @@ import java.util.Map;
  * Created by Nathan on 3/7/2017.
  */
 public class BehaviorPanel extends JPanel {
-    Environment environment;
     private final ProjectData projectData;
-    EnvironmentControlPanel environmentControlPanel;
-    ArrayList<LocationTypePanel> locationTypePanels = new ArrayList<>();
-    JPanel tilesPanel;
+    private final ArrayList<LocationTypePanel> locationTypePanels = new ArrayList<>();
+    private final JPanel tilesPanel;
 
     public BehaviorPanel(Environment environment, ProjectData projectData, EnvironmentControlPanel environmentControlPanel) {
-        this.environment = environment;
         this.projectData = projectData;
-        this.environmentControlPanel = environmentControlPanel;
-
-        JPanel testLocation;
-        JTextField testName;
-        ColorButton colorButton;
-        JSpinner jSpinner;
-        JButton closeButton;
 
         setLayout(new BorderLayout());
 

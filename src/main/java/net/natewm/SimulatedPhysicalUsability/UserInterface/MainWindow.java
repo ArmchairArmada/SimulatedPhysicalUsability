@@ -1,9 +1,7 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.GraphicsEngine;
-import net.natewm.SimulatedPhysicalUsability.Project.EnvironmentDescription;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior.BehaviorControlPanel;
@@ -28,14 +26,13 @@ import java.util.logging.*;
 public class MainWindow extends JFrame {
     private static final Logger LOGGER = Logger.getLogger(MainWindow.class.getName());
 
-    final JFileChooser fileChooser;
-    final JFrame window = this;
+    private final JFileChooser fileChooser;
+    private final JFrame window = this;
 
-    int prevTab = 0;
+    private int prevTab = 0;
 
     public MainWindow(GraphicsEngine graphicsEngine, SimulationThread simulationThread, Environment environment, ProjectData projectData) {
         fileChooser = new JFileChooser();
-        ObjectMapper mapper = new ObjectMapper();
 
         setTitle("Simulated Physical Usability");
 
@@ -124,56 +121,53 @@ public class MainWindow extends JFrame {
         // TODO: Make real tabs -- remember to suspend limit rendering to 60 FPS
         //tabbedPane.addTab("Statistics", new JPanel());
 
-        tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                // Leaving this tab
-                switch (prevTab) {
-                    case 0:     // Simulation
-                        break;
+        tabbedPane.addChangeListener(e -> {
+            // Leaving this tab
+            switch (prevTab) {
+                case 0:     // Simulation
+                    break;
 
-                    case 1:     // Environment
-                        break;
+                case 1:     // Environment
+                    break;
 
-                    case 2:     // Behavior
-                        try {
-                            behaviorPanel.applyValues();
-                        } catch (Exception e1) {
-                            //e1.printStackTrace();
-                            JOptionPane.showConfirmDialog (null,
-                                    e1.getMessage(),"Error", JOptionPane.DEFAULT_OPTION);
-                        }
-                        break;
+                case 2:     // Behavior
+                    try {
+                        behaviorPanel.applyValues();
+                    } catch (Exception e1) {
+                        //e1.printStackTrace();
+                        JOptionPane.showConfirmDialog (null,
+                                e1.getMessage(),"Error", JOptionPane.DEFAULT_OPTION);
+                    }
+                    break;
 
-                    case 3:     // Data
-                        break;
+                case 3:     // Data
+                    break;
 
-                    default:
-                        break;
-                }
-
-                // Switching to to this tab
-                switch (tabbedPane.getSelectedIndex()) {
-                    case 0:     // Simulation
-                        break;
-
-                    case 1:     // Environment
-                        environmentControlPanel.addButtons();
-                        break;
-
-                    case 2:     // Behavior
-                        behaviorPanel.populateLocationTypes();
-                        break;
-
-                    case 3:     // Data
-                        break;
-
-                    default:
-                        break;
-                }
-
-                prevTab = tabbedPane.getSelectedIndex();
+                default:
+                    break;
             }
+
+            // Switching to to this tab
+            switch (tabbedPane.getSelectedIndex()) {
+                case 0:     // Simulation
+                    break;
+
+                case 1:     // Environment
+                    environmentControlPanel.addButtons();
+                    break;
+
+                case 2:     // Behavior
+                    behaviorPanel.populateLocationTypes();
+                    break;
+
+                case 3:     // Data
+                    break;
+
+                default:
+                    break;
+            }
+
+            prevTab = tabbedPane.getSelectedIndex();
         });
 
         add(tabbedPane);

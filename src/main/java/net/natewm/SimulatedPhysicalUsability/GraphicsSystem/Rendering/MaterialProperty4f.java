@@ -7,7 +7,7 @@ import org.joml.Vector4f;
  * Four floating point material properties.
  */
 public class MaterialProperty4f extends MaterialProperty {
-    Vector4f value;
+    private Vector4f value;
 
     /**
      * Creates material property for four floating point values.

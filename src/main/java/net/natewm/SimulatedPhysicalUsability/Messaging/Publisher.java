@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Nathan on 4/11/2017.
  */
 public class Publisher {
-    List<MessageQueue> subscriberList = new ArrayList<>();
+    private final List<MessageQueue> subscriberList = new ArrayList<>();
 
     public Publisher() {
     }

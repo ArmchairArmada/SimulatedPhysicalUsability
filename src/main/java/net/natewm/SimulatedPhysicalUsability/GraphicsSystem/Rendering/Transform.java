@@ -14,8 +14,8 @@ public class Transform {
 
     public Vector3f position = new Vector3f();
     public Quaternionf rotation = new Quaternionf();
-    Matrix4f matrix = new Matrix4f();
-    boolean dirty = true;
+    private final Matrix4f matrix = new Matrix4f();
+    private boolean dirty = true;
 
     /**
      * Gets matrix, which is the result of position and rotation.
@@ -37,6 +37,11 @@ public class Transform {
         dirty = false;
     }
 
+    /**
+     * Sets the transform's position and rotation properties.
+     *
+     * @param transform Transform to use
+     */
     public void set(Transform transform) {
         position = transform.position;
         rotation = transform.rotation;

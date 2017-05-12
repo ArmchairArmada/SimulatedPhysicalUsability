@@ -17,32 +17,41 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Nathan on 1/3/2017.
+ * Manages graphical resources like meshes, textures, shaders, etc.
  */
 public class ResourceManager {
     private static final Logger LOGGER = Logger.getLogger(ResourceManager.class.getName());
 
     // TODO: Refactor to store resources instead of handles?
-    Map<String, Geometry> geometryMap = new HashMap<>();
-    Map<String, MeshDescription> meshDescriptionMap = new HashMap<>();
-    Map<String, MeshHandle> meshMap = new HashMap<>();
-    Map<String, MaterialHandle> materialMap = new HashMap<>();
-    Map<String, TextureHandle> textureMap = new HashMap<>();
+    private final Map<String, Geometry> geometryMap = new HashMap<>();
+    private final Map<String, MeshDescription> meshDescriptionMap = new HashMap<>();
+    private final Map<String, MeshHandle> meshMap = new HashMap<>();
+    private final Map<String, MaterialHandle> materialMap = new HashMap<>();
+    private final Map<String, TextureHandle> textureMap = new HashMap<>();
 
-    Map<String, ShaderHandle> vertexShaderMap = new HashMap<>();
-    Map<String, ShaderHandle> fragmentShaderMap = new HashMap<>();
-    Map<String, ShaderProgramHandle> shaderProgramMap = new HashMap<>();
+    private final Map<String, ShaderHandle> vertexShaderMap = new HashMap<>();
+    private final Map<String, ShaderHandle> fragmentShaderMap = new HashMap<>();
+    private final Map<String, ShaderProgramHandle> shaderProgramMap = new HashMap<>();
 
-    IImageLoader imageLoader = new ImageLoader();
-    IGeometryLoader geometryLoader = new OBJLoader();
+    private final IImageLoader imageLoader = new ImageLoader();
+    private final IGeometryLoader geometryLoader = new OBJLoader();
 
-    ObjectMapper objectMapper = new ObjectMapper();  // Jackson ObjectMapper for loading JSON files
+    private final ObjectMapper objectMapper = new ObjectMapper();  // Jackson ObjectMapper for loading JSON files
 
-
+    /**
+     * Default constructor for creating the resource manager
+     */
     public ResourceManager() {
     }
 
-
+    /**
+     * Loads geometry from a file
+     *
+     * @param filename Name of file to load.
+     * @param keep     If the geometry should be cached for quick retrieval
+     * @return Geometry that has been loaded from a file
+     * @throws IOException Thrown if the file cannot be loaded
+     */
     private Geometry loadGeometry(String filename, boolean keep) throws IOException {
         LOGGER.log(Level.FINE, "Loading Geometry: {0}", filename);
 
@@ -58,7 +67,15 @@ public class ResourceManager {
         }
     }
 
-
+    /**
+     * Loads a mesh from a file.  It also loads the material used by the mesh.
+     *
+     * @param gl             OpenGL
+     * @param meshHandle     Mesh handle to store mesh into
+     * @param materialHandle Material handle to store material into
+     * @param filename       Name of mesh JSON file to load
+     * @throws Exception Thrown if file cannot be loaded
+     */
     public synchronized void loadMesh(GL3 gl, MeshHandle meshHandle, MaterialHandle materialHandle, String filename) throws Exception {
         LOGGER.log(Level.FINE, "Loading Mesh: {0}", filename);
 
@@ -95,7 +112,14 @@ public class ResourceManager {
         meshHandle.setMesh(mesh);
     }
 
-
+    /**
+     * Loads a material from a file.
+     *
+     * @param gl             OpenGL
+     * @param materialHandle Handle to store material into
+     * @param filename       Name of material JSON file
+     * @throws Exception Thrown if file cannot be loaded
+     */
     public synchronized void loadMaterial(GL3 gl, MaterialHandle materialHandle, String filename) throws Exception {
         LOGGER.log(Level.FINE, "Loading Material: {0}", filename);
 
@@ -209,7 +233,14 @@ public class ResourceManager {
         materialHandle.setMaterial(material);
     }
 
-
+    /**
+     * Loads a texture from a file.
+     *
+     * @param gl            OpenGL
+     * @param textureHandle Handle to store texture into
+     * @param filename      Name of the image file to load
+     * @throws Exception Thrown if file cannot be loaded
+     */
     public synchronized void loadTexture(GL3 gl, TextureHandle textureHandle, String filename) throws Exception {
         LOGGER.log(Level.FINE, "Loading Texture: {0}", filename);
 
@@ -224,7 +255,14 @@ public class ResourceManager {
         textureHandle.setTexture(new Texture(gl, imageLoader.load(filename)));
     }
 
-
+    /**
+     * Loads a vertex shader from file.
+     *
+     * @param gl           OpenGL
+     * @param shaderHandle Handle to store the vertex shader into
+     * @param filename     Name of the GLSL vertex shader file
+     * @throws Exception Thrown if file cannot be loaded
+     */
     public synchronized void loadVertexShader(GL3 gl, ShaderHandle shaderHandle, String filename) throws Exception {
         LOGGER.log(Level.FINE, "Loading Vertex Shader: {0}", filename);
 
@@ -245,7 +283,14 @@ public class ResourceManager {
         shaderHandle.setShader(new Shader(gl, GL3.GL_VERTEX_SHADER, lines));
     }
 
-
+    /**
+     * Loads a fragment shader from file.
+     *
+     * @param gl           OpenGL
+     * @param shaderHandle handle to store the fragment shader into
+     * @param filename     Name of the GLSL fragment shader file
+     * @throws Exception Thrown if file cannot be loaded
+     */
     public synchronized void loadFragmentShader(GL3 gl, ShaderHandle shaderHandle, String filename) throws Exception {
         LOGGER.log(Level.FINE, "Loading Fragment Shader: {0}", filename);
 
@@ -265,11 +310,19 @@ public class ResourceManager {
         shaderHandle.setShader(new Shader(gl, GL3.GL_FRAGMENT_SHADER, lines));
     }
 
+    /**
+     * Generates a shader program from vertex and fragment shaders.
+     *
+     * @param gl                  OpenGL
+     * @param shaderProgramHandle Handle to store shader program into
+     * @param vertexFilename      File name of vertex shader to use
+     * @param fragmentFilename    File name of fragment shader to use
+     * @throws Exception Thrown if files cannot be loaded
+     */
+    public synchronized void loadShaderProgram(GL3 gl, ShaderProgramHandle shaderProgramHandle, String vertexFilename, String fragmentFilename) throws Exception {
+        LOGGER.log(Level.FINE, "Loading ShaderProgram: {0}, {1}", new Object[]{vertexFilename, fragmentFilename});
 
-    public synchronized void loadShaderProgram(GL3 gl, ShaderProgramHandle shaderProgramHandle, String vertexFilename, String fragementFilename) throws Exception {
-        LOGGER.log(Level.FINE, "Loading ShaderProgram: {0}, {1}", new Object[]{vertexFilename, fragementFilename});
-
-        String key = vertexFilename + ":" + fragementFilename;
+        String key = vertexFilename + ":" + fragmentFilename;
 
         if (shaderProgramMap.containsKey(key)) {
             ShaderProgramHandle handle = shaderProgramMap.get(key);
@@ -282,12 +335,16 @@ public class ResourceManager {
         loadVertexShader(gl, vertexShaderHandle, vertexFilename);
 
         ShaderHandle fragmentShaderHandle = new ShaderHandle();
-        loadFragmentShader(gl, fragmentShaderHandle, fragementFilename);
+        loadFragmentShader(gl, fragmentShaderHandle, fragmentFilename);
 
         shaderProgramHandle.setShaderProgram(new ShaderProgram(gl, vertexShaderHandle.getShader(), fragmentShaderHandle.getShader()));
     }
 
-
+    /**
+     * Disposes of all resources stored in the resource manager
+     *
+     * @param graphicsEngine The graphics engine, which does the actual destruction
+     */
     public synchronized void disposeAll(GraphicsEngine graphicsEngine) {
         LOGGER.log(Level.FINE, "Disposing resources.");
 

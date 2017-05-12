@@ -12,9 +12,12 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 /**
- * Created by Nathan on 12/28/2016.
+ * Loads 3D object from a WaveFront OBJ file
  */
 public class OBJLoader implements IGeometryLoader {
+    /**
+     * Stores vertex position, normal, and uv information
+     */
     private class Point {
         Vector3f vertex = null;
         Vector3f normal = null;
@@ -22,11 +25,13 @@ public class OBJLoader implements IGeometryLoader {
         int index = -1;
     }
 
-
+    /**
+     * Keeps track of indexes for each triangle vertex
+     */
     private class Face {
-        int[] p = {-1, -1, -1};
-        int[] t = {-1, -1, -1};
-        int[] n = {-1, -1, -1};
+        final int[] p = {-1, -1, -1};
+        final int[] t = {-1, -1, -1};
+        final int[] n = {-1, -1, -1};
 
         Face(String[] items) {
             String[] strings;
@@ -47,7 +52,13 @@ public class OBJLoader implements IGeometryLoader {
         }
     }
 
-
+    /**
+     * Loads geometry from an OBJ file.
+     *
+     * @param filename File to load
+     * @return Geometry loaded from the file
+     * @throws IOException Exception if a file cannot load
+     */
     public Geometry load(String filename) throws IOException {
         HashMap<String, Point> pointMap = new HashMap<>();
         ArrayList<Point> points = new ArrayList<>();

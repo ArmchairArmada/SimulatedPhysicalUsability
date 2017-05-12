@@ -1,7 +1,5 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Behavior;
 
-import net.natewm.SimulatedPhysicalUsability.CollisionSystem.CollisionGrid;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +9,6 @@ import java.awt.event.ActionListener;
  * Created by Nathan on 4/18/2017.
  */
 public class ColorButton extends JButton {
-    private static final JColorChooser colorChooser = new JColorChooser();
     private Color color = Color.red;
 
     public ColorButton(Color c) {
@@ -46,14 +43,11 @@ public class ColorButton extends JButton {
         });
 
         ColorButton self = this;
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Color newColor = colorChooser.showDialog(self, "Choose a Color", color);
-                if (newColor != null) {
-                    color = newColor;
-                    repaint();
-                }
+        addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(self, "Choose a Color", color);
+            if (newColor != null) {
+                color = newColor;
+                repaint();
             }
         });
     }

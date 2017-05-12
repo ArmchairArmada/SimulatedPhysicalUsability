@@ -6,26 +6,18 @@ import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by Nathan on 1/18/2017.
  */
 public class SimulationControlPanel extends JPanel {
-    private SimulationThread simulationThread;
-    private Environment environment;
-    private JLabel lblSpeed;
+    private final JLabel lblSpeed;
 
     private boolean stopped = true;
     private int speed = 1;
 
     public SimulationControlPanel(SimulationThread simulationThread, Environment environment) {
         JButton button;
-
-        this.simulationThread = simulationThread;
-        this.environment = environment;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -94,12 +86,7 @@ public class SimulationControlPanel extends JPanel {
         JSpinner spnEnterRate = new JSpinner();
         spnEnterRate.setModel(new SpinnerNumberModel(1.0, 0.0, 100.0, 0.01));
         ((JSpinner.DefaultEditor)spnEnterRate.getEditor()).getTextField().setColumns(5);
-        spnEnterRate.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                simulationThread.setEnterRate(((Double)spnEnterRate.getValue()).floatValue());
-            }
-        });
+        spnEnterRate.addChangeListener(e -> simulationThread.setEnterRate(((Double)spnEnterRate.getValue()).floatValue()));
         pnlEnterRate.add(spnEnterRate);
 
         add(pnlEnterRate);

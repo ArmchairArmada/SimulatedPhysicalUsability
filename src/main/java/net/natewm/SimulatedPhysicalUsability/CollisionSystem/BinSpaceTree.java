@@ -14,15 +14,62 @@ import java.util.List;
  * @param <T> The type of data that will be stored in the the tree.
  */
 public class BinSpaceTree<T> implements ICollisionCollection<T>{
+    private final Node root;      // Root node
+    private final int maxDepth;   // Maximum search depth for the tree.
+
+    /**
+     * Constructor for binary space search tree.
+     *
+     * @param x        The horizontal position of space's bounds.
+     * @param y        The vertical position of space's bounds.
+     * @param width    The width of the space's bounds.
+     * @param height   The height of the space's bounds.
+     * @param maxDepth The maximum depth permitted for search tree.
+     */
+    public BinSpaceTree(float x, float y, float width, float height, int maxDepth) {
+        this.maxDepth = maxDepth;
+        root = new Node(null, x, y, width, height);
+    }
+
+    /**
+     * Inserts an object with an associated bounding rectangle into the tree.
+     *
+     * @param rect   Bounding rectangle of object to insert.
+     * @param object Object to insert.
+     */
+    public void insert(Rect rect, T object) {
+        root.insert(rect, object, maxDepth);
+    }
+
+    /**
+     * Removes an object with an associated bounding rectangle from the tree.
+     *
+     * @param rect Rectangle of object to remove.
+     * @return Object that has been removed.
+     */
+    public T remove(Rect rect) {
+        return root.remove(rect, maxDepth);
+    }
+
+    /**
+     * Finds all objects overlapping a given test rectangle and puts results into a given collection.
+     *
+     * @param rect          Test rectangle to find rectangles that overlap it.
+     * @param outCollection Collection to add search results to.
+     */
+    public void findOverlapping(Rect rect, List<Pair<Rect, T>> outCollection) {
+        root.findOverlapping(rect, outCollection, true);
+    }
+
     /**
      * A node in the search tree.
      */
     private class Node {
-        Rect rect;                                       // Bounding rectangle
-        Node parent;                                     // Node's parent node
+        final Rect rect;                                       // Bounding rectangle
+        final Node parent;                                     // Node's parent node
+        final List<Pair<Rect, T>> objects = new LinkedList<>();// Object stored in this node
         Node childA = null;                              // Left or top child node
         Node childB = null;                              // Right or bottom child node
-        List<Pair<Rect, T>> objects = new LinkedList<>();// Object stored in this node
 
 
         /**
@@ -32,7 +79,7 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
          * @param x      The left edge of the node's rectangular area.
          * @param y      The top edge of the node's rectangular area.
          * @param width  The width of the node's rectangular area.
-         * @param height The hight of the node's rectangular area.
+         * @param height The height of the node's rectangular area.
          */
         Node(Node parent, float x, float y, float width, float height) {
             this.parent = parent;
@@ -196,57 +243,5 @@ public class BinSpaceTree<T> implements ICollisionCollection<T>{
                 childB.findOverlapping(rect, outCollection, !isVertical);
             }
         }
-    }
-
-
-    private Node root;      // Root node
-    private int maxDepth;   // Maximum search depth for the tree.
-
-
-    /**
-     * Constructor for binary space search tree.
-     *
-     * @param x        The horizontal position of space's bounds.
-     * @param y        The vertical position of space's bounds.
-     * @param width    The width of the space's bounds.
-     * @param height   The height of the space's bounds.
-     * @param maxDepth The maximum depth permitted for search tree.
-     */
-    public BinSpaceTree(float x, float y, float width, float height, int maxDepth) {
-        this.maxDepth = maxDepth;
-        root = new Node(null, x, y, width, height);
-    }
-
-
-    /**
-     * Inserts an object with an associated bounding rectangle into the tree.
-     *
-     * @param rect   Bounding rectangle of object to insert.
-     * @param object Object to insert.
-     */
-    public void insert(Rect rect, T object) {
-        root.insert(rect, object, maxDepth);
-    }
-
-
-    /**
-     * Removes an object with an associated bounding rectangle from the tree.
-     *
-     * @param rect Rectangle of object to remove.
-     * @return Objec that has been removed.
-     */
-    public T remove(Rect rect) {
-        return root.remove(rect, maxDepth);
-    }
-
-
-    /**
-     * Finds all objects overlapping a given test rectangle and puts results into a given collection.
-     *
-     * @param rect          Test rectangle to find rectangles that overlap it.
-     * @param outCollection Collection to add search results to.
-     */
-    public void findOverlapping(Rect rect, List<Pair<Rect, T>> outCollection) {
-        root.findOverlapping(rect, outCollection, true);
     }
 }

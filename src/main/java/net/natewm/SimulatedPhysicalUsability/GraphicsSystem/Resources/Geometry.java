@@ -15,24 +15,12 @@ import java.util.List;
  * buffers can be generated.
  */
 public class Geometry {
-    public class SubGeometryInfo {
-        public int verticesStart;
-        public int verticesLength = -1;
-        public int trianglesStart;
-        public int trianglesLength = -1;
-
-        public SubGeometryInfo(int verticesStart, int trianglesStart) {
-            this.verticesStart = verticesStart;
-            this.trianglesStart = trianglesStart;
-        }
-    }
-
-    List<Vector3f> vertices = new ArrayList<>();
-    List<Vector3f> normals = new ArrayList<>();
-    List<Vector3f> colors = new ArrayList<>();
-    List<Vector2f> uv = new ArrayList<>();
-    List<Triangle> triangles = new ArrayList<>();
-    List<SubGeometryInfo> subGeometryInfos = new ArrayList<>();
+    private final List<Vector3f> vertices = new ArrayList<>();
+    private final List<Vector3f> normals = new ArrayList<>();
+    private final List<Vector3f> colors = new ArrayList<>();
+    private final List<Vector2f> uv = new ArrayList<>();
+    private final List<Triangle> triangles = new ArrayList<>();
+    private final List<SubGeometryInfo> subGeometryInfos = new ArrayList<>();
 
     /**
      * General constructor.
@@ -40,20 +28,37 @@ public class Geometry {
     public Geometry() {
     }
 
+    /**
+     * Starts a subgeometry group
+     */
     public void startSubGeometry() {
         subGeometryInfos.add(new SubGeometryInfo(vertices.size(), triangles.size()));
     }
 
+    /**
+     * Finalizes a the subgeometry groups
+     */
     public void finalizeSubGeometry() {
         SubGeometryInfo subGeometryInfo = subGeometryInfos.get(subGeometryInfos.size()-1);
         subGeometryInfo.verticesLength = vertices.size() - subGeometryInfo.verticesStart;
         subGeometryInfo.trianglesLength = triangles.size() - subGeometryInfo.trianglesStart;
     }
 
+    /**
+     * Gets the number of subgeometries in this geometry object
+     *
+     * @return Subgeometry count
+     */
     public int getSubGeometryCount() {
         return subGeometryInfos.size();
     }
 
+    /**
+     * Gets information on a subgeometry.
+     *
+     * @param index Index for subgeometry to get information about
+     * @return Subgeometry info
+     */
     public SubGeometryInfo getSubGeometryInfo(int index) {
         return subGeometryInfos.get(index);
     }
@@ -215,7 +220,7 @@ public class Geometry {
         return triangles.size();
     }
 
-    public boolean checkConsistancy() {
+    public boolean checkConsistency() {
         return (normals.size() == vertices.size() || normals.size() == 0)
             && (colors.size()  == vertices.size() || colors.size() == 0)
             && (uv.size()      == vertices.size() || uv.size() == 0);
@@ -287,7 +292,7 @@ public class Geometry {
     /**
      * Creates an OpenGL compatible buffer of triangle indices.
      *
-     * @return A buffer of triangle indicies.
+     * @return A buffer of triangle indices.
      */
     public IntBuffer makeTriangleBuffer() {
         IntBuffer intBuffer = Buffers.newDirectIntBuffer(triangles.size() * 3);
@@ -314,5 +319,17 @@ public class Geometry {
                 maxRadius = radius;
         }
         return radius;
+    }
+
+    public class SubGeometryInfo {
+        public final int verticesStart;
+        public final int trianglesStart;
+        public int verticesLength = -1;
+        public int trianglesLength = -1;
+
+        public SubGeometryInfo(int verticesStart, int trianglesStart) {
+            this.verticesStart = verticesStart;
+            this.trianglesStart = trianglesStart;
+        }
     }
 }

@@ -11,9 +11,9 @@ import java.util.List;
  * Created by Nathan on 1/4/2017.
  */
 public class AgentManager {
-    List<Agent> agents = new ArrayList<>();
-    List<Agent> toAdd = new ArrayList<>();
-    List<Agent> toRemove = new ArrayList<>();
+    private List<Agent> agents = new ArrayList<>();
+    private List<Agent> toAdd = new ArrayList<>();
+    private List<Agent> toRemove = new ArrayList<>();
 
     public AgentManager() {
     }
@@ -54,7 +54,7 @@ public class AgentManager {
             toAdd.clear();
 
             for (Agent agent : agents) {
-                agent.update(this, graphicsEngine, environment, projectData, sdt);
+                agent.update(this, environment, projectData, sdt);
 
                 //if (Math.random() < 0.01)
                 //    remove(agent);

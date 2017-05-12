@@ -10,28 +10,57 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by Nathan on 1/12/2017.
+ * A simple preprocessor for GLSL shader files to be able to include other files.
  */
 public class ShaderPreprocessor {
     private static final Logger LOGGER = Logger.getLogger(ShaderPreprocessor.class.getName());
 
+    /**
+     * Loads a shader from file with preprocessing applied
+     *
+     * @param dir      Directory of the file
+     * @param filename File name
+     * @return Text resulting from preprocessing the file
+     * @throws IOException Thrown if file cannot be loaded
+     */
     public static String[] load(String dir, String filename) throws IOException {
         List<String> lines = processFile(dir, filename);
         return lines.toArray(new String[0]);
     }
 
+    /**
+     * Performs the preprocessing on a file.
+     *
+     * @param dir      Directory the file is in
+     * @param filename File to load with preprocessing
+     * @return List of strings for preprocessed file
+     * @throws IOException Thrown if file cannot be loaded
+     */
     private static List<String> processFile(String dir, String filename) throws IOException {
         List<String> fileLines = Files.readAllLines(Paths.get(dir+filename), StandardCharsets.UTF_8);
         fixLineEndings(fileLines);
         return preprocess(dir, fileLines);
     }
 
+    /**
+     * Since line endings get stripped, new lines get added back on.
+     *
+     * @param lines Lines to have line endings appended onto
+     */
     private static void fixLineEndings(List<String> lines) {
         for (int i=0; i<lines.size(); i++) {
             lines.set(i, lines.get(i).concat("\r\n"));
         }
     }
 
+    /**
+     * Preprocesses lines from a file.  Currently the only command added is to include other files.
+     *
+     * @param dir   Directory of the file
+     * @param lines Lines of text to preprocess
+     * @return List of new lines after preprocessing
+     * @throws IOException Thrown if included file cannot be preprocessed
+     */
     public static List<String> preprocess(String dir, List<String> lines) throws IOException {
         List<String> newLines = new ArrayList<>();
 
@@ -55,16 +84,5 @@ public class ShaderPreprocessor {
         }
 
         return newLines;
-    }
-
-    private static List<String> loadLines(String filename) throws IOException {
-        List<String> lines;
-
-        lines = Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
-        for (int i=0; i<lines.size(); i++) {
-            lines.set(i, lines.get(i).concat("\r\n"));
-        }
-
-        return lines;
     }
 }

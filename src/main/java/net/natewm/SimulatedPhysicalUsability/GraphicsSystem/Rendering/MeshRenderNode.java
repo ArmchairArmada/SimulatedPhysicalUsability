@@ -10,15 +10,16 @@ import java.nio.ByteBuffer;
  * Created by Nathan on 12/29/2016.
  */
 public class MeshRenderNode implements IRenderNode {
-    Transform transform = new Transform();
-    Mesh mesh;
-    Material material;
+    private final Transform transform = new Transform();
+    private Mesh mesh;
+    private Material material;
 
-    Matrix4f modelView = new Matrix4f();
-    Matrix4f mvp = new Matrix4f();
-    Vector4f viewCenter = new Vector4f();
-    float viewRadius=0f, viewZ=0f;
-    boolean dynamic = false;
+    private final Matrix4f modelView = new Matrix4f();
+    private final Matrix4f mvp = new Matrix4f();
+    private final Vector4f viewCenter = new Vector4f();
+    private float viewRadius=0f;
+    private float viewZ=0f;
+    private boolean dynamic = false;
 
     public MeshRenderNode(Mesh mesh, Material material) {
         this.mesh = mesh;

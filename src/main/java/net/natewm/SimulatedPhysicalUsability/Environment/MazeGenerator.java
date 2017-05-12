@@ -4,7 +4,7 @@ import net.natewm.SimulatedPhysicalUsability.Utils.ArrayUtils;
 
 
 /**
- * Randomly genrates a maze of walls in the environment.
+ * Randomly generates a maze of walls in the environment.
  */
 public class MazeGenerator {
     /**
@@ -20,8 +20,8 @@ public class MazeGenerator {
      * A direction (how much x and y should change)
      */
     private class Dir {
-        int dx;
-        int dy;
+        final int dx;
+        final int dy;
 
         Dir(int dx, int dy) {
             this.dx = dx;
@@ -29,8 +29,8 @@ public class MazeGenerator {
         }
     }
 
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
     private final float removeWallProbability;
 
     /**
@@ -139,7 +139,7 @@ public class MazeGenerator {
             cell.topWall = false;
         }
 
-        // Create derections that can be taken to arrive at the next cell.
+        // Create directions that can be taken to arrive at the next cell.
         Dir[] dirs = new Dir[]{
                 new Dir(-1, 0),
                 new Dir(1, 0),

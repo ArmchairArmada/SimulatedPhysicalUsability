@@ -10,16 +10,13 @@ import net.natewm.SimulatedPhysicalUsability.GraphicsSystem.GraphicsEngine.Graph
  */
 
 public class GraphicsPanel extends GLCanvas {
-    private final GraphicsEngine graphicsEngine;
     private GL3 gl;
     private FPSAnimator animator;
 
-    private MouseCamera mouseCamera;
+    private final MouseCamera mouseCamera;
 
     public GraphicsPanel(GraphicsEngine graphicsEngine) {
         super(graphicsEngine.getGlCapabilities());
-
-        this.graphicsEngine = graphicsEngine;
 
         mouseCamera = new MouseCamera(-0.8f, 3.1415f, 20f, this);
 

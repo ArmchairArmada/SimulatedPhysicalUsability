@@ -1,7 +1,6 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
 import net.natewm.SimulatedPhysicalUsability.CollisionSystem.Rect;
-import net.natewm.SimulatedPhysicalUsability.Environment.Environment;
 import net.natewm.SimulatedPhysicalUsability.Environment.Location;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 
@@ -11,8 +10,8 @@ import java.awt.*;
  * Created by Nathan on 2/21/2017.
  */
 public class LocationDrawable implements IEditorDrawable {
-    Rect rect;
-    Location location;
+    private final Rect rect;
+    private final Location location;
 
     public LocationDrawable(Location location) {
         this.location = location;

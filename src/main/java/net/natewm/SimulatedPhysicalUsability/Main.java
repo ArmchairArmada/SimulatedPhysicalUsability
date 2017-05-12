@@ -16,11 +16,6 @@ import java.util.logging.*;
 public class Main {
     private static final Logger LOGGER = Logger.getLogger("net.natewm.SimulatedPhysicalUsability");
 
-    private static final int GROUND_WIDTH = 8;
-    private static final int GROUND_HEIGHT = 8;
-    private static final int GROUND_GRID_WIDTH = 128;
-    private static final int GROUND_GRID_HEIGHT = 128;
-
     public Main() {
     }
 
@@ -57,7 +52,7 @@ public class Main {
             Environment environment = new Environment(graphicsEngine, projectData);
 
             SimulationThread simulationThread = new SimulationThread(graphicsEngine, environment, projectData);
-            graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReciever());
+            graphicsEngine.setFrameReceiver(simulationThread.getFrameEndReceiver());
 
             MainWindow mainWindow = new MainWindow(graphicsEngine, simulationThread, environment, projectData);
         });

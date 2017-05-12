@@ -32,21 +32,21 @@ public class EnvironmentPanel extends JPanel {
     private static final int GRID_HEIGHT = 1024;
     private static final Color GRID_COLOR = new Color(220,220,220);
 
-    int centerX = 0;
-    int centerY = 0;
-    int button = 0;
-    int previousX = 0;
-    int previousY = 0;
-    int offsetX = 0;
-    int offsetY = 0;
+    private int centerX = 0;
+    private int centerY = 0;
+    private int button = 0;
+    private int previousX = 0;
+    private int previousY = 0;
+    private int offsetX = 0;
+    private int offsetY = 0;
 
     private final Environment environment;
     private final ProjectData projectData;
 
-    Tool tool = Tool.WALLS;
+    private Tool tool = Tool.WALLS;
     private LocationType toolLocationType = null;
 
-    ICollisionCollection<IEditorDrawable> drawables;
+    private ICollisionCollection<IEditorDrawable> drawables;
 
     public EnvironmentPanel(Environment environment, ProjectData projectData) {
         this.environment = environment;

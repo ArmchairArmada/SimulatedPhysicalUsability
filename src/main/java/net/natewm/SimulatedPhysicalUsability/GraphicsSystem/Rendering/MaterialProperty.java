@@ -6,7 +6,7 @@ import com.jogamp.opengl.GL3;
  * Material property base class.
  */
 public class MaterialProperty {
-    String name;    // Name of the property
+    final String name;    // Name of the property
     int uniformID;  // ID of the uniform in the shader
 
     /**

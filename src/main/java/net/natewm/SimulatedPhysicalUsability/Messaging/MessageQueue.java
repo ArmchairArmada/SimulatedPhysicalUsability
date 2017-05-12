@@ -7,8 +7,8 @@ import java.util.Queue;
  * Created by Nathan on 4/11/2017.
  */
 public class MessageQueue {
-    Queue<Message> messageQueue = new LinkedList<>();
-    boolean newMessage = false;
+    private final Queue<Message> messageQueue = new LinkedList<>();
+    private boolean newMessage = false;
 
     public MessageQueue() {
     }

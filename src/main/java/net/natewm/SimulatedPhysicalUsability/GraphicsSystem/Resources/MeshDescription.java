@@ -10,9 +10,9 @@ import java.util.List;
  * Created by Nathan on 1/3/2017.
  */
 public class MeshDescription {
-    private List<String> geometry;
+    List<String> geometry;
     //private String geometryLowRes = null;
-    private String material;
+    String material;
 
     public List<String> getGeometry() {
         return geometry;

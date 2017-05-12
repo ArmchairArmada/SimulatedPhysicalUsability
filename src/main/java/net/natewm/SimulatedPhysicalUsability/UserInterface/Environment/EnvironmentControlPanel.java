@@ -1,7 +1,5 @@
 package net.natewm.SimulatedPhysicalUsability.UserInterface.Environment;
 
-import javafx.scene.control.ToggleButton;
-import javafx.scene.layout.Border;
 import net.natewm.SimulatedPhysicalUsability.Environment.LocationType;
 import net.natewm.SimulatedPhysicalUsability.Project.ProjectData;
 import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
@@ -9,17 +7,16 @@ import net.natewm.SimulatedPhysicalUsability.Simulation.SimulationThread;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created by Nathan on 1/18/2017.
  */
 public class EnvironmentControlPanel extends JPanel {
-    EnvironmentPanel environmentPanel;
-    final ProjectData projectData;
-    final SimulationThread simulationThread;
-    ArrayList<JToggleButton> locationTypeButtonList = new ArrayList<>();
-    ButtonGroup tglButtons;
+    private final EnvironmentPanel environmentPanel;
+    private final ProjectData projectData;
+    private final SimulationThread simulationThread;
+    private final ArrayList<JToggleButton> locationTypeButtonList = new ArrayList<>();
+    private ButtonGroup tglButtons;
 
     public EnvironmentControlPanel(ProjectData projectData, EnvironmentPanel environmentPanel, SimulationThread simulationThread) {
         this.environmentPanel = environmentPanel;
@@ -55,9 +52,7 @@ public class EnvironmentControlPanel extends JPanel {
 
         tglButton = new JToggleButton("Eraser");
         tglButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        tglButton.addActionListener(e -> {
-            environmentPanel.setTool(EnvironmentPanel.Tool.ERASER);
-        });
+        tglButton.addActionListener(e -> environmentPanel.setTool(EnvironmentPanel.Tool.ERASER));
         tglButtons.add(tglButton);
         add(tglButton);
 
@@ -95,9 +90,7 @@ public class EnvironmentControlPanel extends JPanel {
         for (LocationType locationType : projectData.getLocationTypes()) {
             button = new JToggleButton(locationType.getName());
             button.setAlignmentX(CENTER_ALIGNMENT);
-            button.addActionListener(e -> {
-                environmentPanel.setLocationTool(locationType);
-            });
+            button.addActionListener(e -> environmentPanel.setLocationTool(locationType));
 
             button.setIcon(new Icon() {
                 @Override

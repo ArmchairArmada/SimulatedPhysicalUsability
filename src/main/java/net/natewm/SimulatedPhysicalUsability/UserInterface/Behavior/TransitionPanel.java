@@ -14,12 +14,12 @@ public class TransitionPanel extends JPanel {
     private static final String[] selectionStrings = {"Nearest", "Random"};
     private static final String[] unavailableStrings = {"Repick", "Wait", "Queue"};
 
-    private JTextField txtDestination;
-    private JSpinner spnWeight;
+    private final JTextField txtDestination;
+    private final JSpinner spnWeight;
     private JComboBox<String> cmbSelection;
     private JComboBox<String> cmbUnavailable;
 
-    private LocationType.Transition transition;
+    private final LocationType.Transition transition;
 
     public TransitionPanel(LocationType.Transition transition) {
         super();

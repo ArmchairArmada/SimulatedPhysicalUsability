@@ -11,32 +11,30 @@ import java.awt.event.*;
  * Camera control system which uses the mouse for translation, rotation, and zoom.
  */
 public class MouseCamera {
-    static final float TRANSLATE_RATE = 0.0007f;
-    static final float ZOOM_RATE = 0.0025f;
-    static final float ROTATE_RATE = 0.001f;
-    static final float SCROLL_RATE = 0.05f;
-    static final float MIN_ROTATE = (float)(-Math.PI/2.0+0.025f);
-    static final float MAX_ROTATE = -0.001f;
-    static final float MIN_ZOOM = 2f;
+    private static final float TRANSLATE_RATE = 0.0007f;
+    private static final float ZOOM_RATE = 0.0025f;
+    private static final float ROTATE_RATE = 0.001f;
+    private static final float SCROLL_RATE = 0.05f;
+    private static final float MIN_ROTATE = (float)(-Math.PI/2.0+0.025f);
+    private static final float MAX_ROTATE = -0.001f;
+    private static final float MIN_ZOOM = 2f;
 
-    MouseListener mouseListener;
-    MouseMotionListener mouseMotionListener;
-    MouseWheelListener mouseWheelListener;
+    private final MouseListener mouseListener;
+    private final MouseMotionListener mouseMotionListener;
+    private final MouseWheelListener mouseWheelListener;
 
-    int button = 0;
-    float previousX = 0f;
-    float previousY = 0f;
+    private int button = 0;
+    private float previousX = 0f;
+    private float previousY = 0f;
 
-    float rotateX = 0f;
-    float rotateY = 0f;
-    float distance = 10f;
+    private float rotateX = 0f;
+    private float rotateY = 0f;
+    private float distance = 10f;
 
-    Component component;
+    private final Vector3f cameraCenter = new Vector3f();
+    private final Quaternionf cameraAngle = new Quaternionf();
 
-    Vector3f cameraCenter = new Vector3f();
-    Quaternionf cameraAngle = new Quaternionf();
-
-    Matrix4f matrix = new Matrix4f();
+    private final Matrix4f matrix = new Matrix4f();
 
     /**
      * Constructor to create the mouse controlled camera.
@@ -49,7 +47,6 @@ public class MouseCamera {
         this.rotateX = cameraRotateX;
         this.rotateY = cameraRotateY;
         this.distance = cameraDistance;
-        this.component = component;
 
         cameraAngle.identity().rotateAxis(rotateY, 0f, 1f, 0f).rotateAxis(rotateX, 1f, 0f, 0f);
         updateMatrix();

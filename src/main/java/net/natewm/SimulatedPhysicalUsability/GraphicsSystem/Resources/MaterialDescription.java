@@ -7,15 +7,18 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by Nathan on 1/3/2017.
+ * Description of a material's properties, which can be loaded from a JSON file.
  */
 public class MaterialDescription {
+    /**
+     * Material properties
+     */
     public class Properties {
-        private List<String> textures = null;
-        private List<Double> diffuseColor = null;
-        private List<Double> specularColor = null;
-        private Double specularPower = null;
-        private Double specularIntensity = null;
+        private final List<String> textures = null;
+        private final List<Double> diffuseColor = null;
+        private final List<Double> specularColor = null;
+        private final Double specularPower = null;
+        private final Double specularIntensity = null;
 
         public List<String> getTextures() {
             return textures;
@@ -38,22 +41,45 @@ public class MaterialDescription {
         }
     }
 
-    private String vertexShader = null;
-    private String fragmentShader = null;
-    private Properties properties = null;
+    private final String vertexShader = null;
+    private final String fragmentShader = null;
+    private final Properties properties = null;
 
+    /**
+     * Gets the vertex shader filename.
+     *
+     * @return Vertex shader file name
+     */
     public String getVertexShader() {
         return vertexShader;
     }
 
+    /**
+     * Gets the fragmetn shader filename
+     *
+     * @return Fragment shader file name
+     */
     public String getFragmentShader() {
         return fragmentShader;
     }
 
+    /**
+     * Gets the properties describing the material.
+     *
+     * @return Material's properites
+     */
     public Properties getProperties() {
         return properties;
     }
 
+    /**
+     * Loads a MaterialDescription from a JSON file.
+     *
+     * @param mapper   Jackson JSON mapper
+     * @param filename JSON filename
+     * @return A material description
+     * @throws IOException Throws exception if file cannot be loaded
+     */
     public static MaterialDescription loadFromJSON(ObjectMapper mapper, String filename) throws IOException {
         return mapper.readValue(new File(filename), MaterialDescription.class);
     }

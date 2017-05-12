@@ -1,15 +1,14 @@
 package net.natewm.SimulatedPhysicalUsability.Environment;
 
-import net.natewm.SimulatedPhysicalUsability.Project.LocationDescription;
 import net.natewm.SimulatedPhysicalUsability.Simulation.Agent;
 
 /**
  * Created by Nathan on 3/14/2017.
  */
 public class Location {
-    private LocationType locationType;
-    private float x;
-    private float y;
+    private final LocationType locationType;
+    private final float x;
+    private final float y;
     private Agent occupiedBy = null;
     private int navGridId;
 
