@@ -17,40 +17,88 @@ public class FloatGrid {
     private float min;
     private float max;
 
+    /**
+     * Constructs a grid of floating point values
+     *
+     * @param width  Width of the grid
+     * @param height Height of the grid
+     */
     public FloatGrid(int width, int height) {
         data =  new float[width*height];
         this.width = width;
         this.height = height;
     }
 
+    /**
+     * Gets the width of the grid.
+     *
+     * @return Width of the grid
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Gets the height of the grid.
+     *
+     * @return Height of the grid
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Gets the minimum value stored in the grid (may not be current).
+     *
+     * @return Minimum value stored in grid
+     */
     public float getMin() {
         return min;
     }
 
+    /**
+     * Gets the maximum value stored in the grid (may not be current).
+     *
+     * @return Maximum value stored in the grid
+     */
     public float getMax() {
         return max;
     }
 
+    /**
+     * Gets the value stored at a position in the grid.
+     *
+     * @param x X position in the grid
+     * @param y Y position in the grid
+     * @return Value stored in the grid position
+     */
     public float get(int x, int y) {
         return data[y * width + x];
     }
 
+    /**
+     * Sets a value at a position in the grid.
+     *
+     * @param x     X position in the grid
+     * @param y     Y position in the grid
+     * @param value Value to store in the grid
+     */
     public void set(int x, int y, float value) {
         data[y * width + x] = value;
     }
 
+    /**
+     * Gets the number of grid cells in the grid.
+     *
+     * @return Size of the grid
+     */
     public int size() {
         return data.length;
     }
 
+    /**
+     * Updates the minimum and maximum values stored in the grid.
+     */
     public void updateMinMax() {
         float v;
         min=Float.MAX_VALUE;
@@ -65,6 +113,18 @@ public class FloatGrid {
         }
     }
 
+    /**
+     * Converts the float values into a byte buffer, where the values will be stretched between 0 and 255.  This uses
+     * an average of the linear and log scale values so that it would have a more interesting appearance when used as
+     * a heatmap texture.
+     *
+     * The minimum and maximum values are specified for stretching values so this grid can be used along with other
+     * grids in the map, which may have different min and max values.
+     *
+     * @param minValue Minimum for stretching value
+     * @param maxValue Maximum for stretching value
+     * @return A byte buffer filled with values between 0 and 255
+     */
     public ByteBuffer toByteBuffer(float minValue, float maxValue) {
         float v;
 

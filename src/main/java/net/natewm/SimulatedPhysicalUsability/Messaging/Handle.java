@@ -1,7 +1,9 @@
 package net.natewm.SimulatedPhysicalUsability.Messaging;
 
 /**
- * Created by Nathan on 4/19/2017.
+ * Handle for referring to some resource (not currently used)
+ *
+ * @param <T> Type of resource stored in handle
  */
 public class Handle<T> {
     private T object = null;
